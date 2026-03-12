@@ -1,0 +1,99 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  ADMIN
+  TEACHER
+  STUDENT
+}
+
+enum LessonType {
+  PRIVATE
+  DUO
+  GROUP
+  ONLINE
+}
+
+enum BookingStatus {
+  PENDING
+  CONFIRMED
+  CANCELED
+  COMPLETED
+}
+
+model User {
+  id              String              @id @default(cuid())
+  email           String              @unique
+  firstName       String
+  lastName        String
+  phone           String?
+  role            UserRole            @default(STUDENT)
+  isActive        Boolean             @default(true)
+  createdAt       DateTime            @default(now())
+  updatedAt       DateTime            @updatedAt
+
+  taughtLessons   Lesson[]            @relation("TeacherLessons")
+  bookings        LessonParticipant[]
+  payments        Payment[]
+  progressEntries ProgressEntry[]
+}
+
+model Lesson {
+  id            String              @id @default(cuid())
+  title         String
+  description   String?
+  lessonType    LessonType
+  scheduledAt   DateTime
+  durationMin   Int
+  priceAmount   Decimal?            @db.Decimal(10, 2)
+  location      String?
+  teacherId     String
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  teacher       User                @relation("TeacherLessons", fields: [teacherId], references: [id])
+  participants  LessonParticipant[]
+}
+
+model LessonParticipant {
+  id         String         @id @default(cuid())
+  lessonId   String
+  userId     String
+  status     BookingStatus  @default(CONFIRMED)
+  createdAt  DateTime       @default(now())
+
+  lesson     Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([lessonId, userId])
+}
+
+model Payment {
+  id         String    @id @default(cuid())
+  userId     String
+  amount     Decimal   @db.Decimal(10, 2)
+  currency   String    @default("CHF")
+  paidAt     DateTime?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model ProgressEntry {
+  id         String    @id @default(cuid())
+  userId     String
+  title      String
+  notes      String?
+  level      Int?
+  createdAt  DateTime  @default(now())
+  updatedAt  DateTime  @updatedAt
+
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
