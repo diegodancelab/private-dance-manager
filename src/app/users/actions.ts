@@ -26,3 +26,31 @@ export async function createUser(formData: FormData) {
 
   redirect("/users");
 }
+
+export async function updateUser(formData: FormData) {
+  const id = String(formData.get("id") || "").trim();
+  const email = String(formData.get("email") || "").trim();
+  const firstName = String(formData.get("firstName") || "").trim();
+  const lastName = String(formData.get("lastName") || "").trim();
+  const phone = String(formData.get("phone") || "").trim();
+  const role = String(formData.get("role") || "STUDENT").trim();
+
+  if (!id || !email || !firstName || !lastName) {
+    throw new Error("Id, email, first name and last name are required.");
+  }
+
+  await prisma.user.update({
+    where: {
+      id,
+    },
+    data: {
+      email,
+      firstName,
+      lastName,
+      phone: phone || null,
+      role: role as "ADMIN" | "TEACHER" | "STUDENT",
+    },
+  });
+
+  redirect(`/users/${id}`);
+}

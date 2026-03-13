@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 
 type Props = {
   params: Promise<{
@@ -23,6 +24,9 @@ export default async function UserDetailPage({ params }: Props) {
   return (
     <div>
       <h1>User detail</h1>
+      <p>
+  <Link href={`/users/${user.id}/edit`}>Edit user</Link>
+</p>
 
       <p>
         <strong>Name:</strong> {user.firstName} {user.lastName}
