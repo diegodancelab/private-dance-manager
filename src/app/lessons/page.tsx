@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 
+
 export default async function LessonsPage() {
   const lessons = await prisma.lesson.findMany({
     orderBy: {
