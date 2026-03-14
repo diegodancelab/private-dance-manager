@@ -27,6 +27,35 @@ enum BookingStatus {
   COMPLETED
 }
 
+enum ChargeStatus {
+  PENDING
+  PARTIALLY_PAID
+  PAID
+  CANCELED
+}
+
+enum ChargeType {
+  LESSON
+  PACKAGE
+  ADJUSTMENT
+  OTHER
+}
+
+enum PaymentMethod {
+  CASH
+  TWINT
+  BANK_TRANSFER
+  CARD
+  OTHER
+}
+
+enum PaymentStatus {
+  PENDING
+  COMPLETED
+  CANCELED
+  REFUNDED
+}
+
 model User {
   id              String              @id @default(cuid())
   email           String              @unique
@@ -40,7 +69,8 @@ model User {
 
   taughtLessons   Lesson[]            @relation("TeacherLessons")
   bookings        LessonParticipant[]
-  payments        Payment[]
+  charges         Charge[]
+payments        Payment[]
   progressEntries ProgressEntry[]
 }
 
@@ -59,6 +89,7 @@ model Lesson {
 
   teacher       User                @relation("TeacherLessons", fields: [teacherId], references: [id])
   participants  LessonParticipant[]
+  charges       Charge[]
 }
 
 model LessonParticipant {
@@ -74,18 +105,6 @@ model LessonParticipant {
   @@unique([lessonId, userId])
 }
 
-model Payment {
-  id         String    @id @default(cuid())
-  userId     String
-  amount     Decimal   @db.Decimal(10, 2)
-  currency   String    @default("CHF")
-  paidAt     DateTime?
-  createdAt  DateTime  @default(now())
-  updatedAt  DateTime  @updatedAt
-
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
-}
-
 model ProgressEntry {
   id         String    @id @default(cuid())
   userId     String
@@ -96,4 +115,52 @@ model ProgressEntry {
   updatedAt  DateTime  @updatedAt
 
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Charge {
+  id            String              @id @default(cuid())
+  userId        String
+  lessonId      String?
+  type          ChargeType          @default(LESSON)
+  title         String
+  description   String?
+  amount        Decimal             @db.Decimal(10, 2)
+  currency      String              @default("CHF")
+  status        ChargeStatus        @default(PENDING)
+  dueAt         DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson        Lesson?             @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  allocations   PaymentAllocation[]
+}
+
+model Payment {
+  id            String              @id @default(cuid())
+  userId        String
+  amount        Decimal             @db.Decimal(10, 2)
+  currency      String              @default("CHF")
+  method        PaymentMethod?
+  status        PaymentStatus       @default(COMPLETED)
+  note          String?
+  paidAt        DateTime?
+  createdAt     DateTime            @default(now())
+  updatedAt     DateTime            @updatedAt
+
+  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  allocations   PaymentAllocation[]
+}
+
+model PaymentAllocation {
+  id            String    @id @default(cuid())
+  chargeId      String
+  paymentId     String
+  amount        Decimal   @db.Decimal(10, 2)
+  createdAt     DateTime  @default(now())
+
+  charge        Charge    @relation(fields: [chargeId], references: [id], onDelete: Cascade)
+  payment       Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
+
+  @@unique([chargeId, paymentId])
 }
