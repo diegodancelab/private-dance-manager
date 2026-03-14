@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { addLessonParticipant } from "../actions";
+import { addLessonParticipant, removeLessonParticipant } from "../actions";
 import Link from "next/link";
 
 type Props = {
@@ -49,8 +49,8 @@ export default async function LessonDetailPage({ params }: Props) {
     <div>
       <h1>Lesson detail</h1>
       <p>
-  <Link href={`/lessons/${lesson.id}/edit`}>Edit lesson</Link>
-</p>
+        <Link href={`/lessons/${lesson.id}/edit`}>Edit lesson</Link>
+      </p>
       <p>
         <strong>Title:</strong> {lesson.title}
       </p>
@@ -90,7 +90,14 @@ export default async function LessonDetailPage({ params }: Props) {
         <ul>
           {lesson.participants.map((participant) => (
             <li key={participant.id}>
-              {participant.user.firstName} {participant.user.lastName} - {participant.status}
+              {participant.user.firstName} {participant.user.lastName} -{" "}
+              {participant.status}
+
+              <form action={removeLessonParticipant} style={{ display: "inline", marginLeft: "8px" }}>
+                <input type="hidden" name="participantId" value={participant.id} />
+                <input type="hidden" name="lessonId" value={lesson.id} />
+                <button type="submit">Remove</button>
+              </form>
             </li>
           ))}
         </ul>
