@@ -32,3 +32,22 @@ export async function createLesson(formData: FormData) {
 
   redirect(`/lessons/${lesson.id}`);
 }
+
+export async function addLessonParticipant(formData: FormData) {
+  const lessonId = String(formData.get("lessonId") || "").trim();
+  const userId = String(formData.get("userId") || "").trim();
+
+  if (!lessonId || !userId) {
+    throw new Error("Lesson id and user id are required.");
+  }
+
+  await prisma.lessonParticipant.create({
+    data: {
+      lessonId,
+      userId,
+      status: "CONFIRMED",
+    },
+  });
+
+  redirect(`/lessons/${lessonId}`);
+}

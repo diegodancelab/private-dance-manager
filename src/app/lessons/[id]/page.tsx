@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { addLessonParticipant } from "../actions";
 
 type Props = {
   params: Promise<{
@@ -27,6 +28,21 @@ export default async function LessonDetailPage({ params }: Props) {
   if (!lesson) {
     notFound();
   }
+
+  const students = await prisma.user.findMany({
+    where: {
+      role: "STUDENT",
+    },
+    orderBy: {
+      firstName: "asc",
+    },
+  });
+
+  const participantUserIds = lesson.participants.map((participant) => participant.userId);
+
+  const availableStudents = students.filter(
+    (student) => !participantUserIds.includes(student.id)
+  );
 
   return (
     <div>
@@ -65,14 +81,39 @@ export default async function LessonDetailPage({ params }: Props) {
       </p>
 
       <h2>Participants</h2>
+      {lesson.participants.length === 0 ? (
+        <p>No participants yet.</p>
+      ) : (
+        <ul>
+          {lesson.participants.map((participant) => (
+            <li key={participant.id}>
+              {participant.user.firstName} {participant.user.lastName} - {participant.status}
+            </li>
+          ))}
+        </ul>
+      )}
+      
+      <h2>Add participant</h2>
 
-      <ul>
-        {lesson.participants.map((participant) => (
-          <li key={participant.id}>
-            {participant.user.firstName} {participant.user.lastName} - {participant.status}
-          </li>
-        ))}
-      </ul>
+      {availableStudents.length === 0 ? (
+        <p>No available students to add.</p>
+      ) : (
+        <form action={addLessonParticipant}>
+          <input type="hidden" name="lessonId" value={lesson.id} />
+          <div>
+            <label htmlFor="userId">Student</label>
+            <select id="userId" name="userId" required>
+              <option value="">Select a student</option>
+              {availableStudents.map((student) => (
+                <option key={student.id} value={student.id}>
+                  {student.firstName} {student.lastName} - {student.email}
+                </option>
+              ))}
+            </select>
+          </div>
+          <button type="submit">Add participant</button>
+        </form>
+      )}
     </div>
   );
 }
