@@ -30,6 +30,13 @@ export default async function ChargeDetailPage({ params }: Props) {
     notFound();
   }
 
+const totalPaid = charge.allocations.reduce((sum, allocation) => {
+    return sum + Number(allocation.amount);
+  }, 0);
+
+  const chargeAmount = Number(charge.amount);
+  const remainingBalance = Math.max(chargeAmount - totalPaid, 0);
+
   return (
     <div>
       <p>
@@ -38,8 +45,8 @@ export default async function ChargeDetailPage({ params }: Props) {
 
       <h1>Charge detail</h1>
       <p>
-  <Link href="/payments/new">Create payment</Link>
-</p>
+        <Link href="/payments/new">Create payment</Link>
+    </p>
 
       <p>
         <strong>Student:</strong> {charge.user.firstName} {charge.user.lastName}
@@ -63,6 +70,14 @@ export default async function ChargeDetailPage({ params }: Props) {
 
       <p>
         <strong>Status:</strong> {charge.status}
+      </p>
+
+      <p>
+        <strong>Total paid:</strong> {totalPaid.toFixed(2)} {charge.currency}
+      </p>
+
+      <p>
+        <strong>Remaining balance:</strong> {remainingBalance.toFixed(2)} {charge.currency}
       </p>
 
       <p>
