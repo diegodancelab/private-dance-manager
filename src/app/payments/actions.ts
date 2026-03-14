@@ -3,6 +3,46 @@
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 
+async function updateChargeStatus(chargeId: string) {
+  const charge = await prisma.charge.findUnique({
+    where: {
+      id: chargeId,
+    },
+    include: {
+      allocations: true,
+    },
+  });
+
+  if (!charge) {
+    throw new Error("Charge not found.");
+  }
+
+  const allocatedTotal = charge.allocations.reduce((sum, allocation) => {
+    return sum + Number(allocation.amount);
+  }, 0);
+
+  const chargeAmount = Number(charge.amount);
+
+  let status: "PENDING" | "PARTIALLY_PAID" | "PAID" | "CANCELED" = "PENDING";
+
+  if (allocatedTotal <= 0) {
+    status = "PENDING";
+  } else if (allocatedTotal < chargeAmount) {
+    status = "PARTIALLY_PAID";
+  } else {
+    status = "PAID";
+  }
+
+  await prisma.charge.update({
+    where: {
+      id: chargeId,
+    },
+    data: {
+      status,
+    },
+  });
+}
+
 export async function createPayment(formData: FormData) {
   const userId = String(formData.get("userId") || "").trim();
   const chargeId = String(formData.get("chargeId") || "").trim();
@@ -38,6 +78,8 @@ export async function createPayment(formData: FormData) {
       amount,
     },
   });
+
+  await updateChargeStatus(chargeId);
 
   redirect(`/payments/${payment.id}`);
 }
