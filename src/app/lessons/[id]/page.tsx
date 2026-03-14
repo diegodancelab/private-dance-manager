@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { addLessonParticipant } from "../actions";
+import Link from "next/link";
 
 type Props = {
   params: Promise<{
@@ -47,7 +48,9 @@ export default async function LessonDetailPage({ params }: Props) {
   return (
     <div>
       <h1>Lesson detail</h1>
-
+      <p>
+  <Link href={`/lessons/${lesson.id}/edit`}>Edit lesson</Link>
+</p>
       <p>
         <strong>Title:</strong> {lesson.title}
       </p>

@@ -51,3 +51,37 @@ export async function addLessonParticipant(formData: FormData) {
 
   redirect(`/lessons/${lessonId}`);
 }
+
+export async function updateLesson(formData: FormData) {
+  const id = String(formData.get("id") || "").trim();
+  const title = String(formData.get("title") || "").trim();
+  const description = String(formData.get("description") || "").trim();
+  const lessonType = String(formData.get("lessonType") || "PRIVATE").trim();
+  const scheduledAt = String(formData.get("scheduledAt") || "").trim();
+  const durationMin = Number(formData.get("durationMin") || 0);
+  const priceAmount = String(formData.get("priceAmount") || "").trim();
+  const location = String(formData.get("location") || "").trim();
+  const teacherId = String(formData.get("teacherId") || "").trim();
+
+  if (!id || !title || !lessonType || !scheduledAt || !durationMin || !teacherId) {
+    throw new Error("Id, title, lesson type, scheduled date, duration and teacher are required.");
+  }
+
+  await prisma.lesson.update({
+    where: {
+      id,
+    },
+    data: {
+      title,
+      description: description || null,
+      lessonType: lessonType as "PRIVATE" | "DUO" | "GROUP" | "ONLINE",
+      scheduledAt: new Date(scheduledAt),
+      durationMin,
+      priceAmount: priceAmount || null,
+      location: location || null,
+      teacherId,
+    },
+  });
+
+  redirect(`/lessons/${id}`);
+}
