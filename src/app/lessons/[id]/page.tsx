@@ -48,6 +48,10 @@ export default async function LessonDetailPage({ params }: Props) {
 
   return (
     <div>
+      <p>
+    <Link href="/lessons">← Back to lessons</Link>
+  </p>
+  
       <h1>Lesson detail</h1>
       <p>
         <Link href={`/lessons/${lesson.id}/edit`}>Edit lesson</Link>
