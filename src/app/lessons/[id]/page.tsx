@@ -1,7 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { addLessonParticipant, removeLessonParticipant } from "../actions";
+import { addLessonParticipant, removeLessonParticipant, deleteLesson } from "../actions";
 import Link from "next/link";
+
 
 type Props = {
   params: Promise<{
@@ -51,6 +52,10 @@ export default async function LessonDetailPage({ params }: Props) {
       <p>
         <Link href={`/lessons/${lesson.id}/edit`}>Edit lesson</Link>
       </p>
+      <form action={deleteLesson}>
+        <input type="hidden" name="lessonId" value={lesson.id} />
+        <button type="submit">Delete lesson</button>
+      </form>
       <p>
         <strong>Title:</strong> {lesson.title}
       </p>

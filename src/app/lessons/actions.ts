@@ -102,3 +102,19 @@ export async function removeLessonParticipant(formData: FormData) {
 
   redirect(`/lessons/${lessonId}`);
 }
+
+export async function deleteLesson(formData: FormData) {
+  const lessonId = String(formData.get("lessonId") || "").trim();
+
+  if (!lessonId) {
+    throw new Error("Lesson id is required.");
+  }
+
+  await prisma.lesson.delete({
+    where: {
+      id: lessonId,
+    },
+  });
+
+  redirect("/lessons");
+}
