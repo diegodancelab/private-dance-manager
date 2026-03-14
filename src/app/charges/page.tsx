@@ -39,19 +39,21 @@ export default async function ChargesPage() {
             {charges.map((charge) => (
               <tr key={charge.id}>
                 <td>
-                  {charge.user.firstName} {charge.user.lastName}
+                    <Link href={`/charges/${charge.id}`}>
+                        {charge.user.firstName} {charge.user.lastName}
+                    </Link>
                 </td>
 
                 <td>{charge.title}</td>
 
                 <td>
-                  {charge.amount.toString()} {charge.currency}
+                {charge.amount.toString()} {charge.currency}
                 </td>
 
                 <td>{charge.status}</td>
 
                 <td>
-                  {charge.lesson ? charge.lesson.title : "—"}
+                {charge.lesson ? charge.lesson.title : "—"}
                 </td>
 
                 <td>{charge.createdAt.toLocaleDateString()}</td>

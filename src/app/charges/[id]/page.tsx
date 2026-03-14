@@ -37,6 +37,9 @@ export default async function ChargeDetailPage({ params }: Props) {
       </p>
 
       <h1>Charge detail</h1>
+      <p>
+  <Link href="/payments/new">Create payment</Link>
+</p>
 
       <p>
         <strong>Student:</strong> {charge.user.firstName} {charge.user.lastName}
