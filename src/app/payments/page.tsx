@@ -1,8 +1,31 @@
-export default function PaymentsPage() {
+import Link from "next/link";
+import { prisma } from "@/lib/prisma";
+
+export default async function PaymentsPage() {
+  const payments = await prisma.payment.findMany({
+    orderBy: {
+      createdAt: "desc",
+    }
+  });
+
   return (
     <div>
       <h1>Payments</h1>
-      <p>Payments management will be displayed here.</p>
+
+      <p>
+        <Link href="/payments/new">Create </Link>
+      </p>
+
+      <ul>
+        {payments.map((payment) => (
+          <li key={payment.id}>
+            <Link href={`/paymentsxy/${payment.id}`}>
+              {payment.amount.toString()} {payment.currency}
+            </Link>{" "}
+            - {payment.method} - {payment.status}
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

@@ -1,85 +1,129 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import {
+  PaymentMethod,
+  PaymentStatus,
+  UserRole,
+} from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
-import { ChargeStatus, PaymentMethod, PaymentStatus } from "@/generated/prisma/client";
+import type { PaymentFormState } from "./form-state";
 
-function parsePaymentMethod(value: FormDataEntryValue | null): PaymentMethod | null {
+function parseRequiredString(value: FormDataEntryValue | null): string {
+  return String(value || "").trim();
+}
+
+function parseOptionalString(value: FormDataEntryValue | null): string | null {
   const parsed = String(value || "").trim();
-  
-  if (!parsed) {
+  return parsed === "" ? null : parsed;
+}
+
+function parsePaymentMethod(
+  value: FormDataEntryValue | null
+): PaymentMethod | null {
+  const parsed = String(value || "").trim();
+
+  if (parsed === "") {
     return null;
   }
-  
+
   if (Object.values(PaymentMethod).includes(parsed as PaymentMethod)) {
     return parsed as PaymentMethod;
   }
-  
+
   return null;
 }
 
 function parsePaymentStatus(value: FormDataEntryValue | null): PaymentStatus {
   const parsed = String(value || "").trim();
-  
+
   if (Object.values(PaymentStatus).includes(parsed as PaymentStatus)) {
     return parsed as PaymentStatus;
   }
-  
+
   return PaymentStatus.COMPLETED;
 }
 
-async function updateChargeStatus(chargeId: string) {
-  const charge = await prisma.charge.findUnique({
-    where: {
-      id: chargeId,
-    },
-    include: {
-      allocations: true,
-    },
-  });
-
-  if (!charge) {
-    throw new Error("Charge not found.");
-  }
-
-  const allocatedTotal = charge.allocations.reduce((sum, allocation) => {
-    return sum + Number(allocation.amount);
-  }, 0);
-
-  const chargeAmount = Number(charge.amount);
-
-  let status: ChargeStatus = ChargeStatus.PENDING;
-
-  if (allocatedTotal <= 0) {
-    status = ChargeStatus.PENDING;
-  } else if (allocatedTotal < chargeAmount) {
-    status = ChargeStatus.PARTIALLY_PAID;
-  } else {
-    status = ChargeStatus.PAID;
-  }
-
-  await prisma.charge.update({
-    where: {
-      id: chargeId,
-    },
-    data: {
-      status,
-    },
-  });
+function isValidDecimal(value: string): boolean {
+  return /^\d+(\.\d{1,2})?$/.test(value);
 }
 
-export async function createPayment(formData: FormData) {
-  const userId = String(formData.get("userId") || "").trim();
-  const chargeId = String(formData.get("chargeId") || "").trim();
-  const amount = String(formData.get("amount") || "").trim();
-  const currency = String(formData.get("currency") || "CHF").trim();
+function isValidDateTimeLocal(value: string): boolean {
+  if (!value) {
+    return false;
+  }
+
+  const date = new Date(value);
+  return !Number.isNaN(date.getTime());
+}
+
+export async function createPayment(
+  _prevState: PaymentFormState,
+  formData: FormData
+): Promise<PaymentFormState> {
+  const userId = parseRequiredString(formData.get("userId"));
+  const amount = parseRequiredString(formData.get("amount"));
+  const currency = parseRequiredString(formData.get("currency")) || "CHF";
   const method = parsePaymentMethod(formData.get("method"));
   const status = parsePaymentStatus(formData.get("status"));
   const note = String(formData.get("note") || "").trim();
-  const paidAt = String(formData.get("paidAt") || "").trim();
+  const paidAt = parseRequiredString(formData.get("paidAt"));
 
-  if (!userId || !chargeId || !amount) {
-    throw new Error("User, charge and amount are required.");
+  const state: PaymentFormState = {
+    success: false,
+    message: "",
+    fields: {
+      id: "",
+      userId,
+      amount,
+      currency,
+      method: method ?? "",
+      status,
+      note,
+      paidAt,
+    },
+    errors: {},
+  };
+
+  if (!userId) {
+    state.errors.userId = "Student is required.";
+  }
+
+  if (!amount) {
+    state.errors.amount = "Amount is required.";
+  } else if (!isValidDecimal(amount)) {
+    state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+  }
+
+  if (!currency) {
+    state.errors.currency = "Currency is required.";
+  }
+
+  if (paidAt && !isValidDateTimeLocal(paidAt)) {
+    state.errors.paidAt = "Paid date is invalid.";
+  }
+
+  if (Object.keys(state.errors).length > 0) {
+    return state;
+  }
+
+  const student = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      role: UserRole.STUDENT,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!student) {
+    return {
+      ...state,
+      errors: {
+        userId: "Selected student was not found.",
+      },
+    };
   }
 
   const payment = await prisma.payment.create({
@@ -89,20 +133,121 @@ export async function createPayment(formData: FormData) {
       currency,
       method,
       status,
-      note: note || null,
+      note: parseOptionalString(formData.get("note")),
       paidAt: paidAt ? new Date(paidAt) : null,
     },
   });
 
-  await prisma.paymentAllocation.create({
-    data: {
-      chargeId,
-      paymentId: payment.id,
+  redirect(`/payments/${payment.id}`);
+}
+
+export async function updatePayment(
+  _prevState: PaymentFormState,
+  formData: FormData
+): Promise<PaymentFormState> {
+  const id = parseRequiredString(formData.get("id"));
+  const userId = parseRequiredString(formData.get("userId"));
+  const amount = parseRequiredString(formData.get("amount"));
+  const currency = parseRequiredString(formData.get("currency")) || "CHF";
+  const method = parsePaymentMethod(formData.get("method"));
+  const status = parsePaymentStatus(formData.get("status"));
+  const note = String(formData.get("note") || "").trim();
+  const paidAt = parseRequiredString(formData.get("paidAt"));
+
+  const state: PaymentFormState = {
+    success: false,
+    message: "",
+    fields: {
+      id,
+      userId,
       amount,
+      currency,
+      method: method ?? "",
+      status,
+      note,
+      paidAt,
+    },
+    errors: {},
+  };
+
+  if (!id) {
+    state.errors.form = "Payment id is required.";
+    return state;
+  }
+
+  if (!userId) {
+    state.errors.userId = "Student is required.";
+  }
+
+  if (!amount) {
+    state.errors.amount = "Amount is required.";
+  } else if (!isValidDecimal(amount)) {
+    state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+  }
+
+  if (!currency) {
+    state.errors.currency = "Currency is required.";
+  }
+
+  if (paidAt && !isValidDateTimeLocal(paidAt)) {
+    state.errors.paidAt = "Paid date is invalid.";
+  }
+
+  if (Object.keys(state.errors).length > 0) {
+    return state;
+  }
+
+  const existingPayment = await prisma.payment.findUnique({
+    where: {
+      id,
+    },
+    select: {
+      id: true,
     },
   });
 
-  await updateChargeStatus(chargeId);
+  if (!existingPayment) {
+    return {
+      ...state,
+      errors: {
+        form: "Payment not found.",
+      },
+    };
+  }
 
-  redirect(`/payments/${payment.id}`);
+  const student = await prisma.user.findFirst({
+    where: {
+      id: userId,
+      role: UserRole.STUDENT,
+    },
+    select: {
+      id: true,
+    },
+  });
+
+  if (!student) {
+    return {
+      ...state,
+      errors: {
+        userId: "Selected student was not found.",
+      },
+    };
+  }
+
+  await prisma.payment.update({
+    where: {
+      id,
+    },
+    data: {
+      userId,
+      amount,
+      currency,
+      method,
+      status,
+      note: parseOptionalString(formData.get("note")),
+      paidAt: paidAt ? new Date(paidAt) : null,
+    },
+  });
+
+  redirect(`/payments/${id}`);
 }
