@@ -19,7 +19,7 @@ export default async function PaymentsPage() {
       <ul>
         {payments.map((payment) => (
           <li key={payment.id}>
-            <Link href={`/paymentsxy/${payment.id}`}>
+            <Link href={`/payments/${payment.id}`}>
               {payment.amount.toString()} {payment.currency}
             </Link>{" "}
             - {payment.method} - {payment.status}
