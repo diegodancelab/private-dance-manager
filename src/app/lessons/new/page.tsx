@@ -12,6 +12,12 @@ function buildDefaultScheduledAt(dateParam?: string): string {
     return "";
   }
 
+  const isValidDate = /^\d{4}-\d{2}-\d{2}$/.test(dateParam);
+
+  if (!isValidDate) {
+    return "";
+  }
+
   return `${dateParam}T18:00`;
 }
 
@@ -99,12 +105,7 @@ export default async function NewLessonPage({
 
         <div>
           <label htmlFor="location">Location</label>
-          <input
-            id="location"
-            name="location"
-            type="text"
-            defaultValue="Geneva"
-          />
+          <input id="location" name="location" type="text" />
         </div>
 
         <div>
