@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { createPayment } from "../actions";
+import { UserRole, PaymentMethod, PaymentStatus } from "@/generated/prisma/client";
 
 export default async function NewPaymentPage() {
   const students = await prisma.user.findMany({
     where: {
-      role: "STUDENT",
+      role: UserRole.STUDENT,
     },
     orderBy: {
       firstName: "asc",
@@ -69,23 +70,23 @@ export default async function NewPaymentPage() {
 
         <div>
           <label htmlFor="method">Method</label>
-          <select id="method" name="method" defaultValue="TWINT">
+          <select id="method" name="method" defaultValue={PaymentMethod.TWINT}>
             <option value="">No method</option>
-            <option value="CASH">Cash</option>
-            <option value="TWINT">Twint</option>
-            <option value="BANK_TRANSFER">Bank transfer</option>
-            <option value="CARD">Card</option>
-            <option value="OTHER">Other</option>
+            <option value={PaymentMethod.CASH}>Cash</option>
+            <option value={PaymentMethod.TWINT}>Twint</option>
+            <option value={PaymentMethod.BANK_TRANSFER}>Bank transfer</option>
+            <option value={PaymentMethod.CARD}>Card</option>
+            <option value={PaymentMethod.OTHER}>Other</option>
           </select>
         </div>
 
         <div>
           <label htmlFor="status">Status</label>
-          <select id="status" name="status" defaultValue="COMPLETED">
-            <option value="PENDING">Pending</option>
-            <option value="COMPLETED">Completed</option>
-            <option value="CANCELED">Canceled</option>
-            <option value="REFUNDED">Refunded</option>
+          <select id="status" name="status" defaultValue={PaymentStatus.COMPLETED}>
+            <option value={PaymentStatus.PENDING}>Pending</option>
+            <option value={PaymentStatus.COMPLETED}>Completed</option>
+            <option value={PaymentStatus.CANCELED}>Canceled</option>
+            <option value={PaymentStatus.REFUNDED}>Refunded</option>
           </select>
         </div>
 

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { createLesson } from "../actions";
+import { UserRole, LessonType } from "@/generated/prisma/client";
 
 type NewLessonPageProps = {
   searchParams: Promise<{
@@ -28,7 +29,7 @@ export default async function NewLessonPage({
 
   const teachers = await prisma.user.findMany({
     where: {
-      role: "TEACHER",
+      role: UserRole.TEACHER,
     },
     orderBy: {
       firstName: "asc",
@@ -61,11 +62,11 @@ export default async function NewLessonPage({
 
         <div>
           <label htmlFor="lessonType">Lesson type</label>
-          <select id="lessonType" name="lessonType" defaultValue="PRIVATE">
-            <option value="PRIVATE">Private</option>
-            <option value="DUO">Duo</option>
-            <option value="GROUP">Group</option>
-            <option value="ONLINE">Online</option>
+          <select id="lessonType" name="lessonType" defaultValue={LessonType.PRIVATE}>
+            <option value={LessonType.PRIVATE}>Private</option>
+            <option value={LessonType.DUO}>Duo</option>
+            <option value={LessonType.GROUP}>Group</option>
+            <option value={LessonType.ONLINE}>Online</option>
           </select>
         </div>
 

@@ -1,11 +1,12 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { createCharge } from "../actions";
+import { UserRole, ChargeType, ChargeStatus } from "@/generated/prisma/client";
 
 export default async function NewChargePage() {
   const students = await prisma.user.findMany({
     where: {
-      role: "STUDENT",
+      role: UserRole.STUDENT,
     },
     orderBy: {
       firstName: "asc",
@@ -56,11 +57,11 @@ export default async function NewChargePage() {
 
         <div>
           <label htmlFor="type">Charge type</label>
-          <select id="type" name="type" defaultValue="LESSON">
-            <option value="LESSON">Lesson</option>
-            <option value="PACKAGE">Package</option>
-            <option value="ADJUSTMENT">Adjustment</option>
-            <option value="OTHER">Other</option>
+          <select id="type" name="type" defaultValue={ChargeType.LESSON}>
+            <option value={ChargeType.LESSON}>Lesson</option>
+            <option value={ChargeType.PACKAGE}>Package</option>
+            <option value={ChargeType.ADJUSTMENT}>Adjustment</option>
+            <option value={ChargeType.OTHER}>Other</option>
           </select>
         </div>
 
@@ -86,11 +87,11 @@ export default async function NewChargePage() {
 
         <div>
           <label htmlFor="status">Status</label>
-          <select id="status" name="status" defaultValue="PENDING">
-            <option value="PENDING">Pending</option>
-            <option value="PARTIALLY_PAID">Partially paid</option>
-            <option value="PAID">Paid</option>
-            <option value="CANCELED">Canceled</option>
+          <select id="status" name="status" defaultValue={ChargeStatus.PENDING}>
+            <option value={ChargeStatus.PENDING}>Pending</option>
+            <option value={ChargeStatus.PARTIALLY_PAID}>Partially paid</option>
+            <option value={ChargeStatus.PAID}>Paid</option>
+            <option value={ChargeStatus.CANCELED}>Canceled</option>
           </select>
         </div>
 

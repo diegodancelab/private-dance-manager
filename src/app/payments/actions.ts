@@ -2,6 +2,31 @@
 
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { ChargeStatus, PaymentMethod, PaymentStatus } from "@/generated/prisma/client";
+
+function parsePaymentMethod(value: FormDataEntryValue | null): PaymentMethod | null {
+  const parsed = String(value || "").trim();
+  
+  if (!parsed) {
+    return null;
+  }
+  
+  if (Object.values(PaymentMethod).includes(parsed as PaymentMethod)) {
+    return parsed as PaymentMethod;
+  }
+  
+  return null;
+}
+
+function parsePaymentStatus(value: FormDataEntryValue | null): PaymentStatus {
+  const parsed = String(value || "").trim();
+  
+  if (Object.values(PaymentStatus).includes(parsed as PaymentStatus)) {
+    return parsed as PaymentStatus;
+  }
+  
+  return PaymentStatus.COMPLETED;
+}
 
 async function updateChargeStatus(chargeId: string) {
   const charge = await prisma.charge.findUnique({
@@ -23,14 +48,14 @@ async function updateChargeStatus(chargeId: string) {
 
   const chargeAmount = Number(charge.amount);
 
-  let status: "PENDING" | "PARTIALLY_PAID" | "PAID" | "CANCELED" = "PENDING";
+  let status: ChargeStatus = ChargeStatus.PENDING;
 
   if (allocatedTotal <= 0) {
-    status = "PENDING";
+    status = ChargeStatus.PENDING;
   } else if (allocatedTotal < chargeAmount) {
-    status = "PARTIALLY_PAID";
+    status = ChargeStatus.PARTIALLY_PAID;
   } else {
-    status = "PAID";
+    status = ChargeStatus.PAID;
   }
 
   await prisma.charge.update({
@@ -48,8 +73,8 @@ export async function createPayment(formData: FormData) {
   const chargeId = String(formData.get("chargeId") || "").trim();
   const amount = String(formData.get("amount") || "").trim();
   const currency = String(formData.get("currency") || "CHF").trim();
-  const method = String(formData.get("method") || "").trim();
-  const status = String(formData.get("status") || "COMPLETED").trim();
+  const method = parsePaymentMethod(formData.get("method"));
+  const status = parsePaymentStatus(formData.get("status"));
   const note = String(formData.get("note") || "").trim();
   const paidAt = String(formData.get("paidAt") || "").trim();
 
@@ -62,10 +87,8 @@ export async function createPayment(formData: FormData) {
       userId,
       amount,
       currency,
-      method: method
-        ? (method as "CASH" | "TWINT" | "BANK_TRANSFER" | "CARD" | "OTHER")
-        : null,
-      status: status as "PENDING" | "COMPLETED" | "CANCELED" | "REFUNDED",
+      method,
+      status,
       note: note || null,
       paidAt: paidAt ? new Date(paidAt) : null,
     },

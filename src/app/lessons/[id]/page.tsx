@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { addLessonParticipant, removeLessonParticipant, deleteLesson } from "../actions";
 import Link from "next/link";
-
+import { UserRole } from "@/generated/prisma/client";
 
 type Props = {
   params: Promise<{
@@ -33,7 +33,7 @@ export default async function LessonDetailPage({ params }: Props) {
 
   const students = await prisma.user.findMany({
     where: {
-      role: "STUDENT",
+      role: UserRole.STUDENT,
     },
     orderBy: {
       firstName: "asc",
