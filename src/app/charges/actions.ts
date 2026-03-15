@@ -1,18 +1,40 @@
 "use server";
 
+import { ChargeStatus, ChargeType } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+
+function parseChargeType(value: FormDataEntryValue | null): ChargeType {
+  const parsed = String(value || "").trim();
+
+  if (Object.values(ChargeType).includes(parsed as ChargeType)) {
+    return parsed as ChargeType;
+  }
+
+  return ChargeType.LESSON;
+}
+
+function parseChargeStatus(value: FormDataEntryValue | null): ChargeStatus {
+  const parsed = String(value || "").trim();
+
+  if (Object.values(ChargeStatus).includes(parsed as ChargeStatus)) {
+    return parsed as ChargeStatus;
+  }
+
+  return ChargeStatus.PENDING;
+}
 
 export async function createCharge(formData: FormData) {
   const userId = String(formData.get("userId") || "").trim();
   const lessonId = String(formData.get("lessonId") || "").trim();
-  const type = String(formData.get("type") || "LESSON").trim();
   const title = String(formData.get("title") || "").trim();
   const description = String(formData.get("description") || "").trim();
   const amount = String(formData.get("amount") || "").trim();
   const currency = String(formData.get("currency") || "CHF").trim();
-  const status = String(formData.get("status") || "PENDING").trim();
   const dueAt = String(formData.get("dueAt") || "").trim();
+
+  const type = parseChargeType(formData.get("type"));
+  const status = parseChargeStatus(formData.get("status"));
 
   if (!userId || !title || !amount) {
     throw new Error("User, title and amount are required.");
@@ -22,12 +44,12 @@ export async function createCharge(formData: FormData) {
     data: {
       userId,
       lessonId: lessonId || null,
-      type: type as "LESSON" | "PACKAGE" | "ADJUSTMENT" | "OTHER",
+      type,
       title,
       description: description || null,
       amount,
       currency,
-      status: status as "PENDING" | "PARTIALLY_PAID" | "PAID" | "CANCELED",
+      status,
       dueAt: dueAt ? new Date(dueAt) : null,
     },
   });
