@@ -10,13 +10,17 @@ export async function createStudent(formData: FormData) {
   const lastName = String(formData.get("lastName") || "").trim();
   const phone = String(formData.get("phone") || "").trim();
 
-  if (!email || !firstName || !lastName) {
-    throw new Error("Email, first name and last name are required.");
+  if (!firstName || !lastName) {
+    throw new Error("First name and last name are required.");
+  }
+
+  if (!email && !phone) {
+    throw new Error("At least one contact method is required: email or phone.");
   }
 
   await prisma.user.create({
     data: {
-      email,
+      email: email || null,
       firstName,
       lastName,
       phone: phone || null,
@@ -34,8 +38,12 @@ export async function updateStudent(formData: FormData) {
   const lastName = String(formData.get("lastName") || "").trim();
   const phone = String(formData.get("phone") || "").trim();
 
-  if (!id || !email || !firstName || !lastName) {
-    throw new Error("Id, email, first name and last name are required.");
+  if (!id || !firstName || !lastName) {
+    throw new Error("Id, first name and last name are required.");
+  }
+
+  if (!email && !phone) {
+    throw new Error("At least one contact method is required: email or phone.");
   }
 
   await prisma.user.update({
@@ -43,11 +51,11 @@ export async function updateStudent(formData: FormData) {
       id,
     },
     data: {
-      email,
+      email: email || null,
       firstName,
       lastName,
       phone: phone || null,
-      role: UserRole.STUDENT
+      role: UserRole.STUDENT,
     },
   });
 

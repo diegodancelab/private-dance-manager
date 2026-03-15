@@ -1,9 +1,9 @@
-import { createStudent } from "../action";
+import { createStudent } from "../actions";
 
-export default function NewUserPage() {
+export default function NewStudentPage() {
   return (
     <div>
-      <h1>Create user</h1>
+      <h1>Create student</h1>
 
       <form action={createStudent}>
         <div>
@@ -18,7 +18,7 @@ export default function NewUserPage() {
 
         <div>
           <label htmlFor="email">Email</label>
-          <input id="email" name="email" type="email" required />
+          <input id="email" name="email" type="email" />
         </div>
 
         <div>
@@ -26,7 +26,9 @@ export default function NewUserPage() {
           <input id="phone" name="phone" type="text" />
         </div>
 
-        <button type="submit">Create Student</button>
+        <p>At least one contact method is required: email or phone.</p>
+
+        <button type="submit">Create student</button>
       </form>
     </div>
   );

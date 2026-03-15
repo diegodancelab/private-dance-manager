@@ -58,7 +58,7 @@ enum PaymentStatus {
 
 model User {
   id              String              @id @default(cuid())
-  email           String              @unique
+  email           String?             @unique
   firstName       String
   lastName        String
   phone           String?
@@ -70,7 +70,7 @@ model User {
   taughtLessons   Lesson[]            @relation("TeacherLessons")
   bookings        LessonParticipant[]
   charges         Charge[]
-payments        Payment[]
+ payments        Payment[]
   progressEntries ProgressEntry[]
 }
 

@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { updateStudent } from "../../action";
+import { updateStudent } from "../../actions";
 import { UserRole } from "@/generated/prisma/client";
 
 
