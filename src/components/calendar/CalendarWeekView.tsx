@@ -1,6 +1,7 @@
 import { formatDateKey, getWeekDays } from "@/lib/calendar";
 import LessonCard from "./LessonCard";
 import styles from "./CalendarWeekView.module.css";
+import Link from "next/link";
 
 type LessonParticipantItem = {
   id: string;
@@ -64,6 +65,12 @@ export default function CalendarWeekView({
           <section key={key} className={styles.dayColumn}>
             <header className={styles.dayHeader}>
               <h2 className={styles.dayTitle}>{formatDayLabel(day)}</h2>
+              <Link
+                href={`/lessons/new?date=${key}`}
+                className={styles.addLessonButton}
+              >
+                Add lesson
+              </Link>
             </header>
 
             <div className={styles.dayContent}>
