@@ -1,7 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
-import { LessonType } from "@/generated/prisma/client";
+import { BookingStatus, LessonType } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
 
 function parseRequiredString(value: FormDataEntryValue | null): string {
@@ -95,7 +95,7 @@ export async function addLessonParticipant(formData: FormData) {
     data: {
       lessonId,
       userId,
-      status: "CONFIRMED",
+      status: BookingStatus.CONFIRMED,
     },
   });
 
