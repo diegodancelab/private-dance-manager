@@ -11,6 +11,7 @@ type SidebarNavProps = {
 const navItems = [
   { href: "/", label: "Dashboard" },
   { href: "/calendar", label: "Calendar" },
+  { href: "/lessons", label: "Lessons" },
   { href: "/students", label: "Students" },
   { href: "/charges", label: "Charges" },
   { href: "/payments", label: "Payments" },

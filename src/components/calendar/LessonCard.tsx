@@ -1,3 +1,4 @@
+import Link from "next/link";
 import styles from "./LessonCard.module.css";
 
 type LessonParticipantItem = {
@@ -38,30 +39,35 @@ function formatEndTime(date: Date, durationMin: number) {
 
 export default function LessonCard({ lesson }: LessonCardProps) {
   const participantNames = lesson.participants
-    .map((participant) => `${participant.user.firstName} ${participant.user.lastName}`)
+    .map(
+      (participant) =>
+        `${participant.user.firstName} ${participant.user.lastName}`
+    )
     .join(", ");
 
   return (
-    <div className={styles.card}>
-      <div className={styles.time}>
-        {formatTime(lesson.scheduledAt)} -{" "}
-        {formatEndTime(lesson.scheduledAt, lesson.durationMin)}
-      </div>
+    <Link href={`/lessons/${lesson.id}/edit`} className={styles.link}>
+      <article className={styles.card}>
+        <div className={styles.time}>
+          {formatTime(lesson.scheduledAt)} -{" "}
+          {formatEndTime(lesson.scheduledAt, lesson.durationMin)}
+        </div>
 
-      <div className={styles.title}>{lesson.title}</div>
+        <div className={styles.title}>{lesson.title}</div>
 
-      <div className={styles.meta}>
-        <span>{lesson.lessonType}</span>
-        <span>{lesson.durationMin} min</span>
-      </div>
+        <div className={styles.meta}>
+          <span>{lesson.lessonType}</span>
+          <span>{lesson.durationMin} min</span>
+        </div>
 
-      <p className={styles.participants}>
-        {participantNames || "Aucun élève assigné"}
-      </p>
+        <p className={styles.participants}>
+          {participantNames || "Aucun élève assigné"}
+        </p>
 
-      {lesson.location ? (
-        <p className={styles.location}>📍 {lesson.location}</p>
-      ) : null}
-    </div>
+        {lesson.location ? (
+          <p className={styles.location}>📍 {lesson.location}</p>
+        ) : null}
+      </article>
+    </Link>
   );
 }
