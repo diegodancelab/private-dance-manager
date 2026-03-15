@@ -46,7 +46,8 @@ const totalPaid = charge.allocations.reduce((sum, allocation) => {
       <h1>Charge detail</h1>
       <p>
         <Link href="/payments/new">Create payment</Link>
-    </p>
+      </p>
+      <Link href={`/charges/${charge.id}/edit`}>Edit charge</Link>
 
       <p>
         <strong>Student:</strong> {charge.user.firstName} {charge.user.lastName}

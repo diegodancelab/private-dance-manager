@@ -57,6 +57,10 @@ export default async function ChargesPage() {
                 </td>
 
                 <td>{charge.createdAt.toLocaleDateString()}</td>
+                
+                <td>
+                  <Link href={`/charges/${charge.id}/edit`}>Edit</Link>
+                </td>
               </tr>
             ))}
           </tbody>
