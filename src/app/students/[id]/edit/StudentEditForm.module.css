@@ -1,0 +1,27 @@
+.form {
+  display: grid;
+  gap: 1rem;
+  max-width: 480px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.error {
+  margin: 0;
+  color: crimson;
+  font-size: 0.9rem;
+}
+
+.helper {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.9rem;
+}
+
+.button {
+  width: fit-content;
+}
