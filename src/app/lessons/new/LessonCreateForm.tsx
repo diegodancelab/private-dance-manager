@@ -13,28 +13,38 @@ type TeacherOption = {
   email: string | null;
 };
 
+type StudentOption = {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string | null;
+};
+
 type LessonCreateFormProps = {
   teachers: TeacherOption[];
+  students: StudentOption[];
   defaultScheduledAt: string;
   defaultTeacherId: string;
+  defaultStudentId: string;
 };
 
 export default function LessonCreateForm({
   teachers,
+  students,
   defaultScheduledAt,
   defaultTeacherId,
+  defaultStudentId,
 }: LessonCreateFormProps) {
-  const [state, formAction, isPending] = useActionState(
-    createLesson,
-    {
-      ...initialLessonFormState,
-      fields: {
-        ...initialLessonFormState.fields,
-        scheduledAt: defaultScheduledAt,
-        teacherId: defaultTeacherId,
-      },
-    }
-  );
+  const [state, formAction, isPending] = useActionState(createLesson, {
+    ...initialLessonFormState,
+    fields: {
+      ...initialLessonFormState.fields,
+      scheduledAt: defaultScheduledAt,
+      teacherId: defaultTeacherId,
+      studentId: defaultStudentId,
+      bookingStatus: "CONFIRMED",
+    },
+  });
 
   const safeState = state ?? initialLessonFormState;
 
@@ -71,10 +81,10 @@ export default function LessonCreateForm({
           defaultValue={safeState.fields.lessonType}
         >
           {LESSON_TYPE_OPTIONS.map((option) => (
-    <option key={option.value} value={option.value}>
-      {option.label}
-    </option>
-  ))}
+            <option key={option.value} value={option.value}>
+              {option.label}
+            </option>
+          ))}
         </select>
       </div>
 
@@ -147,6 +157,42 @@ export default function LessonCreateForm({
         </select>
         {safeState.errors.teacherId ? (
           <p className={styles.error}>{safeState.errors.teacherId}</p>
+        ) : null}
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="studentId">Student</label>
+        <select
+          id="studentId"
+          name="studentId"
+          defaultValue={safeState.fields.studentId}
+        >
+          <option value="">Unassigned lesson</option>
+          {students.map((student) => (
+            <option key={student.id} value={student.id}>
+              {student.firstName} {student.lastName}
+              {student.email ? ` - ${student.email}` : ""}
+            </option>
+          ))}
+        </select>
+        {safeState.errors.studentId ? (
+          <p className={styles.error}>{safeState.errors.studentId}</p>
+        ) : null}
+      </div>
+
+      <div className={styles.field}>
+        <label htmlFor="bookingStatus">Booking status</label>
+        <select
+          id="bookingStatus"
+          name="bookingStatus"
+          defaultValue={safeState.fields.bookingStatus}
+        >
+          <option value="CONFIRMED">Confirmed</option>
+          <option value="PENDING">Pending</option>
+          <option value="CANCELLED">Cancelled</option>
+        </select>
+        {safeState.errors.bookingStatus ? (
+          <p className={styles.error}>{safeState.errors.bookingStatus}</p>
         ) : null}
       </div>
 

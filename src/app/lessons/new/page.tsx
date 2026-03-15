@@ -2,10 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { UserRole } from "@/generated/prisma/client";
 import LessonCreateForm from "./LessonCreateForm";
 
-
 type NewLessonPageProps = {
   searchParams: Promise<{
     date?: string;
+    studentId?: string;
   }>;
 };
 
@@ -43,6 +43,21 @@ export default async function NewLessonPage({
     },
   });
 
+  const students = await prisma.user.findMany({
+    where: {
+      role: UserRole.STUDENT,
+    },
+    orderBy: {
+      firstName: "asc",
+    },
+    select: {
+      id: true,
+      firstName: true,
+      lastName: true,
+      email: true,
+    },
+  });
+
   const defaultScheduledAt = buildDefaultScheduledAt(params.date);
   const defaultTeacherId = teachers.length === 1 ? teachers[0].id : "";
 
@@ -51,8 +66,10 @@ export default async function NewLessonPage({
       <h1>Create lesson</h1>
       <LessonCreateForm
         teachers={teachers}
+        students={students}
         defaultScheduledAt={defaultScheduledAt}
         defaultTeacherId={defaultTeacherId}
+        defaultStudentId={params.studentId ?? ""}
       />
     </div>
   );

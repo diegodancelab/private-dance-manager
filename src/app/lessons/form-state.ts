@@ -13,6 +13,8 @@ export type LessonFormState = {
     priceAmount: string;
     location: string;
     teacherId: string;
+    studentId: string;
+    bookingStatus: string;
   };
   errors: {
     title?: string;
@@ -21,6 +23,8 @@ export type LessonFormState = {
     durationMin?: string;
     priceAmount?: string;
     teacherId?: string;
+    studentId?: string;
+    bookingStatus?: string;
     form?: string;
   };
 };
@@ -38,6 +42,8 @@ export const initialLessonFormState: LessonFormState = {
     priceAmount: "",
     location: "",
     teacherId: "",
+    studentId: "",
+    bookingStatus: "CONFIRMED",
   },
   errors: {},
 };

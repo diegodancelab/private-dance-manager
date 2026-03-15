@@ -37,6 +37,16 @@ function parseLessonType(value: FormDataEntryValue | null): LessonType {
   return LessonType.PRIVATE;
 }
 
+function parseBookingStatus(value: FormDataEntryValue | null): BookingStatus {
+  const parsed = String(value || "").trim();
+
+  if (Object.values(BookingStatus).includes(parsed as BookingStatus)) {
+    return parsed as BookingStatus;
+  }
+
+  return BookingStatus.CONFIRMED;
+}
+
 function parseScheduledAt(value: FormDataEntryValue | null): Date {
   const parsed = String(value || "").trim();
   const date = new Date(parsed);
@@ -81,6 +91,8 @@ export async function createLesson(
   const priceAmount = String(formData.get("priceAmount") || "").trim();
   const location = String(formData.get("location") || "").trim();
   const teacherId = parseRequiredString(formData.get("teacherId"));
+  const studentId = String(formData.get("studentId") || "").trim();
+  const bookingStatus = parseBookingStatus(formData.get("bookingStatus"));
 
   const state: LessonFormState = {
     success: false,
@@ -95,6 +107,8 @@ export async function createLesson(
       priceAmount,
       location,
       teacherId,
+      studentId,
+      bookingStatus,
     },
     errors: {},
   };
@@ -146,6 +160,27 @@ export async function createLesson(
     };
   }
 
+  if (studentId) {
+    const student = await prisma.user.findFirst({
+      where: {
+        id: studentId,
+        role: UserRole.STUDENT,
+      },
+      select: {
+        id: true,
+      },
+    });
+
+    if (!student) {
+      return {
+        ...state,
+        errors: {
+          studentId: "Selected student was not found.",
+        },
+      };
+    }
+  }
+
   const scheduledDate = parseScheduledAt(formData.get("scheduledAt"));
   const parsedDescription = parseOptionalString(formData.get("description"));
   const parsedPriceAmount = parseOptionalPrice(formData.get("priceAmount"));
@@ -161,6 +196,14 @@ export async function createLesson(
       priceAmount: parsedPriceAmount,
       location: parsedLocation,
       teacherId,
+      participants: studentId
+        ? {
+            create: {
+              userId: studentId,
+              status: bookingStatus,
+            },
+          }
+        : undefined,
     },
   });
 
@@ -213,6 +256,8 @@ export async function updateLesson(
       priceAmount,
       location,
       teacherId,
+      studentId: "",
+      bookingStatus: BookingStatus.CONFIRMED,
     },
     errors: {},
   };
