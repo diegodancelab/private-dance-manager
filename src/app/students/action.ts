@@ -2,13 +2,13 @@
 
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
+import { UserRole } from "@/generated/prisma/client";
 
-export async function createUser(formData: FormData) {
+export async function createStudent(formData: FormData) {
   const email = String(formData.get("email") || "").trim();
   const firstName = String(formData.get("firstName") || "").trim();
   const lastName = String(formData.get("lastName") || "").trim();
   const phone = String(formData.get("phone") || "").trim();
-  const role = String(formData.get("role") || "STUDENT").trim();
 
   if (!email || !firstName || !lastName) {
     throw new Error("Email, first name and last name are required.");
@@ -20,20 +20,19 @@ export async function createUser(formData: FormData) {
       firstName,
       lastName,
       phone: phone || null,
-      role: role as "ADMIN" | "TEACHER" | "STUDENT",
+      role: UserRole.STUDENT,
     },
   });
 
-  redirect("/users");
+  redirect("/students");
 }
 
-export async function updateUser(formData: FormData) {
+export async function updateStudent(formData: FormData) {
   const id = String(formData.get("id") || "").trim();
   const email = String(formData.get("email") || "").trim();
   const firstName = String(formData.get("firstName") || "").trim();
   const lastName = String(formData.get("lastName") || "").trim();
   const phone = String(formData.get("phone") || "").trim();
-  const role = String(formData.get("role") || "STUDENT").trim();
 
   if (!id || !email || !firstName || !lastName) {
     throw new Error("Id, email, first name and last name are required.");
@@ -48,9 +47,9 @@ export async function updateUser(formData: FormData) {
       firstName,
       lastName,
       phone: phone || null,
-      role: role as "ADMIN" | "TEACHER" | "STUDENT",
+      role: UserRole.STUDENT
     },
   });
 
-  redirect(`/users/${id}`);
+  redirect(`/students/${id}`);
 }

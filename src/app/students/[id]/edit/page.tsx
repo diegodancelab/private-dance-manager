@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { updateUser } from "../../actions";
+import { updateStudent } from "../../action";
+import { UserRole } from "@/generated/prisma/client";
+
 
 type Props = {
   params: Promise<{
@@ -11,22 +13,23 @@ type Props = {
 export default async function EditUserPage({ params }: Props) {
   const { id } = await params;
 
-  const user = await prisma.user.findUnique({
+  const student = await prisma.user.findFirst({
     where: {
       id,
+      role: UserRole.STUDENT,
     },
   });
 
-  if (!user) {
+  if (!student) {
     notFound();
   }
 
   return (
     <div>
-      <h1>Edit user</h1>
+      <h1>Edit student</h1>
 
-      <form action={updateUser}>
-        <input type="hidden" name="id" value={user.id} />
+      <form action={updateStudent}>
+        <input type="hidden" name="id" value={student.id} />
 
         <div>
           <label htmlFor="firstName">First name</label>
@@ -34,7 +37,7 @@ export default async function EditUserPage({ params }: Props) {
             id="firstName"
             name="firstName"
             type="text"
-            defaultValue={user.firstName}
+            defaultValue={student.firstName}
             required
           />
         </div>
@@ -45,7 +48,7 @@ export default async function EditUserPage({ params }: Props) {
             id="lastName"
             name="lastName"
             type="text"
-            defaultValue={user.lastName}
+            defaultValue={student.lastName}
             required
           />
         </div>
@@ -56,7 +59,7 @@ export default async function EditUserPage({ params }: Props) {
             id="email"
             name="email"
             type="email"
-            defaultValue={user.email}
+            defaultValue={student.email}
             required
           />
         </div>
@@ -67,20 +70,11 @@ export default async function EditUserPage({ params }: Props) {
             id="phone"
             name="phone"
             type="text"
-            defaultValue={user.phone ?? ""}
+            defaultValue={student.phone ?? ""}
           />
         </div>
 
-        <div>
-          <label htmlFor="role">Role</label>
-          <select id="role" name="role" defaultValue={user.role}>
-            <option value="STUDENT">Student</option>
-            <option value="TEACHER">Teacher</option>
-            <option value="ADMIN">Admin</option>
-          </select>
-        </div>
-
-        <button type="submit">Update user</button>
+        <button type="submit">Update student</button>
       </form>
     </div>
   );

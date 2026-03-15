@@ -1,11 +1,11 @@
-import { createUser } from "../actions";
+import { createStudent } from "../action";
 
 export default function NewUserPage() {
   return (
     <div>
       <h1>Create user</h1>
 
-      <form action={createUser}>
+      <form action={createStudent}>
         <div>
           <label htmlFor="firstName">First name</label>
           <input id="firstName" name="firstName" type="text" required />
@@ -26,16 +26,7 @@ export default function NewUserPage() {
           <input id="phone" name="phone" type="text" />
         </div>
 
-        <div>
-          <label htmlFor="role">Role</label>
-          <select id="role" name="role" defaultValue="STUDENT">
-            <option value="STUDENT">Student</option>
-            <option value="TEACHER">Teacher</option>
-            <option value="ADMIN">Admin</option>
-          </select>
-        </div>
-
-        <button type="submit">Create user</button>
+        <button type="submit">Create Student</button>
       </form>
     </div>
   );
