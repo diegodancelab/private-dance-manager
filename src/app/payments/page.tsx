@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import styles from "./PaymentsPage.module.css";
 
 function formatAmount(amount: string | number, currency: string) {
   return `${amount} ${currency}`;
@@ -21,10 +22,7 @@ function formatDateTime(date: Date | null) {
 
 export default async function PaymentsPage() {
   const payments = await prisma.payment.findMany({
-    orderBy: [
-      { paidAt: "desc" },
-      { createdAt: "desc" },
-    ],
+    orderBy: [{ paidAt: "desc" }, { createdAt: "desc" }],
     include: {
       user: {
         select: {
@@ -37,157 +35,74 @@ export default async function PaymentsPage() {
   });
 
   return (
-    <div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "space-between",
-          alignItems: "center",
-          gap: "1rem",
-          flexWrap: "wrap",
-          marginBottom: "1.5rem",
-        }}
-      >
-        <div>
-          <h1 style={{ margin: 0 }}>Payments</h1>
-          <p style={{ margin: "0.35rem 0 0", color: "#6b7280" }}>
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <div className={styles.heading}>
+          <h1 className={styles.title}>Payments</h1>
+          <p className={styles.subtitle}>
             Track received money from your students.
           </p>
         </div>
 
-        <Link href="/payments/new">Create payment</Link>
+        <Link href="/payments/new" className={styles.createLink}>
+          Create payment
+        </Link>
       </div>
 
       {payments.length === 0 ? (
-        <div>
-          <p>No payments yet.</p>
-          <p>Create your first payment to start tracking received money.</p>
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>No payments yet.</p>
+          <p className={styles.emptySubtext}>
+            Create your first payment to start tracking received money.
+          </p>
         </div>
       ) : (
-        <div style={{ overflowX: "auto" }}>
-          <table
-            style={{
-              width: "100%",
-              borderCollapse: "collapse",
-              minWidth: "760px",
-            }}
-          >
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
             <thead>
               <tr>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "0.75rem",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  Student
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "0.75rem",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  Amount
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "0.75rem",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  Method
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "0.75rem",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  Status
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "0.75rem",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  Paid at
-                </th>
-                <th
-                  style={{
-                    textAlign: "left",
-                    padding: "0.75rem",
-                    borderBottom: "1px solid #e5e7eb",
-                  }}
-                >
-                  Actions
-                </th>
+                <th className={styles.tableHeadCell}>Student</th>
+                <th className={styles.tableHeadCell}>Amount</th>
+                <th className={styles.tableHeadCell}>Method</th>
+                <th className={styles.tableHeadCell}>Status</th>
+                <th className={styles.tableHeadCell}>Paid at</th>
+                <th className={styles.tableHeadCell}>Actions</th>
               </tr>
             </thead>
 
             <tbody>
               {payments.map((payment) => (
                 <tr key={payment.id}>
-                  <td
-                    style={{
-                      padding: "0.75rem",
-                      borderBottom: "1px solid #f3f4f6",
-                    }}
-                  >
+                  <td className={styles.tableCell}>
                     {payment.user.firstName} {payment.user.lastName}
                   </td>
 
-                  <td
-                    style={{
-                      padding: "0.75rem",
-                      borderBottom: "1px solid #f3f4f6",
-                    }}
-                  >
+                  <td className={styles.tableCell}>
                     {formatAmount(String(payment.amount), payment.currency)}
                   </td>
 
-                  <td
-                    style={{
-                      padding: "0.75rem",
-                      borderBottom: "1px solid #f3f4f6",
-                    }}
-                  >
-                    {payment.method ?? "-"}
-                  </td>
+                  <td className={styles.tableCell}>{payment.method ?? "-"}</td>
 
-                  <td
-                    style={{
-                      padding: "0.75rem",
-                      borderBottom: "1px solid #f3f4f6",
-                    }}
-                  >
-                    {payment.status}
-                  </td>
+                  <td className={styles.tableCell}>{payment.status}</td>
 
-                  <td
-                    style={{
-                      padding: "0.75rem",
-                      borderBottom: "1px solid #f3f4f6",
-                    }}
-                  >
+                  <td className={styles.tableCell}>
                     {formatDateTime(payment.paidAt)}
                   </td>
 
-                  <td
-                    style={{
-                      padding: "0.75rem",
-                      borderBottom: "1px solid #f3f4f6",
-                    }}
-                  >
-                    <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
-                      <Link href={`/payments/${payment.id}`}>View</Link>
-                      <Link href={`/payments/${payment.id}/edit`}>Edit</Link>
+                  <td className={styles.tableCell}>
+                    <div className={styles.actions}>
+                      <Link
+                        href={`/payments/${payment.id}`}
+                        className={styles.actionLink}
+                      >
+                        View
+                      </Link>
+                      <Link
+                        href={`/payments/${payment.id}/edit`}
+                        className={styles.actionLink}
+                      >
+                        Edit
+                      </Link>
                     </div>
                   </td>
                 </tr>
