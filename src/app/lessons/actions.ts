@@ -1,10 +1,8 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { LessonType } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
-
-const allowedLessonTypes = ["PRIVATE", "DUO", "GROUP", "ONLINE"] as const;
-type AllowedLessonType = (typeof allowedLessonTypes)[number];
 
 function parseRequiredString(value: FormDataEntryValue | null): string {
   return String(value || "").trim();
@@ -24,14 +22,14 @@ function parseOptionalPrice(value: FormDataEntryValue | null): string | null {
   return parsed === "" ? null : parsed;
 }
 
-function parseLessonType(value: FormDataEntryValue | null): AllowedLessonType {
+function parseLessonType(value: FormDataEntryValue | null): LessonType {
   const parsed = String(value || "").trim();
 
-  if (allowedLessonTypes.includes(parsed as AllowedLessonType)) {
-    return parsed as AllowedLessonType;
+  if (Object.values(LessonType).includes(parsed as LessonType)) {
+    return parsed as LessonType;
   }
 
-  return "PRIVATE";
+  return LessonType.PRIVATE;
 }
 
 function parseScheduledAt(value: FormDataEntryValue | null): Date {
@@ -43,6 +41,14 @@ function parseScheduledAt(value: FormDataEntryValue | null): Date {
   }
 
   return date;
+}
+
+function formatDateParam(date: Date): string {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 export async function createLesson(formData: FormData) {
@@ -61,7 +67,7 @@ export async function createLesson(formData: FormData) {
     );
   }
 
-  const lesson = await prisma.lesson.create({
+  await prisma.lesson.create({
     data: {
       title,
       description,
@@ -74,7 +80,7 @@ export async function createLesson(formData: FormData) {
     },
   });
 
-  redirect(`/lessons/${lesson.id}`);
+  redirect(`/calendar?date=${formatDateParam(scheduledAt)}`);
 }
 
 export async function addLessonParticipant(formData: FormData) {
