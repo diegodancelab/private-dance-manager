@@ -26,6 +26,7 @@ A fullstack SaaS-style web application built for dance teachers to handle lesson
 - 📅 **Calendar** — Schedule and visualize upcoming lessons
 - 🎓 **Students** — Manage student profiles and progress
 - 📖 **Lessons** — Create and track private, duo, group, or online lessons
+- 📦 **Packages** — Sell hour bundles to students and track consumption per lesson
 - 💳 **Payments** — Record payments (cash, Twint, bank transfer, card)
 - 🧾 **Charges** — Issue charges and track payment status per student
 
@@ -129,6 +130,7 @@ src/
  │   ├── calendar/       # Scheduling
  │   ├── students/       # Student management
  │   ├── lessons/        # Lesson management
+ │   ├── packages/       # Hour bundle management
  │   ├── payments/       # Payment tracking
  │   └── charges/        # Charge management
  ├── components/

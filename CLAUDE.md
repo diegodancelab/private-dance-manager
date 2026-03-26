@@ -29,6 +29,7 @@ src/
  │   ├── calendar/       # Scheduling feature
  │   ├── students/       # Student management
  │   ├── lessons/        # Lesson management
+ │   ├── packages/       # Hour bundle management
  │   ├── payments/       # Payment tracking
  │   └── charges/        # Charge management
  ├── components/
@@ -61,6 +62,8 @@ Key Prisma models:
 - **User** — roles: `ADMIN`, `TEACHER`, `STUDENT`
 - **Lesson** — types: `PRIVATE`, `DUO`, `GROUP`, `ONLINE`
 - **LessonParticipant** — booking status per participant
+- **Package** — hour bundles sold to students — statuses: `ACTIVE`, `EXHAUSTED`, `EXPIRED`, `CANCELED`
+- **PackageUsage** — records minutes consumed per `LessonParticipant`
 - **Charge** — types: `LESSON`, `PACKAGE`, `ADJUSTMENT`, `OTHER` — statuses: `PENDING`, `PARTIALLY_PAID`, `PAID`, `CANCELED`
 - **Payment** — methods: `CASH`, `TWINT`, `BANK_TRANSFER`, `CARD`, `OTHER`
 - **PaymentAllocation** — links payments to charges (many-to-many)
