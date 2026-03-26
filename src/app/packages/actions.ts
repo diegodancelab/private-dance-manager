@@ -149,6 +149,7 @@ export async function updatePackage(
       name,
       totalMinutes: newTotalMinutes,
       remainingMinutes: newRemainingMinutes,
+      status: newRemainingMinutes === 0 ? PackageStatus.EXHAUSTED : PackageStatus.ACTIVE,
       expiresAt: parsedExpiresAt,
     },
   });
