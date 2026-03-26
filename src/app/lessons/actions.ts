@@ -5,6 +5,7 @@ import {
   BookingStatus,
   LessonType,
   PackageStatus,
+  Prisma,
   UserRole,
 } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
@@ -219,13 +220,41 @@ export async function addLessonParticipant(formData: FormData) {
     throw new Error("Lesson id and user id are required.");
   }
 
-  await prisma.lessonParticipant.create({
-    data: {
-      lessonId,
-      userId,
-      status: BookingStatus.CONFIRMED,
-    },
+  const lesson = await prisma.lesson.findUnique({
+    where: { id: lessonId },
+    select: { id: true },
   });
+
+  if (!lesson) {
+    throw new Error("Lesson not found.");
+  }
+
+  const student = await prisma.user.findFirst({
+    where: { id: userId, role: UserRole.STUDENT },
+    select: { id: true },
+  });
+
+  if (!student) {
+    throw new Error("Student not found.");
+  }
+
+  try {
+    await prisma.lessonParticipant.create({
+      data: {
+        lessonId,
+        userId,
+        status: BookingStatus.CONFIRMED,
+      },
+    });
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2002"
+    ) {
+      throw new Error("This student is already assigned to this lesson.");
+    }
+    throw err;
+  }
 
   redirect(`/lessons/${lessonId}`);
 }
