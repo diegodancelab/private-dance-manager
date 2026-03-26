@@ -76,6 +76,8 @@ export default async function EditLessonPage({ params }: Props) {
       priceAmount: lesson.priceAmount ? String(lesson.priceAmount) : "",
       location: lesson.location ?? "",
       teacherId: lesson.teacherId,
+      studentId: "",
+      bookingStatus: ""
     },
     errors: {},
   };
