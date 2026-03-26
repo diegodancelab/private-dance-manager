@@ -20,10 +20,5 @@ export default async function NewPaymentPage() {
     },
   });
 
-  return (
-    <div>
-      <h1>Create payment</h1>
-      <PaymentCreateForm students={students} />
-    </div>
-  );
+  return <PaymentCreateForm students={students} />;
 }

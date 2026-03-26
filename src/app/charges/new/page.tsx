@@ -31,10 +31,5 @@ export default async function NewChargePage() {
     },
   });
 
-  return (
-    <div>
-      <h1>Create charge</h1>
-      <ChargeCreateForm students={students} lessons={lessons} />
-    </div>
-  );
+  return <ChargeCreateForm students={students} lessons={lessons} />;
 }

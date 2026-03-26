@@ -1,5 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import styles from "./ChargesPage.module.css";
+
+function formatAmount(amount: string | number, currency: string) {
+  return `${amount} ${currency}`;
+}
 
 export default async function ChargesPage() {
   const charges = await prisma.charge.findMany({
@@ -13,58 +18,82 @@ export default async function ChargesPage() {
   });
 
   return (
-    <div>
-      <h1>Charges</h1>
+    <div className={styles.page}>
+      <div className={styles.header}>
+        <div className={styles.heading}>
+          <h1 className={styles.title}>Charges</h1>
+          <p className={styles.subtitle}>Track what is owed by each student.</p>
+        </div>
 
-      <p>
-        <Link href="/charges/new">Create charge</Link>
-      </p>
+        <Link href="/charges/new" className={styles.createLink}>
+          Add charge
+        </Link>
+      </div>
 
       {charges.length === 0 ? (
-        <p>No charges yet.</p>
+        <div className={styles.emptyState}>
+          <p className={styles.emptyText}>No charges yet.</p>
+          <p className={styles.emptySubtext}>Create your first charge to start tracking payments.</p>
+        </div>
       ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Student</th>
-              <th>Title</th>
-              <th>Amount</th>
-              <th>Status</th>
-              <th>Lesson</th>
-              <th>Created</th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {charges.map((charge) => (
-              <tr key={charge.id}>
-                <td>
-                    <Link href={`/charges/${charge.id}`}>
-                        {charge.user.firstName} {charge.user.lastName}
-                    </Link>
-                </td>
-
-                <td>{charge.title}</td>
-
-                <td>
-                {charge.amount.toString()} {charge.currency}
-                </td>
-
-                <td>{charge.status}</td>
-
-                <td>
-                {charge.lesson ? charge.lesson.title : "—"}
-                </td>
-
-                <td>{charge.createdAt.toLocaleDateString()}</td>
-                
-                <td>
-                  <Link href={`/charges/${charge.id}/edit`}>Edit</Link>
-                </td>
+        <div className={styles.tableWrapper}>
+          <table className={styles.table}>
+            <thead>
+              <tr>
+                <th className={styles.tableHeadCell}>Student</th>
+                <th className={styles.tableHeadCell}>Title</th>
+                <th className={styles.tableHeadCell}>Amount</th>
+                <th className={styles.tableHeadCell}>Status</th>
+                <th className={styles.tableHeadCell}>Lesson</th>
+                <th className={styles.tableHeadCell}>Created</th>
+                <th className={styles.tableHeadCell}>Actions</th>
               </tr>
-            ))}
-          </tbody>
-        </table>
+            </thead>
+
+            <tbody>
+              {charges.map((charge) => (
+                <tr key={charge.id}>
+                  <td className={styles.tableCell}>
+                    {charge.user.firstName} {charge.user.lastName}
+                  </td>
+
+                  <td className={styles.tableCell}>{charge.title}</td>
+
+                  <td className={styles.tableCell}>
+                    {formatAmount(charge.amount.toString(), charge.currency)}
+                  </td>
+
+                  <td className={styles.tableCell}>{charge.status}</td>
+
+                  <td className={styles.tableCell}>
+                    {charge.lesson ? charge.lesson.title : "—"}
+                  </td>
+
+                  <td className={styles.tableCell}>
+                    {charge.createdAt.toLocaleDateString("fr-CH")}
+                  </td>
+
+                  <td className={styles.tableCell}>
+                    <div className={styles.actions}>
+                      <Link
+                        href={`/charges/${charge.id}`}
+                        className={styles.actionLink}
+                      >
+                        View
+                      </Link>
+                      <Link
+                        href={`/charges/${charge.id}/edit`}
+                        className={styles.actionLink}
+                      >
+                        Edit
+                      </Link>
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       )}
     </div>
   );

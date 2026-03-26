@@ -80,10 +80,5 @@ export default async function EditPaymentPage({ params }: Props) {
     errors: {},
   };
 
-  return (
-    <div>
-      <h1>Edit payment</h1>
-      <PaymentEditForm initialState={initialState} students={students} />
-    </div>
-  );
+  return <PaymentEditForm initialState={initialState} students={students} />;
 }

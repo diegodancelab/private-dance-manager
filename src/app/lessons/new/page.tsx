@@ -62,15 +62,12 @@ export default async function NewLessonPage({
   const defaultTeacherId = teachers.length === 1 ? teachers[0].id : "";
 
   return (
-    <div>
-      <h1>Create lesson</h1>
-      <LessonCreateForm
-        teachers={teachers}
-        students={students}
-        defaultScheduledAt={defaultScheduledAt}
-        defaultTeacherId={defaultTeacherId}
-        defaultStudentId={params.studentId ?? ""}
-      />
-    </div>
+    <LessonCreateForm
+      teachers={teachers}
+      students={students}
+      defaultScheduledAt={defaultScheduledAt}
+      defaultTeacherId={defaultTeacherId}
+      defaultStudentId={params.studentId ?? ""}
+    />
   );
 }

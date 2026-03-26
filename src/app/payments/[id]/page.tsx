@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import styles from "./PaymentDetail.module.css";
 
 type Props = {
   params: Promise<{
@@ -30,51 +31,108 @@ export default async function PaymentDetailPage({ params }: Props) {
   }
 
   return (
-    <div>
-      <p>
-        <Link href="/charges">← Back to charges</Link>
-      </p>
+    <div className={styles.page}>
+      <Link href="/payments" className={styles.backLink}>
+        ← Back to payments
+      </Link>
 
-      <h1>Payment detail</h1>
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <h1 className={styles.cardTitle}>
+            Payment — {payment.amount.toString()} {payment.currency}
+          </h1>
 
-      <p>
-        <strong>Student:</strong> {payment.user.firstName} {payment.user.lastName}
-      </p>
+          <div className={styles.cardActions}>
+            <Link
+              href={`/payments/${payment.id}/edit`}
+              className={styles.secondaryLink}
+            >
+              Edit
+            </Link>
+          </div>
+        </div>
 
-      <p>
-        <strong>Amount:</strong> {payment.amount.toString()} {payment.currency}
-      </p>
+        <div className={styles.cardBody}>
+          <div className={styles.infoGrid}>
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Student</span>
+              <span className={styles.infoValue}>
+                {payment.user.firstName} {payment.user.lastName}
+              </span>
+            </div>
 
-      <p>
-        <strong>Method:</strong> {payment.method ?? "—"}
-      </p>
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Amount</span>
+              <span className={styles.infoValue}>
+                {payment.amount.toString()} {payment.currency}
+              </span>
+            </div>
 
-      <p>
-        <strong>Status:</strong> {payment.status}
-      </p>
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Method</span>
+              <span className={styles.infoValue}>{payment.method ?? "—"}</span>
+            </div>
 
-      <p>
-        <strong>Note:</strong> {payment.note ?? "—"}
-      </p>
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Status</span>
+              <span className={styles.infoValue}>{payment.status}</span>
+            </div>
 
-      <p>
-        <strong>Paid at:</strong> {payment.paidAt ? payment.paidAt.toString() : "—"}
-      </p>
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Paid at</span>
+              <span className={styles.infoValue}>
+                {payment.paidAt
+                  ? new Intl.DateTimeFormat("fr-CH", {
+                      day: "2-digit",
+                      month: "2-digit",
+                      year: "numeric",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                    }).format(payment.paidAt)
+                  : "—"}
+              </span>
+            </div>
 
-      <h2>Allocations</h2>
+            {payment.note ? (
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Note</span>
+                <span className={styles.infoValue}>{payment.note}</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
 
-      {payment.allocations.length === 0 ? (
-        <p>No allocations.</p>
-      ) : (
-        <ul>
-          {payment.allocations.map((allocation) => (
-            <li key={allocation.id}>
-              {allocation.charge.title} - {allocation.amount.toString()}{" "}
-              {payment.currency}
-            </li>
-          ))}
-        </ul>
-      )}
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>Charge allocations</h2>
+
+          {payment.allocations.length === 0 ? (
+            <p className={styles.emptyText}>No allocations.</p>
+          ) : (
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th className={styles.tableHeadCell}>Charge</th>
+                    <th className={styles.tableHeadCell}>Amount</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {payment.allocations.map((allocation) => (
+                    <tr key={allocation.id}>
+                      <td className={styles.tableCell}>
+                        {allocation.charge.title}
+                      </td>
+                      <td className={styles.tableCell}>
+                        {allocation.amount.toString()} {payment.currency}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      </div>
     </div>
   );
 }

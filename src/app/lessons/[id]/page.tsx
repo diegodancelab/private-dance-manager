@@ -76,10 +76,5 @@ export default async function EditLessonPage({ params }: Props) {
     errors: {},
   };
 
-  return (
-    <div>
-      <h1>Edit lesson</h1>
-      <LessonEditForm initialState={initialState} teachers={teachers} />
-    </div>
-  );
+  return <LessonEditForm initialState={initialState} teachers={teachers} />;
 }

@@ -95,13 +95,10 @@ export default async function EditChargePage({ params }: Props) {
   };
 
   return (
-    <div>
-      <h1>Edit charge</h1>
-      <ChargeEditForm
-        initialState={initialState}
-        students={students}
-        lessons={lessons}
-      />
-    </div>
+    <ChargeEditForm
+      initialState={initialState}
+      students={students}
+      lessons={lessons}
+    />
   );
 }

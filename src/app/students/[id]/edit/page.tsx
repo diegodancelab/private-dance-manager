@@ -37,10 +37,5 @@ export default async function EditStudentPage({ params }: Props) {
     errors: {},
   };
 
-  return (
-    <div>
-      <h1>Edit student</h1>
-      <StudentEditForm initialState={initialState} />
-    </div>
-  );
+  return <StudentEditForm initialState={initialState} />;
 }
