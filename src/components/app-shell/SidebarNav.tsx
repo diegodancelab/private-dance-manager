@@ -30,7 +30,10 @@ export default function SidebarNav({ onNavigate }: SidebarNavProps) {
 
       <nav className={styles.nav} aria-label="Main navigation">
         {navItems.map((item) => {
-          const isActive = pathname === item.href;
+          const isActive =
+            item.href === "/"
+              ? pathname === "/"
+              : pathname.startsWith(item.href);
 
           return (
             <Link
