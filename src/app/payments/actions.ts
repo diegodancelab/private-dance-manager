@@ -127,55 +127,59 @@ export async function createPayment(
     };
   }
 
-  const payment = await prisma.payment.create({
-    data: {
-      userId,
-      amount,
-      currency,
-      method,
-      status,
-      note: parseOptionalString(formData.get("note")),
-      paidAt: paidAt ? new Date(paidAt) : null,
-    },
-  });
-
   const chargeId = parseOptionalString(formData.get("chargeId"));
 
-  if (chargeId) {
-    const charge = await prisma.charge.findUnique({
-      where: { id: chargeId },
-      select: {
-        amount: true,
-        allocations: { select: { amount: true } },
+  const paymentId = await prisma.$transaction(async (tx) => {
+    const payment = await tx.payment.create({
+      data: {
+        userId,
+        amount,
+        currency,
+        method,
+        status,
+        note: parseOptionalString(formData.get("note")),
+        paidAt: paidAt ? new Date(paidAt) : null,
       },
     });
 
-    if (charge) {
-      await prisma.paymentAllocation.create({
-        data: {
-          chargeId,
-          paymentId: payment.id,
-          amount,
+    if (chargeId) {
+      const charge = await tx.charge.findUnique({
+        where: { id: chargeId },
+        select: {
+          amount: true,
+          allocations: { select: { amount: true } },
         },
       });
 
-      const totalPaid =
-        charge.allocations.reduce((sum, a) => sum + Number(a.amount), 0) +
-        Number(amount);
+      if (charge) {
+        await tx.paymentAllocation.create({
+          data: {
+            chargeId,
+            paymentId: payment.id,
+            amount,
+          },
+        });
 
-      const newStatus =
-        totalPaid >= Number(charge.amount)
-          ? ChargeStatus.PAID
-          : ChargeStatus.PARTIALLY_PAID;
+        const totalPaid =
+          charge.allocations.reduce((sum, a) => sum + Number(a.amount), 0) +
+          Number(amount);
 
-      await prisma.charge.update({
-        where: { id: chargeId },
-        data: { status: newStatus },
-      });
+        const newStatus =
+          totalPaid >= Number(charge.amount)
+            ? ChargeStatus.PAID
+            : ChargeStatus.PARTIALLY_PAID;
+
+        await tx.charge.update({
+          where: { id: chargeId },
+          data: { status: newStatus },
+        });
+      }
     }
-  }
 
-  redirect(`/payments/${payment.id}`);
+    return payment.id;
+  });
+
+  redirect(`/payments/${paymentId}`);
 }
 
 export async function updatePayment(
