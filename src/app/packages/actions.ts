@@ -57,6 +57,10 @@ export async function createPackage(
 
   if (!currency) state.errors.currency = "Currency is required.";
 
+  if (expiresAt && Number.isNaN(new Date(expiresAt).getTime())) {
+    state.errors.expiresAt = "Expiry date is invalid.";
+  }
+
   if (Object.keys(state.errors).length > 0) return state;
 
   const student = await prisma.user.findFirst({
@@ -125,6 +129,10 @@ export async function updatePackage(
     state.errors.totalHours = "Total hours is required.";
   } else if (!isValidPositiveInt(totalHours)) {
     state.errors.totalHours = "Total hours must be a positive integer.";
+  }
+
+  if (expiresAt && Number.isNaN(new Date(expiresAt).getTime())) {
+    state.errors.expiresAt = "Expiry date is invalid.";
   }
 
   if (Object.keys(state.errors).length > 0) return state;
