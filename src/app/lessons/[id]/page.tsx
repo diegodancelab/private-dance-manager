@@ -1,244 +1,137 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { UserRole, PackageStatus } from "@/generated/prisma/client";
-import LessonEditForm from "./edit/LessonEditForm";
-import { LessonFormState } from "../form-state";
-import {
-  addLessonParticipant,
-  removeLessonParticipant,
-  assignPackageToParticipant,
-  removePackageFromParticipant,
-} from "../actions";
-import styles from "./LessonPage.module.css";
+import Link from "next/link";
+import styles from "./LessonDetail.module.css";
 
 type Props = {
-  params: Promise<{
-    id: string;
-  }>;
+  params: Promise<{ id: string }>;
 };
 
-function toDateTimeLocalValue(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
+function formatDateTime(date: Date): string {
+  return new Intl.DateTimeFormat("fr-CH", {
+    day: "2-digit",
+    month: "2-digit",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(date);
 }
 
-function formatMinutes(minutes: number): string {
-  const h = Math.floor(minutes / 60);
-  const m = minutes % 60;
-  if (m === 0) return `${h}h`;
-  return `${h}h ${m}m`;
-}
-
-export default async function EditLessonPage({ params }: Props) {
+export default async function LessonDetailPage({ params }: Props) {
   const { id } = await params;
 
   const lesson = await prisma.lesson.findUnique({
     where: { id },
     include: {
+      teacher: {
+        select: { firstName: true, lastName: true },
+      },
       participants: {
         include: {
-          user: {
-            select: {
-              id: true,
-              firstName: true,
-              lastName: true,
-            },
-          },
+          user: { select: { id: true, firstName: true, lastName: true } },
           packageUsage: {
-            include: {
-              package: {
-                select: { id: true, name: true },
-              },
-            },
+            include: { package: { select: { name: true } } },
           },
         },
       },
     },
   });
 
-  if (!lesson) {
-    notFound();
-  }
-
-  const teachers = await prisma.user.findMany({
-    where: { role: "TEACHER" },
-    orderBy: { firstName: "asc" },
-    select: { id: true, firstName: true, lastName: true, email: true },
-  });
-
-  const participantUserIds = lesson.participants.map((p) => p.userId);
-
-  const availableStudents = await prisma.user.findMany({
-    where: {
-      role: UserRole.STUDENT,
-      id: { notIn: participantUserIds },
-    },
-    orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
-    select: { id: true, firstName: true, lastName: true },
-  });
-
-  const studentPackages = await prisma.package.findMany({
-    where: {
-      userId: { in: participantUserIds },
-      status: PackageStatus.ACTIVE,
-    },
-    select: { id: true, userId: true, name: true, remainingMinutes: true },
-    orderBy: { createdAt: "desc" },
-  });
-
-  const packagesByStudent: Record<
-    string,
-    { id: string; name: string; remainingMinutes: number }[]
-  > = {};
-  for (const pkg of studentPackages) {
-    if (!packagesByStudent[pkg.userId]) packagesByStudent[pkg.userId] = [];
-    packagesByStudent[pkg.userId].push(pkg);
-  }
-
-  const initialState: LessonFormState = {
-    success: false,
-    message: "",
-    fields: {
-      id: lesson.id,
-      title: lesson.title,
-      description: lesson.description ?? "",
-      lessonType: lesson.lessonType,
-      scheduledAt: toDateTimeLocalValue(lesson.scheduledAt),
-      durationMin: String(lesson.durationMin),
-      priceAmount: lesson.priceAmount ? String(lesson.priceAmount) : "",
-      location: lesson.location ?? "",
-      teacherId: lesson.teacherId,
-      studentId: "",
-      bookingStatus: ""
-    },
-    errors: {},
-  };
+  if (!lesson) notFound();
 
   return (
     <div className={styles.page}>
-      <LessonEditForm initialState={initialState} teachers={teachers} />
+      <Link href="/lessons" className={styles.backLink}>
+        ← Back to lessons
+      </Link>
 
       <div className={styles.card}>
         <div className={styles.cardHeader}>
-          <h2 className={styles.cardTitle}>
-            Students ({lesson.participants.length})
-          </h2>
+          <h1 className={styles.cardTitle}>{lesson.title}</h1>
+          <div className={styles.cardActions}>
+            <Link
+              href={`/lessons/${lesson.id}/edit`}
+              className={styles.secondaryLink}
+            >
+              Edit
+            </Link>
+          </div>
         </div>
 
         <div className={styles.cardBody}>
+          <div className={styles.infoGrid}>
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Type</span>
+              <span className={styles.infoValue}>{lesson.lessonType}</span>
+            </div>
+
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Scheduled at</span>
+              <span className={styles.infoValue}>
+                {formatDateTime(lesson.scheduledAt)}
+              </span>
+            </div>
+
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Duration</span>
+              <span className={styles.infoValue}>{lesson.durationMin} min</span>
+            </div>
+
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Price</span>
+              <span className={styles.infoValue}>
+                {lesson.priceAmount ? `${lesson.priceAmount} CHF` : "—"}
+              </span>
+            </div>
+
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Location</span>
+              <span className={styles.infoValue}>{lesson.location ?? "—"}</span>
+            </div>
+
+            <div className={styles.infoItem}>
+              <span className={styles.infoLabel}>Teacher</span>
+              <span className={styles.infoValue}>
+                {lesson.teacher.firstName} {lesson.teacher.lastName}
+              </span>
+            </div>
+
+            {lesson.description ? (
+              <div className={styles.infoItem}>
+                <span className={styles.infoLabel}>Description</span>
+                <span className={styles.infoValue}>{lesson.description}</span>
+              </div>
+            ) : null}
+          </div>
+        </div>
+
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>
+            Participants ({lesson.participants.length})
+          </h2>
+
           {lesson.participants.length === 0 ? (
-            <p className={styles.emptyText}>No students assigned yet.</p>
+            <p className={styles.emptyText}>No students assigned.</p>
           ) : (
             <div className={styles.participantList}>
-              {lesson.participants.map((participant) => {
-                const usage = participant.packageUsage;
-                const availablePackages =
-                  packagesByStudent[participant.userId] ?? [];
-
-                return (
-                  <div key={participant.id} className={styles.participantRow}>
-                    <div className={styles.participantInfo}>
-                      <span className={styles.participantName}>
-                        {participant.user.firstName} {participant.user.lastName}
+              {lesson.participants.map((participant) => (
+                <div key={participant.id} className={styles.participantRow}>
+                  <div className={styles.participantInfo}>
+                    <span className={styles.participantName}>
+                      {participant.user.firstName} {participant.user.lastName}
+                    </span>
+                    <span className={styles.participantStatus}>
+                      {participant.status}
+                    </span>
+                    {participant.packageUsage ? (
+                      <span className={styles.packageTag}>
+                        {participant.packageUsage.package.name}
                       </span>
-                      <span className={styles.participantStatus}>
-                        {participant.status}
-                      </span>
-
-                      {usage ? (
-                        <div className={styles.packageRow}>
-                          <span className={styles.packageTag}>
-                            {usage.package.name} —{" "}
-                            {formatMinutes(usage.minutesConsumed)}
-                          </span>
-                          <form action={removePackageFromParticipant}>
-                            <input type="hidden" name="usageId" value={usage.id} />
-                            <input
-                              type="hidden"
-                              name="packageId"
-                              value={usage.package.id}
-                            />
-                            <input
-                              type="hidden"
-                              name="minutesConsumed"
-                              value={usage.minutesConsumed}
-                            />
-                            <input type="hidden" name="lessonId" value={lesson.id} />
-                            <button
-                              type="submit"
-                              className={styles.unassignButton}
-                            >
-                              Remove package
-                            </button>
-                          </form>
-                        </div>
-                      ) : availablePackages.length > 0 ? (
-                        <form
-                          action={assignPackageToParticipant}
-                          className={styles.packageAssignForm}
-                        >
-                          <input
-                            type="hidden"
-                            name="participantId"
-                            value={participant.id}
-                          />
-                          <input type="hidden" name="lessonId" value={lesson.id} />
-                          <select name="packageId" className={styles.packageSelect}>
-                            {availablePackages.map((pkg) => (
-                              <option key={pkg.id} value={pkg.id}>
-                                {pkg.name} ({formatMinutes(pkg.remainingMinutes)} left)
-                              </option>
-                            ))}
-                          </select>
-                          <button type="submit" className={styles.assignButton}>
-                            Assign
-                          </button>
-                        </form>
-                      ) : null}
-                    </div>
-
-                    <form action={removeLessonParticipant}>
-                      <input
-                        type="hidden"
-                        name="participantId"
-                        value={participant.id}
-                      />
-                      <input type="hidden" name="lessonId" value={lesson.id} />
-                      <button type="submit" className={styles.removeButton}>
-                        Remove
-                      </button>
-                    </form>
+                    ) : null}
                   </div>
-                );
-              })}
+                </div>
+              ))}
             </div>
-          )}
-
-          {availableStudents.length > 0 && (
-            <form action={addLessonParticipant} className={styles.addForm}>
-              <input type="hidden" name="lessonId" value={lesson.id} />
-
-              <div className={styles.addField}>
-                <label htmlFor="userId">Add a student</label>
-                <select id="userId" name="userId">
-                  <option value="">Select a student</option>
-                  {availableStudents.map((student) => (
-                    <option key={student.id} value={student.id}>
-                      {student.firstName} {student.lastName}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <button type="submit" className={styles.addButton}>
-                Add
-              </button>
-            </form>
           )}
         </div>
       </div>
