@@ -1,8 +1,10 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { UserRole } from "@/generated/prisma/client";
 import LessonEditForm from "./edit/LessonEditForm";
 import { LessonFormState } from "../form-state";
-
+import { addLessonParticipant, removeLessonParticipant } from "../actions";
+import styles from "./LessonPage.module.css";
 
 type Props = {
   params: Promise<{
@@ -24,19 +26,19 @@ export default async function EditLessonPage({ params }: Props) {
   const { id } = await params;
 
   const lesson = await prisma.lesson.findUnique({
-    where: {
-      id,
-    },
-    select: {
-      id: true,
-      title: true,
-      description: true,
-      lessonType: true,
-      scheduledAt: true,
-      durationMin: true,
-      priceAmount: true,
-      location: true,
-      teacherId: true,
+    where: { id },
+    include: {
+      participants: {
+        include: {
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+            },
+          },
+        },
+      },
     },
   });
 
@@ -45,18 +47,20 @@ export default async function EditLessonPage({ params }: Props) {
   }
 
   const teachers = await prisma.user.findMany({
+    where: { role: "TEACHER" },
+    orderBy: { firstName: "asc" },
+    select: { id: true, firstName: true, lastName: true, email: true },
+  });
+
+  const participantUserIds = lesson.participants.map((p) => p.userId);
+
+  const availableStudents = await prisma.user.findMany({
     where: {
-      role: "TEACHER",
+      role: UserRole.STUDENT,
+      id: { notIn: participantUserIds },
     },
-    orderBy: {
-      firstName: "asc",
-    },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-    },
+    orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+    select: { id: true, firstName: true, lastName: true },
   });
 
   const initialState: LessonFormState = {
@@ -76,5 +80,72 @@ export default async function EditLessonPage({ params }: Props) {
     errors: {},
   };
 
-  return <LessonEditForm initialState={initialState} teachers={teachers} />;
+  return (
+    <div className={styles.page}>
+      <LessonEditForm initialState={initialState} teachers={teachers} />
+
+      <div className={styles.card}>
+        <div className={styles.cardHeader}>
+          <h2 className={styles.cardTitle}>
+            Students ({lesson.participants.length})
+          </h2>
+        </div>
+
+        <div className={styles.cardBody}>
+          {lesson.participants.length === 0 ? (
+            <p className={styles.emptyText}>No students assigned yet.</p>
+          ) : (
+            <div className={styles.participantList}>
+              {lesson.participants.map((participant) => (
+                <div key={participant.id} className={styles.participantRow}>
+                  <div className={styles.participantInfo}>
+                    <span className={styles.participantName}>
+                      {participant.user.firstName} {participant.user.lastName}
+                    </span>
+                    <span className={styles.participantStatus}>
+                      {participant.status}
+                    </span>
+                  </div>
+
+                  <form action={removeLessonParticipant}>
+                    <input
+                      type="hidden"
+                      name="participantId"
+                      value={participant.id}
+                    />
+                    <input type="hidden" name="lessonId" value={lesson.id} />
+                    <button type="submit" className={styles.removeButton}>
+                      Remove
+                    </button>
+                  </form>
+                </div>
+              ))}
+            </div>
+          )}
+
+          {availableStudents.length > 0 && (
+            <form action={addLessonParticipant} className={styles.addForm}>
+              <input type="hidden" name="lessonId" value={lesson.id} />
+
+              <div className={styles.addField}>
+                <label htmlFor="userId">Add a student</label>
+                <select id="userId" name="userId">
+                  <option value="">Select a student</option>
+                  {availableStudents.map((student) => (
+                    <option key={student.id} value={student.id}>
+                      {student.firstName} {student.lastName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <button type="submit" className={styles.addButton}>
+                Add
+              </button>
+            </form>
+          )}
+        </div>
+      </div>
+    </div>
+  );
 }
