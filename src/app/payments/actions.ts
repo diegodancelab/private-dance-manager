@@ -146,12 +146,13 @@ export async function createPayment(
       const charge = await tx.charge.findUnique({
         where: { id: chargeId },
         select: {
+          userId: true,
           amount: true,
           allocations: { select: { amount: true } },
         },
       });
 
-      if (charge) {
+      if (charge && charge.userId === userId) {
         await tx.paymentAllocation.create({
           data: {
             chargeId,
