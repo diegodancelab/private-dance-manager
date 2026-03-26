@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import StatusBadge from "@/components/ui/StatusBadge";
+import { getLabel } from "@/lib/labels";
 import styles from "./PaymentDetail.module.css";
 
 type Props = {
@@ -70,12 +72,12 @@ export default async function PaymentDetailPage({ params }: Props) {
 
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Method</span>
-              <span className={styles.infoValue}>{payment.method ?? "—"}</span>
+              <span className={styles.infoValue}>{payment.method ? getLabel(payment.method) : "—"}</span>
             </div>
 
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Status</span>
-              <span className={styles.infoValue}>{payment.status}</span>
+              <span className={styles.infoValue}><StatusBadge status={payment.status} /></span>
             </div>
 
             <div className={styles.infoItem}>

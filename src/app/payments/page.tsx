@@ -1,5 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import StatusBadge from "@/components/ui/StatusBadge";
+import { getLabel } from "@/lib/labels";
 import styles from "./PaymentsPage.module.css";
 
 function formatAmount(amount: string | number, currency: string) {
@@ -81,9 +83,13 @@ export default async function PaymentsPage() {
                     {formatAmount(String(payment.amount), payment.currency)}
                   </td>
 
-                  <td className={styles.tableCell}>{payment.method ?? "-"}</td>
+                  <td className={styles.tableCell}>
+                    {payment.method ? getLabel(payment.method) : "—"}
+                  </td>
 
-                  <td className={styles.tableCell}>{payment.status}</td>
+                  <td className={styles.tableCell}>
+                    <StatusBadge status={payment.status} />
+                  </td>
 
                   <td className={styles.tableCell}>
                     {formatDateTime(payment.paidAt)}

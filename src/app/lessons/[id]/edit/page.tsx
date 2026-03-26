@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { UserRole, PackageStatus } from "@/generated/prisma/client";
+import { getLabel } from "@/lib/labels";
 import LessonEditForm from "./LessonEditForm";
 import type { LessonFormState } from "../../form-state";
 import {
@@ -147,7 +148,7 @@ export default async function EditLessonPage({ params }: Props) {
                         {participant.user.firstName} {participant.user.lastName}
                       </span>
                       <span className={styles.participantStatus}>
-                        {participant.status}
+                        {getLabel(participant.status)}
                       </span>
 
                       {usage ? (

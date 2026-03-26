@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import StatusBadge from "@/components/ui/StatusBadge";
 import styles from "./PackageDetail.module.css";
 
 type Props = {
@@ -88,7 +89,7 @@ export default async function PackageDetailPage({ params }: Props) {
 
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Status</span>
-              <span className={styles.infoValue}>{pkg.status}</span>
+              <span className={styles.infoValue}><StatusBadge status={pkg.status} /></span>
             </div>
 
             <div className={styles.infoItem}>

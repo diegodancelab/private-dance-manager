@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { getLabel } from "@/lib/labels";
 import styles from "./LessonsPage.module.css";
 
 function formatDateTime(date: Date) {
@@ -58,7 +59,7 @@ export default async function LessonsPage() {
                 <tr key={lesson.id}>
                   <td className={styles.tableCell}>{lesson.title}</td>
 
-                  <td className={styles.tableCell}>{lesson.lessonType}</td>
+                  <td className={styles.tableCell}>{getLabel(lesson.lessonType)}</td>
 
                   <td className={styles.tableCell}>
                     {lesson.teacher.firstName} {lesson.teacher.lastName}

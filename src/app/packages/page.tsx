@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import StatusBadge from "@/components/ui/StatusBadge";
 import styles from "./PackagesPage.module.css";
 
 function formatMinutes(minutes: number): string {
@@ -94,7 +95,7 @@ export default async function PackagesPage() {
                       </p>
                     </td>
 
-                    <td className={styles.tableCell}>{pkg.status}</td>
+                    <td className={styles.tableCell}><StatusBadge status={pkg.status} /></td>
 
                     <td className={styles.tableCell}>
                       {formatDate(pkg.expiresAt)}

@@ -2,6 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeStatus } from "@/generated/prisma/client";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import StatusBadge from "@/components/ui/StatusBadge";
+import { getLabel } from "@/lib/labels";
 import styles from "./StudentDetail.module.css";
 
 type Props = {
@@ -36,10 +38,6 @@ function formatDateTime(date: Date): string {
   }).format(date);
 }
 
-const CHARGE_STATUS_LABEL: Record<string, string> = {
-  PENDING: "Pending",
-  PARTIALLY_PAID: "Partial",
-};
 
 export default async function StudentDetailPage({ params }: Props) {
   const { id } = await params;
@@ -209,15 +207,7 @@ export default async function StudentDetailPage({ params }: Props) {
                           </p>
                         </td>
                         <td className={styles.tableCell}>
-                          <span
-                            className={`${styles.badge} ${
-                              charge.status === ChargeStatus.PARTIALLY_PAID
-                                ? styles.badgePartial
-                                : styles.badgePending
-                            }`}
-                          >
-                            {CHARGE_STATUS_LABEL[charge.status]}
-                          </span>
+                          <StatusBadge status={charge.status} />
                         </td>
                         <td className={styles.tableCell}>
                           {formatDate(charge.dueAt)}
@@ -286,7 +276,7 @@ export default async function StudentDetailPage({ params }: Props) {
                             {formatMinutes(pkg.totalMinutes)}
                           </p>
                         </td>
-                        <td className={styles.tableCell}>{pkg.status}</td>
+                        <td className={styles.tableCell}><StatusBadge status={pkg.status} /></td>
                         <td className={styles.tableCell}>
                           {formatDate(pkg.expiresAt)}
                         </td>
@@ -336,7 +326,7 @@ export default async function StudentDetailPage({ params }: Props) {
                       <td className={styles.tableCell}>
                         {lesson.durationMin} min
                       </td>
-                      <td className={styles.tableCell}>{lesson.lessonType}</td>
+                      <td className={styles.tableCell}>{getLabel(lesson.lessonType)}</td>
                       <td className={styles.tableCell}>
                         {lesson.location ?? "—"}
                       </td>

@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import Link from "next/link";
+import StatusBadge from "@/components/ui/StatusBadge";
+import { getLabel } from "@/lib/labels";
 import styles from "./LessonDetail.module.css";
 
 type Props = {
@@ -62,7 +64,7 @@ export default async function LessonDetailPage({ params }: Props) {
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Type</span>
-              <span className={styles.infoValue}>{lesson.lessonType}</span>
+              <span className={styles.infoValue}>{getLabel(lesson.lessonType)}</span>
             </div>
 
             <div className={styles.infoItem}>
@@ -121,7 +123,7 @@ export default async function LessonDetailPage({ params }: Props) {
                       {participant.user.firstName} {participant.user.lastName}
                     </span>
                     <span className={styles.participantStatus}>
-                      {participant.status}
+                      <StatusBadge status={participant.status} />
                     </span>
                     {participant.packageUsage ? (
                       <span className={styles.packageTag}>

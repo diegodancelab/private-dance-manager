@@ -209,24 +209,6 @@
   text-decoration: underline;
 }
 
-.badge {
-  display: inline-block;
-  font-size: 0.75rem;
-  font-weight: 700;
-  padding: 0.2rem 0.55rem;
-  border-radius: 999px;
-  letter-spacing: 0.03em;
-}
-
-.badgePending {
-  background: #fef3c7;
-  color: #92400e;
-}
-
-.badgePartial {
-  background: #dbeafe;
-  color: #1e40af;
-}
 
 @media (max-width: 640px) {
   .infoGrid {

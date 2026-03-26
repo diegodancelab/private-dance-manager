@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import StatusBadge from "@/components/ui/StatusBadge";
 import styles from "./ChargesPage.module.css";
 
 function formatAmount(amount: string | number, currency: string) {
@@ -63,7 +64,7 @@ export default async function ChargesPage() {
                     {formatAmount(charge.amount.toString(), charge.currency)}
                   </td>
 
-                  <td className={styles.tableCell}>{charge.status}</td>
+                  <td className={styles.tableCell}><StatusBadge status={charge.status} /></td>
 
                   <td className={styles.tableCell}>
                     {charge.lesson ? charge.lesson.title : "—"}

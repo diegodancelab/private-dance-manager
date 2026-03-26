@@ -1,6 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import StatusBadge from "@/components/ui/StatusBadge";
+import { getLabel } from "@/lib/labels";
 import styles from "./ChargeDetail.module.css";
 
 type Props = {
@@ -69,7 +71,7 @@ export default async function ChargeDetailPage({ params }: Props) {
 
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Type</span>
-              <span className={styles.infoValue}>{charge.type}</span>
+              <span className={styles.infoValue}>{getLabel(charge.type)}</span>
             </div>
 
             <div className={styles.infoItem}>
@@ -81,7 +83,7 @@ export default async function ChargeDetailPage({ params }: Props) {
 
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Status</span>
-              <span className={styles.infoValue}>{charge.status}</span>
+              <span className={styles.infoValue}><StatusBadge status={charge.status} /></span>
             </div>
 
             <div className={styles.infoItem}>
@@ -145,10 +147,10 @@ export default async function ChargeDetailPage({ params }: Props) {
                         {allocation.amount.toString()} {charge.currency}
                       </td>
                       <td className={styles.tableCell}>
-                        {allocation.payment.method ?? "—"}
+                        {allocation.payment.method ? getLabel(allocation.payment.method) : "—"}
                       </td>
                       <td className={styles.tableCell}>
-                        {allocation.payment.status}
+                        <StatusBadge status={allocation.payment.status} />
                       </td>
                     </tr>
                   ))}
