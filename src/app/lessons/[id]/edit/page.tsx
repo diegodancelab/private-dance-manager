@@ -1,9 +1,14 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
-import { UserRole } from "@/generated/prisma/client";
+import { UserRole, PackageStatus } from "@/generated/prisma/client";
 import LessonEditForm from "./LessonEditForm";
 import type { LessonFormState } from "../../form-state";
-import { addLessonParticipant, removeLessonParticipant } from "../../actions";
+import {
+  addLessonParticipant,
+  removeLessonParticipant,
+  assignPackageToParticipant,
+  removePackageFromParticipant,
+} from "../../actions";
 import styles from "../LessonPage.module.css";
 
 type Props = {
@@ -22,6 +27,13 @@ function formatDateTimeLocal(date: Date) {
   return `${year}-${month}-${day}T${hours}:${minutes}`;
 }
 
+function formatMinutes(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}m`;
+}
+
 export default async function EditLessonPage({ params }: Props) {
   const { id } = await params;
 
@@ -35,6 +47,13 @@ export default async function EditLessonPage({ params }: Props) {
               id: true,
               firstName: true,
               lastName: true,
+            },
+          },
+          packageUsage: {
+            include: {
+              package: {
+                select: { id: true, name: true },
+              },
             },
           },
         },
@@ -62,6 +81,24 @@ export default async function EditLessonPage({ params }: Props) {
     orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
     select: { id: true, firstName: true, lastName: true },
   });
+
+  const studentPackages = await prisma.package.findMany({
+    where: {
+      userId: { in: participantUserIds },
+      status: PackageStatus.ACTIVE,
+    },
+    select: { id: true, userId: true, name: true, remainingMinutes: true },
+    orderBy: { createdAt: "desc" },
+  });
+
+  const packagesByStudent: Record<
+    string,
+    { id: string; name: string; remainingMinutes: number }[]
+  > = {};
+  for (const pkg of studentPackages) {
+    if (!packagesByStudent[pkg.userId]) packagesByStudent[pkg.userId] = [];
+    packagesByStudent[pkg.userId].push(pkg);
+  }
 
   const initialState: LessonFormState = {
     success: false,
@@ -98,30 +135,87 @@ export default async function EditLessonPage({ params }: Props) {
             <p className={styles.emptyText}>No students assigned yet.</p>
           ) : (
             <div className={styles.participantList}>
-              {lesson.participants.map((participant) => (
-                <div key={participant.id} className={styles.participantRow}>
-                  <div className={styles.participantInfo}>
-                    <span className={styles.participantName}>
-                      {participant.user.firstName} {participant.user.lastName}
-                    </span>
-                    <span className={styles.participantStatus}>
-                      {participant.status}
-                    </span>
-                  </div>
+              {lesson.participants.map((participant) => {
+                const usage = participant.packageUsage;
+                const availablePackages =
+                  packagesByStudent[participant.userId] ?? [];
 
-                  <form action={removeLessonParticipant}>
-                    <input
-                      type="hidden"
-                      name="participantId"
-                      value={participant.id}
-                    />
-                    <input type="hidden" name="lessonId" value={lesson.id} />
-                    <button type="submit" className={styles.removeButton}>
-                      Remove
-                    </button>
-                  </form>
-                </div>
-              ))}
+                return (
+                  <div key={participant.id} className={styles.participantRow}>
+                    <div className={styles.participantInfo}>
+                      <span className={styles.participantName}>
+                        {participant.user.firstName} {participant.user.lastName}
+                      </span>
+                      <span className={styles.participantStatus}>
+                        {participant.status}
+                      </span>
+
+                      {usage ? (
+                        <div className={styles.packageRow}>
+                          <span className={styles.packageTag}>
+                            {usage.package.name} —{" "}
+                            {formatMinutes(usage.minutesConsumed)}
+                          </span>
+                          <form action={removePackageFromParticipant}>
+                            <input type="hidden" name="usageId" value={usage.id} />
+                            <input
+                              type="hidden"
+                              name="packageId"
+                              value={usage.package.id}
+                            />
+                            <input
+                              type="hidden"
+                              name="minutesConsumed"
+                              value={usage.minutesConsumed}
+                            />
+                            <input type="hidden" name="lessonId" value={lesson.id} />
+                            <button
+                              type="submit"
+                              className={styles.unassignButton}
+                            >
+                              Remove package
+                            </button>
+                          </form>
+                        </div>
+                      ) : availablePackages.length > 0 ? (
+                        <form
+                          action={assignPackageToParticipant}
+                          className={styles.packageAssignForm}
+                        >
+                          <input
+                            type="hidden"
+                            name="participantId"
+                            value={participant.id}
+                          />
+                          <input type="hidden" name="lessonId" value={lesson.id} />
+                          <select name="packageId" className={styles.packageSelect}>
+                            {availablePackages.map((pkg) => (
+                              <option key={pkg.id} value={pkg.id}>
+                                {pkg.name} ({formatMinutes(pkg.remainingMinutes)} left)
+                              </option>
+                            ))}
+                          </select>
+                          <button type="submit" className={styles.assignButton}>
+                            Assign
+                          </button>
+                        </form>
+                      ) : null}
+                    </div>
+
+                    <form action={removeLessonParticipant}>
+                      <input
+                        type="hidden"
+                        name="participantId"
+                        value={participant.id}
+                      />
+                      <input type="hidden" name="lessonId" value={lesson.id} />
+                      <button type="submit" className={styles.removeButton}>
+                        Remove
+                      </button>
+                    </form>
+                  </div>
+                );
+              })}
             </div>
           )}
 

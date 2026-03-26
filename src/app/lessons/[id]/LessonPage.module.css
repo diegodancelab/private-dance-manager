@@ -170,3 +170,87 @@
   opacity: 0.5;
   cursor: not-allowed;
 }
+
+/* Package assignment */
+.packageRow {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  margin-top: 0.35rem;
+}
+
+.packageTag {
+  font-size: 0.82rem;
+  color: #374151;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.4rem;
+  padding: 0.2rem 0.5rem;
+}
+
+.unassignButton {
+  appearance: none;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.4rem;
+  background: #ffffff;
+  color: #6b7280;
+  font: inherit;
+  font-size: 0.78rem;
+  padding: 0.2rem 0.5rem;
+  cursor: pointer;
+  transition: border-color 0.15s ease, color 0.15s ease;
+}
+
+.unassignButton:hover {
+  border-color: #fca5a5;
+  color: #b91c1c;
+}
+
+.packageAssignForm {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-top: 0.35rem;
+}
+
+.packageSelect {
+  border: 1px solid #d1d5db;
+  border-radius: 0.5rem;
+  background: #ffffff;
+  color: #111827;
+  font: inherit;
+  font-size: 0.82rem;
+  padding: 0.25rem 0.5rem;
+  transition: border-color 0.15s ease;
+}
+
+.packageSelect:hover {
+  border-color: #9ca3af;
+}
+
+.packageSelect:focus {
+  outline: none;
+  border-color: #0f172a;
+  box-shadow: 0 0 0 3px rgba(15, 23, 42, 0.08);
+}
+
+.assignButton {
+  appearance: none;
+  border: none;
+  border-radius: 0.4rem;
+  background: #111827;
+  color: #ffffff;
+  font: inherit;
+  font-size: 0.82rem;
+  font-weight: 600;
+  padding: 0.3rem 0.65rem;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease;
+}
+
+.assignButton:hover {
+  background: #1f2937;
+}

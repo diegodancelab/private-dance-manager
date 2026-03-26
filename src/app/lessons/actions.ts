@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import {
   BookingStatus,
   LessonType,
+  PackageStatus,
   UserRole,
 } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
@@ -369,6 +370,88 @@ export async function removeLessonParticipant(formData: FormData) {
       id: participantId,
     },
   });
+
+  redirect(`/lessons/${lessonId}`);
+}
+
+export async function assignPackageToParticipant(formData: FormData) {
+  const participantId = parseRequiredString(formData.get("participantId"));
+  const packageId = parseRequiredString(formData.get("packageId"));
+  const lessonId = parseRequiredString(formData.get("lessonId"));
+
+  if (!participantId || !packageId || !lessonId) {
+    throw new Error("Missing required fields.");
+  }
+
+  const lesson = await prisma.lesson.findUnique({
+    where: { id: lessonId },
+    select: { durationMin: true },
+  });
+
+  if (!lesson) throw new Error("Lesson not found.");
+
+  const pkg = await prisma.package.findUnique({
+    where: { id: packageId },
+    select: { remainingMinutes: true },
+  });
+
+  if (!pkg) throw new Error("Package not found.");
+
+  const minutesConsumed = lesson.durationMin;
+  const newRemaining = Math.max(pkg.remainingMinutes - minutesConsumed, 0);
+
+  await prisma.$transaction([
+    prisma.packageUsage.create({
+      data: {
+        packageId,
+        lessonParticipantId: participantId,
+        minutesConsumed,
+      },
+    }),
+    prisma.package.update({
+      where: { id: packageId },
+      data: {
+        remainingMinutes: newRemaining,
+        status: newRemaining === 0 ? PackageStatus.EXHAUSTED : PackageStatus.ACTIVE,
+      },
+    }),
+  ]);
+
+  redirect(`/lessons/${lessonId}`);
+}
+
+export async function removePackageFromParticipant(formData: FormData) {
+  const usageId = parseRequiredString(formData.get("usageId"));
+  const packageId = parseRequiredString(formData.get("packageId"));
+  const minutesConsumed = Number(formData.get("minutesConsumed") || 0);
+  const lessonId = parseRequiredString(formData.get("lessonId"));
+
+  if (!usageId || !packageId || !lessonId) {
+    throw new Error("Missing required fields.");
+  }
+
+  const pkg = await prisma.package.findUnique({
+    where: { id: packageId },
+    select: { remainingMinutes: true, totalMinutes: true },
+  });
+
+  if (!pkg) throw new Error("Package not found.");
+
+  const newRemaining = Math.min(
+    pkg.remainingMinutes + minutesConsumed,
+    pkg.totalMinutes
+  );
+
+  await prisma.$transaction([
+    prisma.packageUsage.delete({ where: { id: usageId } }),
+    prisma.package.update({
+      where: { id: packageId },
+      data: {
+        remainingMinutes: newRemaining,
+        status: PackageStatus.ACTIVE,
+      },
+    }),
+  ]);
 
   redirect(`/lessons/${lessonId}`);
 }
