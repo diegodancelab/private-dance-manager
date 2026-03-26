@@ -56,6 +56,13 @@ enum PaymentStatus {
   REFUNDED
 }
 
+enum PackageStatus {
+  ACTIVE
+  EXHAUSTED
+  EXPIRED
+  CANCELED
+}
+
 model User {
   id              String              @id @default(cuid())
   email           String?             @unique
@@ -70,8 +77,9 @@ model User {
   taughtLessons   Lesson[]            @relation("TeacherLessons")
   bookings        LessonParticipant[]
   charges         Charge[]
- payments        Payment[]
+  payments        Payment[]
   progressEntries ProgressEntry[]
+  packages        Package[]
 }
 
 model Lesson {
@@ -99,8 +107,9 @@ model LessonParticipant {
   status     BookingStatus  @default(CONFIRMED)
   createdAt  DateTime       @default(now())
 
-  lesson     Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
-  user       User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson        Lesson         @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  packageUsage  PackageUsage?
 
   @@unique([lessonId, userId])
 }
@@ -134,6 +143,7 @@ model Charge {
   user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
   lesson        Lesson?             @relation(fields: [lessonId], references: [id], onDelete: SetNull)
   allocations   PaymentAllocation[]
+  package       Package?
 }
 
 model Payment {
@@ -163,4 +173,32 @@ model PaymentAllocation {
   payment       Payment   @relation(fields: [paymentId], references: [id], onDelete: Cascade)
 
   @@unique([chargeId, paymentId])
+}
+
+model Package {
+  id               String        @id @default(cuid())
+  userId           String
+  chargeId         String?       @unique
+  name             String
+  totalMinutes     Int
+  remainingMinutes Int
+  status           PackageStatus @default(ACTIVE)
+  expiresAt        DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  charge           Charge?       @relation(fields: [chargeId], references: [id], onDelete: SetNull)
+  usages           PackageUsage[]
+}
+
+model PackageUsage {
+  id                  String            @id @default(cuid())
+  packageId           String
+  lessonParticipantId String            @unique
+  minutesConsumed     Int
+  createdAt           DateTime          @default(now())
+
+  package             Package           @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  lessonParticipant   LessonParticipant @relation(fields: [lessonParticipantId], references: [id], onDelete: Cascade)
 }

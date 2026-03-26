@@ -13,6 +13,7 @@ const navItems = [
   { href: "/calendar", label: "Calendar" },
   { href: "/lessons", label: "Lessons" },
   { href: "/students", label: "Students" },
+  { href: "/packages", label: "Packages" },
   { href: "/charges", label: "Charges" },
   { href: "/payments", label: "Payments" },
 ];
