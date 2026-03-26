@@ -107,6 +107,84 @@
   background: #f9fafb;
 }
 
+.section {
+  border-top: 1px solid #e5e7eb;
+  padding: 1.5rem;
+}
+
+.sectionTitle {
+  margin: 0 0 1rem;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  min-width: 480px;
+  border-collapse: collapse;
+}
+
+.tableHeadCell {
+  text-align: left;
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #e5e7eb;
+  color: #6b7280;
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+.tableCell {
+  padding: 0.75rem 1rem;
+  border-bottom: 1px solid #f3f4f6;
+  color: #111827;
+  font-size: 0.95rem;
+  vertical-align: top;
+}
+
+.progressBar {
+  height: 6px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+  min-width: 80px;
+}
+
+.progressFill {
+  height: 100%;
+  background: #111827;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.progressLabel {
+  font-size: 0.82rem;
+  color: #6b7280;
+  margin-top: 0.3rem;
+}
+
+.emptyText {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.actionLink {
+  color: #111827;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.actionLink:hover {
+  text-decoration: underline;
+}
+
 @media (max-width: 640px) {
   .infoGrid {
     grid-template-columns: 1fr;
