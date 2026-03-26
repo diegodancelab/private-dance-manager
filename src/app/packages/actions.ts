@@ -71,26 +71,28 @@ export async function createPackage(
   const totalMinutes = Number(totalHours) * 60;
   const parsedExpiresAt = expiresAt ? new Date(expiresAt) : null;
 
-  const pkg = await prisma.package.create({
-    data: {
-      userId,
-      name,
-      totalMinutes,
-      remainingMinutes: totalMinutes,
-      status: PackageStatus.ACTIVE,
-      expiresAt: parsedExpiresAt,
-    },
-  });
+  await prisma.$transaction(async (tx) => {
+    const pkg = await tx.package.create({
+      data: {
+        userId,
+        name,
+        totalMinutes,
+        remainingMinutes: totalMinutes,
+        status: PackageStatus.ACTIVE,
+        expiresAt: parsedExpiresAt,
+      },
+    });
 
-  await prisma.charge.create({
-    data: {
-      userId,
-      type: ChargeType.PACKAGE,
-      title: name,
-      amount,
-      currency,
-      package: { connect: { id: pkg.id } },
-    },
+    await tx.charge.create({
+      data: {
+        userId,
+        type: ChargeType.PACKAGE,
+        title: name,
+        amount,
+        currency,
+        package: { connect: { id: pkg.id } },
+      },
+    });
   });
 
   redirect("/packages");
