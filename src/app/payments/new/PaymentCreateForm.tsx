@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState, useRef } from "react";
 import { createPayment } from "../actions";
 import { initialPaymentFormState } from "../form-state";
 import {
@@ -17,12 +17,23 @@ type StudentOption = {
   phone: string | null;
 };
 
+type ChargeOption = {
+  id: string;
+  userId: string;
+  title: string;
+  amount: number;
+  currency: string;
+  alreadyPaid: number;
+};
+
 type PaymentCreateFormProps = {
   students: StudentOption[];
+  charges: ChargeOption[];
 };
 
 export default function PaymentCreateForm({
   students,
+  charges,
 }: PaymentCreateFormProps) {
   const [state, formAction, isPending] = useActionState(
     createPayment,
@@ -30,6 +41,24 @@ export default function PaymentCreateForm({
   );
 
   const safeState = state ?? initialPaymentFormState;
+
+  const [selectedUserId, setSelectedUserId] = useState(safeState.fields.userId);
+  const [selectedChargeId, setSelectedChargeId] = useState<string | null>(null);
+  const amountRef = useRef<HTMLInputElement>(null);
+
+  const studentCharges = charges.filter((c) => c.userId === selectedUserId);
+
+  function handleChargeClick(charge: ChargeOption) {
+    if (selectedChargeId === charge.id) {
+      setSelectedChargeId(null);
+    } else {
+      setSelectedChargeId(charge.id);
+      const remaining = charge.amount - charge.alreadyPaid;
+      if (amountRef.current) {
+        amountRef.current.value = remaining.toFixed(2);
+      }
+    }
+  }
 
   return (
     <div className={styles.page}>
@@ -50,6 +79,10 @@ export default function PaymentCreateForm({
                 id="userId"
                 name="userId"
                 defaultValue={safeState.fields.userId}
+                onChange={(e) => {
+                  setSelectedUserId(e.target.value);
+                  setSelectedChargeId(null);
+                }}
               >
                 <option value="">Select a student</option>
                 {students.map((student) => (
@@ -67,9 +100,59 @@ export default function PaymentCreateForm({
               ) : null}
             </div>
 
+            {selectedUserId && studentCharges.length > 0 ? (
+              <div className={`${styles.field} ${styles.fullWidth}`}>
+                <label>Allocate to charge (optional)</label>
+                <div className={styles.chargeList}>
+                  {studentCharges.map((charge) => {
+                    const pct =
+                      charge.amount > 0
+                        ? Math.round(
+                            (charge.alreadyPaid / charge.amount) * 100
+                          )
+                        : 0;
+                    const remaining = charge.amount - charge.alreadyPaid;
+                    const isSelected = selectedChargeId === charge.id;
+
+                    return (
+                      <button
+                        key={charge.id}
+                        type="button"
+                        onClick={() => handleChargeClick(charge)}
+                        className={`${styles.chargeCard} ${isSelected ? styles.chargeCardSelected : ""}`}
+                      >
+                        <div className={styles.chargeCardTop}>
+                          <span className={styles.chargeName}>
+                            {charge.title}
+                          </span>
+                          <span className={styles.chargeAmounts}>
+                            {charge.alreadyPaid.toFixed(2)} /{" "}
+                            {charge.amount.toFixed(2)} {charge.currency}
+                          </span>
+                        </div>
+                        <div className={styles.chargeBar}>
+                          <div
+                            className={styles.chargeFill}
+                            style={{ width: `${pct}%` }}
+                          />
+                        </div>
+                        <span className={styles.chargeRemaining}>
+                          {remaining.toFixed(2)} {charge.currency} remaining
+                        </span>
+                      </button>
+                    );
+                  })}
+                </div>
+                {selectedChargeId ? (
+                  <input type="hidden" name="chargeId" value={selectedChargeId} />
+                ) : null}
+              </div>
+            ) : null}
+
             <div className={styles.field}>
               <label htmlFor="amount">Amount</label>
               <input
+                ref={amountRef}
                 id="amount"
                 name="amount"
                 type="number"

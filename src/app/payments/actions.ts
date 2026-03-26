@@ -2,6 +2,7 @@
 
 import { prisma } from "@/lib/prisma";
 import {
+  ChargeStatus,
   PaymentMethod,
   PaymentStatus,
   UserRole,
@@ -137,6 +138,42 @@ export async function createPayment(
       paidAt: paidAt ? new Date(paidAt) : null,
     },
   });
+
+  const chargeId = parseOptionalString(formData.get("chargeId"));
+
+  if (chargeId) {
+    const charge = await prisma.charge.findUnique({
+      where: { id: chargeId },
+      select: {
+        amount: true,
+        allocations: { select: { amount: true } },
+      },
+    });
+
+    if (charge) {
+      await prisma.paymentAllocation.create({
+        data: {
+          chargeId,
+          paymentId: payment.id,
+          amount,
+        },
+      });
+
+      const totalPaid =
+        charge.allocations.reduce((sum, a) => sum + Number(a.amount), 0) +
+        Number(amount);
+
+      const newStatus =
+        totalPaid >= Number(charge.amount)
+          ? ChargeStatus.PAID
+          : ChargeStatus.PARTIALLY_PAID;
+
+      await prisma.charge.update({
+        where: { id: chargeId },
+        data: { status: newStatus },
+      });
+    }
+  }
 
   redirect(`/payments/${payment.id}`);
 }

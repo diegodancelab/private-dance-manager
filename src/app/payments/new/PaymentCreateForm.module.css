@@ -163,6 +163,75 @@
   transform: none;
 }
 
+.chargeList {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.chargeCard {
+  appearance: none;
+  width: 100%;
+  text-align: left;
+  border: 1px solid #e5e7eb;
+  border-radius: 10px;
+  background: #f9fafb;
+  color: #111827;
+  font: inherit;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  display: grid;
+  gap: 0.4rem;
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.chargeCard:hover {
+  border-color: #9ca3af;
+  background: #f3f4f6;
+}
+
+.chargeCardSelected {
+  border-color: #0f172a;
+  background: #f0f0ff;
+}
+
+.chargeCardTop {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+}
+
+.chargeName {
+  font-weight: 600;
+  font-size: 0.92rem;
+}
+
+.chargeAmounts {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: #111827;
+  white-space: nowrap;
+}
+
+.chargeBar {
+  height: 5px;
+  background: #e5e7eb;
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.chargeFill {
+  height: 100%;
+  background: #111827;
+  border-radius: 999px;
+  transition: width 0.3s ease;
+}
+
+.chargeRemaining {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
 @media (max-width: 760px) {
   .card {
     padding: 1.25rem;
