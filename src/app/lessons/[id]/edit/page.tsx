@@ -159,16 +159,6 @@ export default async function EditLessonPage({ params }: Props) {
                           </span>
                           <form action={removePackageFromParticipant}>
                             <input type="hidden" name="usageId" value={usage.id} />
-                            <input
-                              type="hidden"
-                              name="packageId"
-                              value={usage.package.id}
-                            />
-                            <input
-                              type="hidden"
-                              name="minutesConsumed"
-                              value={usage.minutesConsumed}
-                            />
                             <input type="hidden" name="lessonId" value={lesson.id} />
                             <button
                               type="submit"
