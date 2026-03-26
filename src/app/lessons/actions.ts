@@ -431,12 +431,27 @@ export async function assignPackageToParticipant(formData: FormData) {
 
     if (!lesson) throw new Error("Lesson not found.");
 
+    const participant = await tx.lessonParticipant.findUnique({
+      where: { id: participantId },
+      select: { userId: true },
+    });
+
+    if (!participant) throw new Error("Participant not found.");
+
     const pkg = await tx.package.findUnique({
       where: { id: packageId },
-      select: { remainingMinutes: true },
+      select: { remainingMinutes: true, status: true, userId: true },
     });
 
     if (!pkg) throw new Error("Package not found.");
+
+    if (pkg.status !== PackageStatus.ACTIVE) {
+      throw new Error("Package is not active.");
+    }
+
+    if (pkg.userId !== participant.userId) {
+      throw new Error("Package does not belong to this student.");
+    }
 
     const minutesConsumed = lesson.durationMin;
     const newRemaining = Math.max(pkg.remainingMinutes - minutesConsumed, 0);
