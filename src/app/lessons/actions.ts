@@ -394,10 +394,21 @@ export async function removeLessonParticipant(formData: FormData) {
     throw new Error("Participant id and lesson id are required.");
   }
 
+  const participant = await prisma.lessonParticipant.findUnique({
+    where: { id: participantId },
+    select: { lessonId: true },
+  });
+
+  if (!participant) {
+    throw new Error("Participant not found.");
+  }
+
+  if (participant.lessonId !== lessonId) {
+    throw new Error("Participant does not belong to this lesson.");
+  }
+
   await prisma.lessonParticipant.delete({
-    where: {
-      id: participantId,
-    },
+    where: { id: participantId },
   });
 
   redirect(`/lessons/${lessonId}`);
