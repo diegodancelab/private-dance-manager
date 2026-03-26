@@ -494,7 +494,7 @@ export async function removePackageFromParticipant(formData: FormData) {
 
     const pkg = await tx.package.findUnique({
       where: { id: usage.packageId },
-      select: { remainingMinutes: true, totalMinutes: true },
+      select: { remainingMinutes: true, totalMinutes: true, status: true },
     });
 
     if (!pkg) throw new Error("Package not found.");
@@ -504,12 +504,17 @@ export async function removePackageFromParticipant(formData: FormData) {
       pkg.totalMinutes
     );
 
+    const newStatus =
+      pkg.status === PackageStatus.EXHAUSTED
+        ? PackageStatus.ACTIVE
+        : pkg.status;
+
     await tx.packageUsage.delete({ where: { id: usageId } });
     await tx.package.update({
       where: { id: usage.packageId },
       data: {
         remainingMinutes: newRemaining,
-        status: PackageStatus.ACTIVE,
+        status: newStatus,
       },
     });
   });
