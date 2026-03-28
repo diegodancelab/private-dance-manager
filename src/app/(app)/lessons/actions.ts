@@ -57,7 +57,7 @@ function parseBookingStatus(value: FormDataEntryValue | null): BookingStatus {
     return parsed as BookingStatus;
   }
 
-  return BookingStatus.CONFIRMED;
+  throw new Error(`Invalid booking status: "${parsed}"`);
 }
 
 

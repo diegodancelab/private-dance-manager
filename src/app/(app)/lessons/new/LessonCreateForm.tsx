@@ -204,7 +204,7 @@ export default function LessonCreateForm({
               >
                 <option value="CONFIRMED">Confirmed</option>
                 <option value="PENDING">Pending</option>
-                <option value="CANCELLED">Cancelled</option>
+                <option value="CANCELED">Canceled</option>
               </select>
               {safeState.errors.bookingStatus ? (
                 <p className={styles.error}>{safeState.errors.bookingStatus}</p>
