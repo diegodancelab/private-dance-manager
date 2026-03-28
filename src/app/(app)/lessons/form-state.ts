@@ -12,7 +12,6 @@ export type LessonFormState = {
     durationMin: string;
     priceAmount: string;
     location: string;
-    teacherId: string;
     studentId: string;
     bookingStatus: string;
   };
@@ -22,7 +21,6 @@ export type LessonFormState = {
     scheduledAt?: string;
     durationMin?: string;
     priceAmount?: string;
-    teacherId?: string;
     studentId?: string;
     bookingStatus?: string;
     form?: string;
@@ -41,7 +39,6 @@ export const initialLessonFormState: LessonFormState = {
     durationMin: "60",
     priceAmount: "",
     location: "",
-    teacherId: "",
     studentId: "",
     bookingStatus: "CONFIRMED",
   },

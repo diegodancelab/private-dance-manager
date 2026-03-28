@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getLabel } from "@/lib/labels";
+import { requireAuth } from "@/lib/auth/require-auth";
 import styles from "./LessonsPage.module.css";
 
 function formatDateTime(date: Date) {
@@ -14,12 +15,12 @@ function formatDateTime(date: Date) {
 }
 
 export default async function LessonsPage() {
+  const { user } = await requireAuth();
+
   const lessons = await prisma.lesson.findMany({
+    where: { teacherId: user.id },
     orderBy: {
       scheduledAt: "desc",
-    },
-    include: {
-      teacher: true,
     },
   });
 
@@ -48,7 +49,6 @@ export default async function LessonsPage() {
               <tr>
                 <th className={styles.tableHeadCell}>Title</th>
                 <th className={styles.tableHeadCell}>Type</th>
-                <th className={styles.tableHeadCell}>Teacher</th>
                 <th className={styles.tableHeadCell}>Scheduled at</th>
                 <th className={styles.tableHeadCell}>Actions</th>
               </tr>
@@ -60,10 +60,6 @@ export default async function LessonsPage() {
                   <td className={styles.tableCell}>{lesson.title}</td>
 
                   <td className={styles.tableCell}>{getLabel(lesson.lessonType)}</td>
-
-                  <td className={styles.tableCell}>
-                    {lesson.teacher.firstName} {lesson.teacher.lastName}
-                  </td>
 
                   <td className={styles.tableCell}>
                     {formatDateTime(lesson.scheduledAt)}

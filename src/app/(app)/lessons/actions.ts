@@ -69,7 +69,9 @@ export const createLesson = withFormAction(async function createLesson(
   _prevState: LessonFormState,
   formData: FormData
 ): Promise<LessonFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
+  const teacherId = user.id;
+
   const title = parseRequiredString(formData.get("title"));
   const description = String(formData.get("description") || "").trim();
   const lessonType = parseLessonType(formData.get("lessonType"));
@@ -77,7 +79,6 @@ export const createLesson = withFormAction(async function createLesson(
   const durationMin = String(formData.get("durationMin") || "").trim();
   const priceAmount = String(formData.get("priceAmount") || "").trim();
   const location = String(formData.get("location") || "").trim();
-  const teacherId = parseRequiredString(formData.get("teacherId"));
   const studentId = String(formData.get("studentId") || "").trim();
   const bookingStatus = parseBookingStatus(formData.get("bookingStatus"));
 
@@ -93,7 +94,6 @@ export const createLesson = withFormAction(async function createLesson(
       durationMin,
       priceAmount,
       location,
-      teacherId,
       studentId,
       bookingStatus,
     },
@@ -125,31 +125,8 @@ export const createLesson = withFormAction(async function createLesson(
       "Price must be a valid amount with up to 2 decimals.";
   }
 
-  if (!teacherId) {
-    state.errors.teacherId = "Teacher is required.";
-  }
-
   if (Object.keys(state.errors).length > 0) {
     return state;
-  }
-
-  const teacher = await prisma.user.findFirst({
-    where: {
-      id: teacherId,
-      role: UserRole.TEACHER,
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (!teacher) {
-    return {
-      ...state,
-      errors: {
-        teacherId: "Selected teacher was not found.",
-      },
-    };
   }
 
   if (studentId) {
@@ -217,7 +194,7 @@ export const createLesson = withFormAction(async function createLesson(
 });
 
 export async function addLessonParticipant(formData: FormData) {
-  await requireAuth();
+  const { user } = await requireAuth();
   const lessonId = parseRequiredString(formData.get("lessonId"));
   const userId = parseRequiredString(formData.get("userId"));
 
@@ -226,8 +203,8 @@ export async function addLessonParticipant(formData: FormData) {
   }
 
   try {
-    const lesson = await prisma.lesson.findUnique({
-      where: { id: lessonId },
+    const lesson = await prisma.lesson.findFirst({
+      where: { id: lessonId, teacherId: user.id },
       select: { id: true },
     });
 
@@ -264,7 +241,9 @@ export const updateLesson = withFormAction(async function updateLesson(
   _prevState: LessonFormState,
   formData: FormData
 ): Promise<LessonFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
+  const teacherId = user.id;
+
   const id = parseRequiredString(formData.get("id"));
   const title = parseRequiredString(formData.get("title"));
   const description = String(formData.get("description") || "").trim();
@@ -273,7 +252,6 @@ export const updateLesson = withFormAction(async function updateLesson(
   const durationMin = String(formData.get("durationMin") || "").trim();
   const priceAmount = String(formData.get("priceAmount") || "").trim();
   const location = String(formData.get("location") || "").trim();
-  const teacherId = parseRequiredString(formData.get("teacherId"));
 
   const state: LessonFormState = {
     success: false,
@@ -287,7 +265,6 @@ export const updateLesson = withFormAction(async function updateLesson(
       durationMin,
       priceAmount,
       location,
-      teacherId,
       studentId: "",
       bookingStatus: BookingStatus.CONFIRMED,
     },
@@ -324,48 +301,20 @@ export const updateLesson = withFormAction(async function updateLesson(
       "Price must be a valid amount with up to 2 decimals.";
   }
 
-  if (!teacherId) {
-    state.errors.teacherId = "Teacher is required.";
-  }
-
   if (Object.keys(state.errors).length > 0) {
     return state;
   }
 
+  // Ownership check — also confirms the lesson exists.
   const existingLesson = await prisma.lesson.findFirst({
-    where: {
-      id,
-    },
-    select: {
-      id: true,
-    },
+    where: { id, teacherId },
+    select: { id: true },
   });
 
   if (!existingLesson) {
     return {
       ...state,
-      errors: {
-        form: "Lesson not found.",
-      },
-    };
-  }
-
-  const teacher = await prisma.user.findFirst({
-    where: {
-      id: teacherId,
-      role: UserRole.TEACHER,
-    },
-    select: {
-      id: true,
-    },
-  });
-
-  if (!teacher) {
-    return {
-      ...state,
-      errors: {
-        teacherId: "Selected teacher was not found.",
-      },
+      errors: { form: "Lesson not found." },
     };
   }
 
@@ -409,7 +358,7 @@ export const updateLesson = withFormAction(async function updateLesson(
 });
 
 export async function removeLessonParticipant(formData: FormData) {
-  await requireAuth();
+  const { user } = await requireAuth();
   const participantId = parseRequiredString(formData.get("participantId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
 
@@ -418,6 +367,13 @@ export async function removeLessonParticipant(formData: FormData) {
   }
 
   try {
+    const lesson = await prisma.lesson.findFirst({
+      where: { id: lessonId, teacherId: user.id },
+      select: { id: true },
+    });
+
+    if (!lesson) throw new DomainError("Lesson not found.");
+
     const participant = await prisma.lessonParticipant.findUnique({
       where: { id: participantId },
       select: { lessonId: true },
@@ -440,7 +396,7 @@ export async function removeLessonParticipant(formData: FormData) {
 }
 
 export async function assignPackageToParticipant(formData: FormData) {
-  await requireAuth();
+  const { user } = await requireAuth();
   const participantId = parseRequiredString(formData.get("participantId"));
   const packageId = parseRequiredString(formData.get("packageId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
@@ -451,8 +407,8 @@ export async function assignPackageToParticipant(formData: FormData) {
 
   try {
     await prisma.$transaction(async (tx) => {
-      const lesson = await tx.lesson.findUnique({
-        where: { id: lessonId },
+      const lesson = await tx.lesson.findFirst({
+        where: { id: lessonId, teacherId: user.id },
         select: { durationMin: true },
       });
 
@@ -536,7 +492,7 @@ export async function assignPackageToParticipant(formData: FormData) {
 }
 
 export async function removePackageFromParticipant(formData: FormData) {
-  await requireAuth();
+  const { user } = await requireAuth();
   const usageId = parseRequiredString(formData.get("usageId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
 
@@ -546,6 +502,13 @@ export async function removePackageFromParticipant(formData: FormData) {
 
   try {
     await prisma.$transaction(async (tx) => {
+      const lesson = await tx.lesson.findFirst({
+        where: { id: lessonId, teacherId: user.id },
+        select: { id: true },
+      });
+
+      if (!lesson) throw new DomainError("Lesson not found.");
+
       const usage = await tx.packageUsage.findUnique({
         where: { id: usageId },
         select: { minutesConsumed: true, packageId: true },
@@ -587,7 +550,7 @@ export async function removePackageFromParticipant(formData: FormData) {
 }
 
 export async function deleteLesson(formData: FormData) {
-  await requireAuth();
+  const { user } = await requireAuth();
   const lessonId = parseRequiredString(formData.get("lessonId"));
 
   if (!lessonId) {
@@ -595,6 +558,13 @@ export async function deleteLesson(formData: FormData) {
   }
 
   try {
+    const lesson = await prisma.lesson.findFirst({
+      where: { id: lessonId, teacherId: user.id },
+      select: { id: true },
+    });
+
+    if (!lesson) throw new DomainError("Lesson not found.");
+
     await prisma.lesson.delete({
       where: { id: lessonId },
     });

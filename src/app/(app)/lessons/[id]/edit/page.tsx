@@ -12,6 +12,7 @@ import {
   removePackageFromParticipant,
 } from "../../actions";
 import styles from "../LessonPage.module.css";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 type Props = {
   params: Promise<{
@@ -29,9 +30,10 @@ function formatMinutes(minutes: number): string {
 
 export default async function EditLessonPage({ params }: Props) {
   const { id } = await params;
+  const { user } = await requireAuth();
 
-  const lesson = await prisma.lesson.findUnique({
-    where: { id },
+  const lesson = await prisma.lesson.findFirst({
+    where: { id, teacherId: user.id },
     include: {
       participants: {
         include: {
@@ -57,12 +59,6 @@ export default async function EditLessonPage({ params }: Props) {
   if (!lesson) {
     notFound();
   }
-
-  const teachers = await prisma.user.findMany({
-    where: { role: UserRole.TEACHER },
-    orderBy: { firstName: "asc" },
-    select: { id: true, firstName: true, lastName: true, email: true },
-  });
 
   const participantUserIds = lesson.participants.map((p) => p.userId);
 
@@ -105,7 +101,6 @@ export default async function EditLessonPage({ params }: Props) {
       durationMin: String(lesson.durationMin),
       priceAmount: lesson.priceAmount?.toString() ?? "",
       location: lesson.location ?? "",
-      teacherId: lesson.teacherId,
       studentId: "",
       bookingStatus: "CONFIRMED",
     },
@@ -114,7 +109,7 @@ export default async function EditLessonPage({ params }: Props) {
 
   return (
     <div className={styles.page}>
-      <LessonEditForm initialState={initialState} teachers={teachers} />
+      <LessonEditForm initialState={initialState} />
 
       <div className={styles.card}>
         <div className={styles.cardHeader}>

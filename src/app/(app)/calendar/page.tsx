@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
-import { UserRole } from "@/generated/prisma/client";
 import CalendarWeekHeader from "@/components/calendar/CalendarWeekHeader";
 import CalendarWeekView from "@/components/calendar/CalendarWeekView";
 import { getEndOfWeek, getStartOfWeek, parseCalendarDate } from "@/lib/calendar";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 
 type CalendarPageProps = {
@@ -14,52 +14,39 @@ type CalendarPageProps = {
 export default async function CalendarPage({
   searchParams,
 }: CalendarPageProps) {
+  const { user } = await requireAuth();
   const params = await searchParams;
   const currentDate = parseCalendarDate(params.date);
 
   const startOfWeek = getStartOfWeek(currentDate);
   const endOfWeek = getEndOfWeek(currentDate);
 
-  const teacher = await prisma.user.findFirst({
+  const lessons = await prisma.lesson.findMany({
     where: {
-      role: UserRole.TEACHER,
+      teacherId: user.id,
+      scheduledAt: {
+        gte: startOfWeek,
+        lt: endOfWeek,
+      },
     },
     orderBy: {
-      createdAt: "asc",
+      scheduledAt: "asc",
     },
-    select: {
-      id: true,
-    },
-  });
-
-  const lessons = teacher
-    ? await prisma.lesson.findMany({
-        where: {
-          teacherId: teacher.id,
-          scheduledAt: {
-            gte: startOfWeek,
-            lt: endOfWeek,
-          },
-        },
-        orderBy: {
-          scheduledAt: "asc",
-        },
+    include: {
+      participants: {
         include: {
-          participants: {
-            include: {
-              user: {
-                select: {
-                  id: true,
-                  firstName: true,
-                  lastName: true,
-                  email: true,
-                },
-              },
+          user: {
+            select: {
+              id: true,
+              firstName: true,
+              lastName: true,
+              email: true,
             },
           },
         },
-      })
-    : [];
+      },
+    },
+  });
 
   return (
     <div>

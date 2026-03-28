@@ -6,22 +6,11 @@ import type { LessonFormState } from "../../form-state";
 import { LESSON_TYPE_OPTIONS } from "@/lib/lesson-types";
 import styles from "./LessonEditForm.module.css";
 
-type TeacherOption = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string | null;
-};
-
 type LessonEditFormProps = {
   initialState: LessonFormState;
-  teachers: TeacherOption[];
 };
 
-export default function LessonEditForm({
-  initialState,
-  teachers,
-}: LessonEditFormProps) {
+export default function LessonEditForm({ initialState }: LessonEditFormProps) {
   const [state, formAction, isPending] = useActionState(
     updateLesson,
     initialState
@@ -36,7 +25,7 @@ export default function LessonEditForm({
           <p className={styles.eyebrow}>Lessons</p>
           <h1 className={styles.title}>Edit lesson</h1>
           <p className={styles.subtitle}>
-            Update the lesson information, schedule, pricing and teacher.
+            Update the lesson information, schedule and pricing.
           </p>
         </div>
 
@@ -138,25 +127,6 @@ export default function LessonEditForm({
               />
             </div>
 
-            <div className={`${styles.field} ${styles.fullWidth}`}>
-              <label htmlFor="teacherId">Teacher</label>
-              <select
-                id="teacherId"
-                name="teacherId"
-                defaultValue={safeState.fields.teacherId}
-              >
-                <option value="">Select a teacher</option>
-                {teachers.map((teacher) => (
-                  <option key={teacher.id} value={teacher.id}>
-                    {teacher.firstName} {teacher.lastName}
-                    {teacher.email ? ` - ${teacher.email}` : ""}
-                  </option>
-                ))}
-              </select>
-              {safeState.errors.teacherId ? (
-                <p className={styles.error}>{safeState.errors.teacherId}</p>
-              ) : null}
-            </div>
           </div>
 
           {safeState.errors.form ? (

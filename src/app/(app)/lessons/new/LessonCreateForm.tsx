@@ -6,13 +6,6 @@ import { createLesson } from "../actions";
 import { initialLessonFormState } from "../form-state";
 import styles from "./LessonCreateForm.module.css";
 
-type TeacherOption = {
-  id: string;
-  firstName: string;
-  lastName: string;
-  email: string | null;
-};
-
 type StudentOption = {
   id: string;
   firstName: string;
@@ -21,18 +14,14 @@ type StudentOption = {
 };
 
 type LessonCreateFormProps = {
-  teachers: TeacherOption[];
   students: StudentOption[];
   defaultScheduledAt: string;
-  defaultTeacherId: string;
   defaultStudentId: string;
 };
 
 export default function LessonCreateForm({
-  teachers,
   students,
   defaultScheduledAt,
-  defaultTeacherId,
   defaultStudentId,
 }: LessonCreateFormProps) {
   const [state, formAction, isPending] = useActionState(createLesson, {
@@ -40,7 +29,6 @@ export default function LessonCreateForm({
     fields: {
       ...initialLessonFormState.fields,
       scheduledAt: defaultScheduledAt,
-      teacherId: defaultTeacherId,
       studentId: defaultStudentId,
       bookingStatus: "CONFIRMED",
     },
@@ -55,7 +43,7 @@ export default function LessonCreateForm({
           <p className={styles.eyebrow}>Lessons</p>
           <h1 className={styles.title}>Create lesson</h1>
           <p className={styles.subtitle}>
-            Schedule a new lesson, assign a teacher and a student.
+            Schedule a new lesson and optionally assign a student.
           </p>
         </div>
 
@@ -153,26 +141,6 @@ export default function LessonCreateForm({
                 defaultValue={safeState.fields.location}
                 placeholder="Geneva"
               />
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="teacherId">Teacher</label>
-              <select
-                id="teacherId"
-                name="teacherId"
-                defaultValue={safeState.fields.teacherId}
-              >
-                <option value="">Select a teacher</option>
-                {teachers.map((teacher) => (
-                  <option key={teacher.id} value={teacher.id}>
-                    {teacher.firstName} {teacher.lastName}
-                    {teacher.email ? ` - ${teacher.email}` : ""}
-                  </option>
-                ))}
-              </select>
-              {safeState.errors.teacherId ? (
-                <p className={styles.error}>{safeState.errors.teacherId}</p>
-              ) : null}
             </div>
 
             <div className={styles.field}>

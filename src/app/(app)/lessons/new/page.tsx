@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@/generated/prisma/client";
 import LessonCreateForm from "./LessonCreateForm";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 type NewLessonPageProps = {
   searchParams: Promise<{
@@ -26,22 +27,8 @@ function buildDefaultScheduledAt(dateParam?: string): string {
 export default async function NewLessonPage({
   searchParams,
 }: NewLessonPageProps) {
+  await requireAuth();
   const params = await searchParams;
-
-  const teachers = await prisma.user.findMany({
-    where: {
-      role: UserRole.TEACHER,
-    },
-    orderBy: {
-      firstName: "asc",
-    },
-    select: {
-      id: true,
-      firstName: true,
-      lastName: true,
-      email: true,
-    },
-  });
 
   const students = await prisma.user.findMany({
     where: {
@@ -59,14 +46,11 @@ export default async function NewLessonPage({
   });
 
   const defaultScheduledAt = buildDefaultScheduledAt(params.date);
-  const defaultTeacherId = teachers.length === 1 ? teachers[0].id : "";
 
   return (
     <LessonCreateForm
-      teachers={teachers}
       students={students}
       defaultScheduledAt={defaultScheduledAt}
-      defaultTeacherId={defaultTeacherId}
       defaultStudentId={params.studentId ?? ""}
     />
   );
