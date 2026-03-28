@@ -68,35 +68,35 @@ Checks:
 
 ## CL2 — Create lesson + assign student
 
-Test both variants of the calendar creation flow.
+Two supported flows:
 
-### Scenario A — existing student
+### Scenario A — assign student at creation time
 
-* create lesson from calendar
-* assign an existing student during creation
+* click "Add lesson" on a calendar day column
+* select an existing student in the student field
+* submit → lesson + participant created together
 
 Checks:
 
 * student correctly linked to lesson
-* lesson appears in student detail page
-* no orphan lesson without participant (if not allowed)
+* lesson appears in student detail page (upcoming lessons)
+* student existence and role validated server-side
 
-### Scenario B — new student created inside the calendar flow
+### Scenario B — assign student after creation (via edit page)
 
-* create lesson from calendar
-* create a new student directly from the same flow
-* assign that newly created student to the lesson
+* create lesson from calendar without selecting a student
+* click on the lesson card in the calendar → redirects to `/lessons/[id]/edit`
+* use the "Add participant" section to assign an existing student
 
 Checks:
 
-* student creation works correctly
-* student is persisted before being linked
-* lesson ↔ student relation is valid and consistent
-* lesson appears correctly in both calendar and student detail page
-* no duplicate student created because of retry or double submit
-* no broken intermediate state
-* no lesson without participant
-* no student created without usable linkage if lesson creation fails
+* student correctly linked to lesson after assignment
+* lesson appears in student detail page (upcoming lessons)
+* lesson can exist without participants (allowed)
+
+Note: there is no option to create a new student inline from either flow.
+To assign a brand new student, the teacher must first create them via /students/new,
+then come back to assign them.
 * operation is atomic or safely rolled back on failure
 * validations are sufficient for both lesson and student data
 * UI stays in sync after success or failure
