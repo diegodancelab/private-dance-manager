@@ -11,6 +11,7 @@ export function formatDate(date: Date | null): string {
     day: "2-digit",
     month: "2-digit",
     year: "numeric",
+    timeZone: "Europe/Zurich",
   }).format(date);
 }
 
@@ -21,5 +22,6 @@ export function formatDateTime(date: Date): string {
     year: "numeric",
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Europe/Zurich",
   }).format(date);
 }

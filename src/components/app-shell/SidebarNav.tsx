@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { logout } from "@/lib/auth/actions";
 import styles from "./SidebarNav.module.css";
 
 type SidebarNavProps = {
@@ -47,6 +48,12 @@ export default function SidebarNav({ onNavigate }: SidebarNavProps) {
           );
         })}
       </nav>
+
+      <form action={logout} className={styles.logoutForm}>
+        <button type="submit" className={styles.logoutButton}>
+          Log out
+        </button>
+      </form>
     </div>
   );
 }

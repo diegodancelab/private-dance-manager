@@ -64,22 +64,40 @@ enum PackageStatus {
 }
 
 model User {
-  id              String              @id @default(cuid())
-  email           String?             @unique
-  firstName       String
-  lastName        String
-  phone           String?
-  role            UserRole            @default(STUDENT)
-  isActive        Boolean             @default(true)
-  createdAt       DateTime            @default(now())
-  updatedAt       DateTime            @updatedAt
+  id                 String              @id @default(cuid())
+  email              String?             @unique
+  firstName          String
+  lastName           String
+  phone              String?
+  role               UserRole            @default(STUDENT)
+  isActive           Boolean             @default(true)
+  passwordHash       String?
+  createdByTeacherId String?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
 
-  taughtLessons   Lesson[]            @relation("TeacherLessons")
-  bookings        LessonParticipant[]
-  charges         Charge[]
-  payments        Payment[]
-  progressEntries ProgressEntry[]
-  packages        Package[]
+  taughtLessons         Lesson[]            @relation("TeacherLessons")
+  bookings              LessonParticipant[]
+  charges               Charge[]            @relation("ChargeStudent")
+  taughtCharges         Charge[]            @relation("ChargeTeacher")
+  payments              Payment[]           @relation("PaymentStudent")
+  taughtPayments        Payment[]           @relation("PaymentTeacher")
+  progressEntries       ProgressEntry[]     @relation("ProgressEntryStudent")
+  taughtProgressEntries ProgressEntry[]     @relation("ProgressEntryTeacher")
+  packages              Package[]           @relation("PackageStudent")
+  taughtPackages        Package[]           @relation("PackageTeacher")
+  sessions              Session[]
+  createdByTeacher      User?               @relation("TeacherCreatedStudents", fields: [createdByTeacherId], references: [id])
+  createdStudents       User[]              @relation("TeacherCreatedStudents")
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Lesson {
@@ -117,18 +135,21 @@ model LessonParticipant {
 model ProgressEntry {
   id         String    @id @default(cuid())
   userId     String
+  teacherId  String
   title      String
   notes      String?
   level      Int?
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
 
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User       @relation("ProgressEntryStudent", fields: [userId], references: [id], onDelete: Cascade)
+  teacher    User       @relation("ProgressEntryTeacher", fields: [teacherId], references: [id])
 }
 
 model Charge {
   id            String              @id @default(cuid())
   userId        String
+  teacherId     String
   lessonId      String?
   type          ChargeType          @default(LESSON)
   title         String
@@ -140,7 +161,8 @@ model Charge {
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 
-  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User                @relation("ChargeStudent", fields: [userId], references: [id], onDelete: Cascade)
+  teacher       User                @relation("ChargeTeacher", fields: [teacherId], references: [id])
   lesson        Lesson?             @relation(fields: [lessonId], references: [id], onDelete: SetNull)
   allocations   PaymentAllocation[]
   package       Package?
@@ -149,6 +171,7 @@ model Charge {
 model Payment {
   id            String              @id @default(cuid())
   userId        String
+  teacherId     String
   amount        Decimal             @db.Decimal(10, 2)
   currency      String              @default("CHF")
   method        PaymentMethod?
@@ -158,7 +181,8 @@ model Payment {
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 
-  user          User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user          User                @relation("PaymentStudent", fields: [userId], references: [id], onDelete: Cascade)
+  teacher       User                @relation("PaymentTeacher", fields: [teacherId], references: [id])
   allocations   PaymentAllocation[]
 }
 
@@ -178,6 +202,7 @@ model PaymentAllocation {
 model Package {
   id               String        @id @default(cuid())
   userId           String
+  teacherId        String
   chargeId         String?       @unique
   name             String
   totalMinutes     Int
@@ -187,7 +212,8 @@ model Package {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user             User          @relation("PackageStudent", fields: [userId], references: [id], onDelete: Cascade)
+  teacher          User          @relation("PackageTeacher", fields: [teacherId], references: [id])
   charge           Charge?       @relation(fields: [chargeId], references: [id], onDelete: SetNull)
   usages           PackageUsage[]
 }

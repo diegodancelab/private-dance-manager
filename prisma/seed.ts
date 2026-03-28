@@ -1,10 +1,11 @@
 import "dotenv/config";
 
+import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { 
+import {
   PrismaClient,
-  UserRole, 
-  LessonType, 
+  UserRole,
+  LessonType,
   BookingStatus,
   ChargeType,
   ChargeStatus,
@@ -19,26 +20,31 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  const adminPasswordHash = await bcrypt.hash("admin123", 12);
+  const teacherPasswordHash = await bcrypt.hash("teacher123", 12);
+
   const admin = await prisma.user.upsert({
     where: { email: "admin@privatedancemanager.com" },
-    update: {},
+    update: { passwordHash: adminPasswordHash },
     create: {
       email: "admin@privatedancemanager.com",
       firstName: "Admin",
       lastName: "User",
       role: UserRole.ADMIN,
+      passwordHash: adminPasswordHash,
     },
   });
 
   const teacher = await prisma.user.upsert({
     where: { email: "teacher@privatedancemanager.com" },
-    update: {},
+    update: { passwordHash: teacherPasswordHash },
     create: {
       email: "teacher@privatedancemanager.com",
       firstName: "Diego",
       lastName: "Poli",
       role: UserRole.TEACHER,
       phone: "+41000000000",
+      passwordHash: teacherPasswordHash,
     },
   });
 
@@ -50,6 +56,7 @@ async function main() {
       firstName: "Test",
       lastName: "Student",
       role: UserRole.STUDENT,
+      createdByTeacherId: teacher.id,
     },
   });
 
@@ -106,6 +113,7 @@ async function main() {
     (await prisma.charge.create({
       data: {
         userId: student.id,
+        teacherId: teacher.id,
         lessonId: lesson.id,
         type: ChargeType.LESSON,
         title: "Private Bachata Fundamentals",
@@ -130,6 +138,7 @@ async function main() {
     (await prisma.payment.create({
       data: {
         userId: student.id,
+        teacherId: teacher.id,
         amount: "80.00",
         currency: "CHF",
         method: PaymentMethod.TWINT,
@@ -169,6 +178,7 @@ async function main() {
     create: {
       id: "seed-progress-entry-1",
       userId: student.id,
+      teacherId: teacher.id,
       title: "First lesson assessment",
       notes:
         "Good rhythm and motivation. Needs work on frame and weight transfer.",
