@@ -193,6 +193,20 @@ export async function createLesson(
   const parsedPriceAmount = parseOptionalPrice(formData.get("priceAmount"));
   const parsedLocation = parseOptionalString(formData.get("location"));
 
+  const conflict = await prisma.lesson.findFirst({
+    where: { teacherId, scheduledAt: scheduledDate },
+    select: { id: true },
+  });
+
+  if (conflict) {
+    return {
+      ...state,
+      errors: {
+        scheduledAt: "This teacher already has a lesson scheduled at this time.",
+      },
+    };
+  }
+
   await prisma.lesson.create({
     data: {
       title,

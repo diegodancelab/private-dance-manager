@@ -121,7 +121,7 @@ export default function LessonCreateForm({
                 name="durationMin"
                 type="number"
                 min="1"
-                defaultValue={safeState.fields.durationMin}
+                defaultValue={safeState.fields.durationMin || "60"}
               />
               {safeState.errors.durationMin ? (
                 <p className={styles.error}>{safeState.errors.durationMin}</p>
