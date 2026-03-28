@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { requireAuth } from "@/lib/auth/require-auth";
 import StatusBadge from "@/components/ui/StatusBadge";
 import styles from "./PackageDetail.module.css";
 
@@ -26,9 +27,10 @@ function formatDate(date: Date | null): string {
 
 export default async function PackageDetailPage({ params }: Props) {
   const { id } = await params;
+  const { user } = await requireAuth();
 
-  const pkg = await prisma.package.findUnique({
-    where: { id },
+  const pkg = await prisma.package.findFirst({
+    where: { id, teacherId: user.id },
     include: {
       user: true,
       charge: true,

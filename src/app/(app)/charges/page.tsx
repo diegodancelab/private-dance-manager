@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import StatusBadge from "@/components/ui/StatusBadge";
+import { requireAuth } from "@/lib/auth/require-auth";
 import styles from "./ChargesPage.module.css";
 
 function formatAmount(amount: string | number, currency: string) {
@@ -8,7 +9,10 @@ function formatAmount(amount: string | number, currency: string) {
 }
 
 export default async function ChargesPage() {
+  const { user } = await requireAuth();
+
   const charges = await prisma.charge.findMany({
+    where: { teacherId: user.id },
     include: {
       user: true,
       lesson: true,

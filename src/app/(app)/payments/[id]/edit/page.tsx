@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { utcToZurichDatetimeLocal } from "@/lib/dates";
+import { requireAuth } from "@/lib/auth/require-auth";
 import type { PaymentFormState } from "../../form-state";
 import { UserRole } from "@/generated/prisma/client";
 import PaymentEditForm from "./PaymentEditForm";
@@ -14,10 +15,12 @@ type Props = {
 
 export default async function EditPaymentPage({ params }: Props) {
   const { id } = await params;
+  const { user } = await requireAuth();
 
-  const payment = await prisma.payment.findUnique({
+  const payment = await prisma.payment.findFirst({
     where: {
       id,
+      teacherId: user.id,
     },
     select: {
       id: true,
@@ -38,6 +41,7 @@ export default async function EditPaymentPage({ params }: Props) {
   const students = await prisma.user.findMany({
     where: {
       role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
     },
     orderBy: [
       { firstName: "asc" },

@@ -22,7 +22,7 @@ export const createPackage = withFormAction(async function createPackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
   const userId = String(formData.get("userId") || "").trim();
   const name = String(formData.get("name") || "").trim();
   const totalHours = String(formData.get("totalHours") || "").trim();
@@ -68,7 +68,7 @@ export const createPackage = withFormAction(async function createPackage(
   if (Object.keys(state.errors).length > 0) return state;
 
   const student = await prisma.user.findFirst({
-    where: { id: userId, role: UserRole.STUDENT },
+    where: { id: userId, role: UserRole.STUDENT, createdByTeacherId: user.id },
     select: { id: true },
   });
 
@@ -83,6 +83,7 @@ export const createPackage = withFormAction(async function createPackage(
     const pkg = await tx.package.create({
       data: {
         userId,
+        teacherId: user.id,
         name,
         totalMinutes,
         remainingMinutes: totalMinutes,
@@ -94,6 +95,7 @@ export const createPackage = withFormAction(async function createPackage(
     await tx.charge.create({
       data: {
         userId,
+        teacherId: user.id,
         type: ChargeType.PACKAGE,
         title: name,
         amount,
@@ -110,7 +112,7 @@ export const updatePackage = withFormAction(async function updatePackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
   const id = String(formData.get("id") || "").trim();
   const name = String(formData.get("name") || "").trim();
   const totalHours = String(formData.get("totalHours") || "").trim();
@@ -149,8 +151,8 @@ export const updatePackage = withFormAction(async function updatePackage(
 
   if (Object.keys(state.errors).length > 0) return state;
 
-  const existing = await prisma.package.findUnique({
-    where: { id },
+  const existing = await prisma.package.findFirst({
+    where: { id, teacherId: user.id },
     select: { id: true, totalMinutes: true, remainingMinutes: true, status: true },
   });
 

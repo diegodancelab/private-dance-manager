@@ -56,6 +56,7 @@ async function main() {
       firstName: "Test",
       lastName: "Student",
       role: UserRole.STUDENT,
+      createdByTeacherId: teacher.id,
     },
   });
 
@@ -112,6 +113,7 @@ async function main() {
     (await prisma.charge.create({
       data: {
         userId: student.id,
+        teacherId: teacher.id,
         lessonId: lesson.id,
         type: ChargeType.LESSON,
         title: "Private Bachata Fundamentals",
@@ -136,6 +138,7 @@ async function main() {
     (await prisma.payment.create({
       data: {
         userId: student.id,
+        teacherId: teacher.id,
         amount: "80.00",
         currency: "CHF",
         method: PaymentMethod.TWINT,
@@ -175,6 +178,7 @@ async function main() {
     create: {
       id: "seed-progress-entry-1",
       userId: student.id,
+      teacherId: teacher.id,
       title: "First lesson assessment",
       notes:
         "Good rhythm and motivation. Needs work on frame and weight transfer.",

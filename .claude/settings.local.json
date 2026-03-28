@@ -32,7 +32,26 @@
       "Bash(sed -n '286,287p' \"c:/dev/private-dance-manager/src/app/\\(app\\)/lessons/actions.ts\")",
       "Bash(sed -n '415,416p' \"c:/dev/private-dance-manager/src/app/\\(app\\)/lessons/actions.ts\")",
       "Bash(sed -n '445,446p' \"c:/dev/private-dance-manager/src/app/\\(app\\)/lessons/actions.ts\")",
-      "Bash(npx next:*)"
+      "Bash(npx next:*)",
+      "Bash(python -c \"import sys,json; data=json.load\\(sys.stdin\\); print\\(data[0][''''text'''']\\)\")",
+      "Bash(python3 -c \":*)",
+      "Bash(cat src/app/\\\\\\(app\\\\\\)/charges/actions.ts)",
+      "Bash(cat src/app/\\\\\\(app\\\\\\)/payments/actions.ts)",
+      "Bash(cat src/app/\\\\\\(app\\\\\\)/packages/actions.ts)",
+      "Bash(cat src/app/\\\\\\(app\\\\\\)/students/actions.ts)",
+      "Bash(cat \"src/app/\\(app\\)/charges/[id]/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/charges/[id]/edit/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/charges/new/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/payments/[id]/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/payments/[id]/edit/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/payments/new/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/packages/[id]/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/packages/[id]/edit/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/packages/new/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/students/[id]/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/students/[id]/edit/page.tsx\")",
+      "Bash(cat \"src/app/\\(app\\)/students/new/page.tsx\")",
+      "Bash(2)"
     ]
   }
 }

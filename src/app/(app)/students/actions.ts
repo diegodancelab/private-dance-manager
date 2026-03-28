@@ -15,7 +15,7 @@ export const createStudent = withFormAction(async function createStudent(
   _prevState: StudentFormState,
   formData: FormData
 ): Promise<StudentFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
   const firstName = String(formData.get("firstName") || "").trim();
   const lastName = String(formData.get("lastName") || "").trim();
   const email = String(formData.get("email") || "").trim();
@@ -77,6 +77,7 @@ export const createStudent = withFormAction(async function createStudent(
       email: email || null,
       phone: phone || null,
       role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
     },
   });
 
@@ -87,7 +88,7 @@ export const updateStudent = withFormAction(async function updateStudent(
   _prevState: StudentFormState,
   formData: FormData
 ): Promise<StudentFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
   const id = String(formData.get("id") || "").trim();
   const firstName = String(formData.get("firstName") || "").trim();
   const lastName = String(formData.get("lastName") || "").trim();
@@ -136,6 +137,7 @@ export const updateStudent = withFormAction(async function updateStudent(
     where: {
       id,
       role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
     },
     select: { id: true },
   });

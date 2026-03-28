@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import StatusBadge from "@/components/ui/StatusBadge";
+import { requireAuth } from "@/lib/auth/require-auth";
 import styles from "./PackagesPage.module.css";
 
 function formatMinutes(minutes: number): string {
@@ -20,7 +21,10 @@ function formatDate(date: Date | null): string {
 }
 
 export default async function PackagesPage() {
+  const { user } = await requireAuth();
+
   const packages = await prisma.package.findMany({
+    where: { teacherId: user.id },
     orderBy: { createdAt: "desc" },
     include: {
       user: {

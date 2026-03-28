@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import Link from "next/link";
 import { getStudentDetail } from "@/features/students/queries/getStudentDetail";
+import { requireAuth } from "@/lib/auth/require-auth";
 import StudentSummaryCards from "./StudentSummaryCards";
 import StudentInfoCard from "./StudentInfoCard";
 import StudentChargesSection from "./StudentChargesSection";
@@ -15,7 +16,8 @@ type Props = {
 
 export default async function StudentDetailPage({ params }: Props) {
   const { id } = await params;
-  const data = await getStudentDetail(id);
+  const { user } = await requireAuth();
+  const data = await getStudentDetail(id, user.id);
 
   if (!data) notFound();
 

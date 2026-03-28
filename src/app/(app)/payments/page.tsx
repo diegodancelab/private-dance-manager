@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { getLabel } from "@/lib/labels";
+import { requireAuth } from "@/lib/auth/require-auth";
 import styles from "./PaymentsPage.module.css";
 
 function formatAmount(amount: string | number, currency: string) {
@@ -23,7 +24,10 @@ function formatDateTime(date: Date | null) {
 }
 
 export default async function PaymentsPage() {
+  const { user } = await requireAuth();
+
   const payments = await prisma.payment.findMany({
+    where: { teacherId: user.id },
     orderBy: [{ paidAt: "desc" }, { createdAt: "desc" }],
     include: {
       user: {

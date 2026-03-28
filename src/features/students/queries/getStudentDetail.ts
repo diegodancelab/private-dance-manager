@@ -65,10 +65,11 @@ export type StudentDetailViewModel = {
 };
 
 export async function getStudentDetail(
-  id: string
+  id: string,
+  teacherId: string
 ): Promise<StudentDetailViewModel | null> {
   const student = await prisma.user.findFirst({
-    where: { id, role: UserRole.STUDENT },
+    where: { id, role: UserRole.STUDENT, createdByTeacherId: teacherId },
     select: {
       id: true,
       firstName: true,
@@ -88,6 +89,7 @@ export async function getStudentDetail(
       prisma.charge.findMany({
         where: {
           userId: id,
+          teacherId,
           status: { in: [ChargeStatus.PENDING, ChargeStatus.PARTIALLY_PAID] },
         },
         orderBy: { createdAt: "desc" },
@@ -103,7 +105,7 @@ export async function getStudentDetail(
       }),
 
       prisma.package.findMany({
-        where: { userId: id },
+        where: { userId: id, teacherId },
         orderBy: { createdAt: "desc" },
         select: {
           id: true,
@@ -137,7 +139,7 @@ export async function getStudentDetail(
       }),
 
       prisma.payment.findMany({
-        where: { userId: id },
+        where: { userId: id, teacherId },
         orderBy: { paidAt: "desc" },
         take: 5,
         select: {

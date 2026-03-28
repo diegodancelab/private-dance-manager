@@ -46,7 +46,7 @@ export const createCharge = withFormAction(async function createCharge(
   _prevState: ChargeFormState,
   formData: FormData
 ): Promise<ChargeFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
   const userId = parseRequiredString(formData.get("userId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
   const type = parseChargeType(formData.get("type"));
@@ -105,6 +105,7 @@ export const createCharge = withFormAction(async function createCharge(
     where: {
       id: userId,
       role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
     },
     select: {
       id: true,
@@ -121,9 +122,10 @@ export const createCharge = withFormAction(async function createCharge(
   }
 
   if (lessonId) {
-    const lesson = await prisma.lesson.findUnique({
+    const lesson = await prisma.lesson.findFirst({
       where: {
         id: lessonId,
+        teacherId: user.id,
       },
       select: {
         id: true,
@@ -143,6 +145,7 @@ export const createCharge = withFormAction(async function createCharge(
   const charge = await prisma.charge.create({
     data: {
       userId,
+      teacherId: user.id,
       lessonId: lessonId || null,
       type,
       title,
@@ -161,7 +164,7 @@ export const updateCharge = withFormAction(async function updateCharge(
   _prevState: ChargeFormState,
   formData: FormData
 ): Promise<ChargeFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
   const id = parseRequiredString(formData.get("id"));
   const userId = parseRequiredString(formData.get("userId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
@@ -222,9 +225,10 @@ export const updateCharge = withFormAction(async function updateCharge(
     return state;
   }
 
-  const existingCharge = await prisma.charge.findUnique({
+  const existingCharge = await prisma.charge.findFirst({
     where: {
       id,
+      teacherId: user.id,
     },
     select: {
       id: true,
@@ -244,6 +248,7 @@ export const updateCharge = withFormAction(async function updateCharge(
     where: {
       id: userId,
       role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
     },
     select: {
       id: true,
@@ -260,9 +265,10 @@ export const updateCharge = withFormAction(async function updateCharge(
   }
 
   if (lessonId) {
-    const lesson = await prisma.lesson.findUnique({
+    const lesson = await prisma.lesson.findFirst({
       where: {
         id: lessonId,
+        teacherId: user.id,
       },
       select: {
         id: true,

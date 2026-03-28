@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { utcToZurichDate } from "@/lib/dates";
+import { requireAuth } from "@/lib/auth/require-auth";
 import ChargeEditForm from "./ChargeEditForm";
 import type { ChargeFormState } from "../../form-state";
 import { UserRole } from "@/generated/prisma/client";
@@ -15,10 +16,12 @@ type Props = {
 
 export default async function EditChargePage({ params }: Props) {
   const { id } = await params;
+  const { user } = await requireAuth();
 
-  const charge = await prisma.charge.findUnique({
+  const charge = await prisma.charge.findFirst({
     where: {
       id,
+      teacherId: user.id,
     },
     select: {
       id: true,
@@ -41,6 +44,7 @@ export default async function EditChargePage({ params }: Props) {
   const students = await prisma.user.findMany({
     where: {
       role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
     },
     orderBy: [
       { firstName: "asc" },
@@ -56,6 +60,7 @@ export default async function EditChargePage({ params }: Props) {
   });
 
   const lessons = await prisma.lesson.findMany({
+    where: { teacherId: user.id },
     orderBy: {
       scheduledAt: "desc",
     },

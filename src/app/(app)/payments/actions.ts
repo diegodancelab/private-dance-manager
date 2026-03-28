@@ -57,7 +57,7 @@ export const createPayment = withFormAction(async function createPayment(
   _prevState: PaymentFormState,
   formData: FormData
 ): Promise<PaymentFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
   const userId = parseRequiredString(formData.get("userId"));
   const amount = parseRequiredString(formData.get("amount"));
   const currency = parseRequiredString(formData.get("currency")) || "CHF";
@@ -108,6 +108,7 @@ export const createPayment = withFormAction(async function createPayment(
     where: {
       id: userId,
       role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
     },
     select: {
       id: true,
@@ -129,6 +130,7 @@ export const createPayment = withFormAction(async function createPayment(
     const payment = await tx.payment.create({
       data: {
         userId,
+        teacherId: user.id,
         amount,
         currency,
         method,
@@ -139,8 +141,8 @@ export const createPayment = withFormAction(async function createPayment(
     });
 
     if (chargeId) {
-      const charge = await tx.charge.findUnique({
-        where: { id: chargeId },
+      const charge = await tx.charge.findFirst({
+        where: { id: chargeId, teacherId: user.id },
         select: {
           userId: true,
           amount: true,
@@ -183,7 +185,7 @@ export const updatePayment = withFormAction(async function updatePayment(
   _prevState: PaymentFormState,
   formData: FormData
 ): Promise<PaymentFormState> {
-  await requireAuth();
+  const { user } = await requireAuth();
   const id = parseRequiredString(formData.get("id"));
   const userId = parseRequiredString(formData.get("userId"));
   const amount = parseRequiredString(formData.get("amount"));
@@ -236,9 +238,10 @@ export const updatePayment = withFormAction(async function updatePayment(
     return state;
   }
 
-  const existingPayment = await prisma.payment.findUnique({
+  const existingPayment = await prisma.payment.findFirst({
     where: {
       id,
+      teacherId: user.id,
     },
     select: {
       id: true,
@@ -258,6 +261,7 @@ export const updatePayment = withFormAction(async function updatePayment(
     where: {
       id: userId,
       role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
     },
     select: {
       id: true,

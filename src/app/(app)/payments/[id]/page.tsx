@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { requireAuth } from "@/lib/auth/require-auth";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { getLabel } from "@/lib/labels";
 import styles from "./PaymentDetail.module.css";
@@ -13,10 +14,12 @@ type Props = {
 
 export default async function PaymentDetailPage({ params }: Props) {
   const { id } = await params;
+  const { user } = await requireAuth();
 
-  const payment = await prisma.payment.findUnique({
+  const payment = await prisma.payment.findFirst({
     where: {
       id,
+      teacherId: user.id,
     },
     include: {
       user: true,

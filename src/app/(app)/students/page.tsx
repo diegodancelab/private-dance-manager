@@ -1,12 +1,16 @@
 import { UserRole } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
+import { requireAuth } from "@/lib/auth/require-auth";
 import styles from "./StudentsPage.module.css";
 
 export default async function StudentsPage() {
+  const { user } = await requireAuth();
+
   const students = await prisma.user.findMany({
     where: {
       role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
     },
     orderBy: {
       createdAt: "desc",

@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { utcToZurichDate } from "@/lib/dates";
+import { requireAuth } from "@/lib/auth/require-auth";
 import type { PackageFormState } from "../../form-state";
 import PackageEditForm from "./PackageEditForm";
 
@@ -11,9 +12,10 @@ type Props = {
 
 export default async function EditPackagePage({ params }: Props) {
   const { id } = await params;
+  const { user } = await requireAuth();
 
-  const pkg = await prisma.package.findUnique({
-    where: { id },
+  const pkg = await prisma.package.findFirst({
+    where: { id, teacherId: user.id },
     select: {
       id: true,
       name: true,
