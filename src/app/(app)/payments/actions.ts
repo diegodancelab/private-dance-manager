@@ -273,19 +273,54 @@ export const updatePayment = withFormAction(async function updatePayment(
     };
   }
 
-  await prisma.payment.update({
-    where: {
-      id,
-    },
-    data: {
-      userId,
-      amount,
-      currency,
-      method,
-      status,
-      note: parseOptionalString(formData.get("note")),
-      paidAt: paidAt ? new Date(paidAt) : null,
-    },
+  await prisma.$transaction(async (tx) => {
+    await tx.payment.update({
+      where: { id },
+      data: {
+        userId,
+        amount,
+        currency,
+        method,
+        status,
+        note: parseOptionalString(formData.get("note")),
+        paidAt: paidAt ? zurichLocalToUtc(paidAt) : null,
+      },
+    });
+
+    // Recalculate status for every charge linked to this payment.
+    const allocations = await tx.paymentAllocation.findMany({
+      where: { paymentId: id },
+      select: { chargeId: true },
+    });
+
+    for (const { chargeId } of allocations) {
+      const charge = await tx.charge.findUnique({
+        where: { id: chargeId },
+        select: {
+          amount: true,
+          status: true,
+          allocations: { select: { amount: true } },
+        },
+      });
+
+      if (!charge || charge.status === ChargeStatus.CANCELED) continue;
+
+      const totalPaid = charge.allocations.reduce(
+        (sum, a) => sum + Number(a.amount),
+        0
+      );
+      const newChargeStatus =
+        totalPaid >= Number(charge.amount)
+          ? ChargeStatus.PAID
+          : totalPaid > 0
+          ? ChargeStatus.PARTIALLY_PAID
+          : ChargeStatus.PENDING;
+
+      await tx.charge.update({
+        where: { id: chargeId },
+        data: { status: newChargeStatus },
+      });
+    }
   });
 
   redirect(`/payments/${id}`);

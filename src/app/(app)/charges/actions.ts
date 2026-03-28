@@ -279,21 +279,43 @@ export const updateCharge = withFormAction(async function updateCharge(
     }
   }
 
-  await prisma.charge.update({
-    where: {
-      id,
-    },
-    data: {
-      userId,
-      lessonId: lessonId || null,
-      type,
-      title,
-      description: parseOptionalString(formData.get("description")),
-      amount,
-      currency,
-      status,
-      dueAt: dueAt ? zurichDateToUtc(dueAt) : null,
-    },
+  await prisma.$transaction(async (tx) => {
+    // Derive status from actual allocations unless the teacher is canceling.
+    let resolvedStatus = status;
+    if (status !== ChargeStatus.CANCELED) {
+      const existing = await tx.charge.findUnique({
+        where: { id },
+        select: { allocations: { select: { amount: true } } },
+      });
+
+      if (existing) {
+        const totalPaid = existing.allocations.reduce(
+          (sum, a) => sum + Number(a.amount),
+          0
+        );
+        resolvedStatus =
+          totalPaid >= Number(amount)
+            ? ChargeStatus.PAID
+            : totalPaid > 0
+            ? ChargeStatus.PARTIALLY_PAID
+            : ChargeStatus.PENDING;
+      }
+    }
+
+    await tx.charge.update({
+      where: { id },
+      data: {
+        userId,
+        lessonId: lessonId || null,
+        type,
+        title,
+        description: parseOptionalString(formData.get("description")),
+        amount,
+        currency,
+        status: resolvedStatus,
+        dueAt: dueAt ? zurichDateToUtc(dueAt) : null,
+      },
+    });
   });
 
   redirect(`/charges/${id}`);
