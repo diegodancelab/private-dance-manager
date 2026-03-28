@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { utcToZurichDate } from "@/lib/dates";
 import ChargeEditForm from "./ChargeEditForm";
 import type { ChargeFormState } from "../../form-state";
 import { UserRole } from "@/generated/prisma/client";
@@ -11,17 +12,6 @@ type Props = {
   }>;
 };
 
-function toDateInputValue(date: Date | null): string {
-  if (!date) {
-    return "";
-  }
-
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
 
 export default async function EditChargePage({ params }: Props) {
   const { id } = await params;
@@ -89,7 +79,7 @@ export default async function EditChargePage({ params }: Props) {
       amount: String(charge.amount),
       currency: charge.currency,
       status: charge.status,
-      dueAt: toDateInputValue(charge.dueAt),
+      dueAt: charge.dueAt ? utcToZurichDate(charge.dueAt) : "",
     },
     errors: {},
   };

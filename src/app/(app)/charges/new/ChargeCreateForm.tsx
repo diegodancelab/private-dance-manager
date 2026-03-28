@@ -7,6 +7,7 @@ import {
   CHARGE_STATUS_OPTIONS,
   CHARGE_TYPE_OPTIONS,
 } from "@/lib/charge-options";
+import { formatDateTime } from "@/lib/format";
 import styles from "./ChargeCreateForm.module.css";
 
 type StudentOption = {
@@ -28,15 +29,6 @@ type ChargeCreateFormProps = {
   lessons: LessonOption[];
 };
 
-function formatLessonOption(date: Date): string {
-  return new Intl.DateTimeFormat("fr-CH", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date));
-}
 
 export default function ChargeCreateForm({
   students,
@@ -95,7 +87,7 @@ export default function ChargeCreateForm({
                 <option value="">No lesson linked</option>
                 {lessons.map((lesson) => (
                   <option key={lesson.id} value={lesson.id}>
-                    {lesson.title} - {formatLessonOption(lesson.scheduledAt)}
+                    {lesson.title} - {formatDateTime(lesson.scheduledAt)}
                   </option>
                 ))}
               </select>

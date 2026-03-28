@@ -1,6 +1,7 @@
 "use server";
 
 import { requireAuth } from "@/lib/auth/require-auth";
+import { zurichDateToUtc, isValidDate } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { ChargeStatus, ChargeType, UserRole } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
@@ -40,11 +41,6 @@ function isValidDecimal(value: string): boolean {
   return /^\d+(\.\d{1,2})?$/.test(value);
 }
 
-function isValidDate(value: string): boolean {
-  if (!value) return false;
-  const date = new Date(value);
-  return !Number.isNaN(date.getTime());
-}
 
 export const createCharge = withFormAction(async function createCharge(
   _prevState: ChargeFormState,
@@ -154,7 +150,7 @@ export const createCharge = withFormAction(async function createCharge(
       amount,
       currency,
       status,
-      dueAt: dueAt ? new Date(dueAt) : null,
+      dueAt: dueAt ? zurichDateToUtc(dueAt) : null,
     },
   });
 
@@ -296,7 +292,7 @@ export const updateCharge = withFormAction(async function updateCharge(
       amount,
       currency,
       status,
-      dueAt: dueAt ? new Date(dueAt) : null,
+      dueAt: dueAt ? zurichDateToUtc(dueAt) : null,
     },
   });
 

@@ -1,5 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
+import { utcToZurichDatetimeLocal } from "@/lib/dates";
 import type { PaymentFormState } from "../../form-state";
 import { UserRole } from "@/generated/prisma/client";
 import PaymentEditForm from "./PaymentEditForm";
@@ -10,19 +11,6 @@ type Props = {
   }>;
 };
 
-function toDateTimeLocalValue(date: Date | null): string {
-  if (!date) {
-    return "";
-  }
-
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-  const hours = String(date.getHours()).padStart(2, "0");
-  const minutes = String(date.getMinutes()).padStart(2, "0");
-
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
 
 export default async function EditPaymentPage({ params }: Props) {
   const { id } = await params;
@@ -75,7 +63,7 @@ export default async function EditPaymentPage({ params }: Props) {
       method: payment.method ?? "",
       status: payment.status,
       note: payment.note ?? "",
-      paidAt: toDateTimeLocalValue(payment.paidAt),
+      paidAt: payment.paidAt ? utcToZurichDatetimeLocal(payment.paidAt) : "",
     },
     errors: {},
   };

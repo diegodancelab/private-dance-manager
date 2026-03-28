@@ -1,6 +1,11 @@
 "use server";
 
 import { requireAuth } from "@/lib/auth/require-auth";
+import {
+  zurichLocalToUtc,
+  utcToZurichDate,
+  isValidDatetimeLocal,
+} from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import {
   BookingStatus,
@@ -55,33 +60,6 @@ function parseBookingStatus(value: FormDataEntryValue | null): BookingStatus {
   return BookingStatus.CONFIRMED;
 }
 
-function parseScheduledAt(value: FormDataEntryValue | null): Date {
-  const parsed = String(value || "").trim();
-  const date = new Date(parsed);
-
-  if (!parsed || Number.isNaN(date.getTime())) {
-    throw new Error("Scheduled date is invalid.");
-  }
-
-  return date;
-}
-
-function formatDateParam(date: Date): string {
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
-function isValidDateTimeLocal(value: string): boolean {
-  if (!value) {
-    return false;
-  }
-
-  const date = new Date(value);
-  return !Number.isNaN(date.getTime());
-}
 
 function isValidDecimal(value: string): boolean {
   return /^\d+(\.\d{1,2})?$/.test(value);
@@ -128,7 +106,7 @@ export const createLesson = withFormAction(async function createLesson(
 
   if (!scheduledAt) {
     state.errors.scheduledAt = "Scheduled date is required.";
-  } else if (!isValidDateTimeLocal(scheduledAt)) {
+  } else if (!isValidDatetimeLocal(scheduledAt)) {
     state.errors.scheduledAt = "Scheduled date is invalid.";
   }
 
@@ -195,7 +173,7 @@ export const createLesson = withFormAction(async function createLesson(
     }
   }
 
-  const scheduledDate = parseScheduledAt(formData.get("scheduledAt"));
+  const scheduledDate = zurichLocalToUtc(scheduledAt);
   const parsedDescription = parseOptionalString(formData.get("description"));
   const parsedPriceAmount = parseOptionalPrice(formData.get("priceAmount"));
   const parsedLocation = parseOptionalString(formData.get("location"));
@@ -235,7 +213,7 @@ export const createLesson = withFormAction(async function createLesson(
     },
   });
 
-  redirect(`/calendar?date=${formatDateParam(scheduledDate)}`);
+  redirect(`/calendar?date=${utcToZurichDate(scheduledDate)}`);
 });
 
 export async function addLessonParticipant(formData: FormData) {
@@ -327,7 +305,7 @@ export const updateLesson = withFormAction(async function updateLesson(
 
   if (!scheduledAt) {
     state.errors.scheduledAt = "Scheduled date is required.";
-  } else if (!isValidDateTimeLocal(scheduledAt)) {
+  } else if (!isValidDatetimeLocal(scheduledAt)) {
     state.errors.scheduledAt = "Scheduled date is invalid.";
   }
 
@@ -391,7 +369,7 @@ export const updateLesson = withFormAction(async function updateLesson(
     };
   }
 
-  const scheduledDate = parseScheduledAt(formData.get("scheduledAt"));
+  const scheduledDate = zurichLocalToUtc(scheduledAt);
   const parsedDescription = parseOptionalString(formData.get("description"));
   const parsedPriceAmount = parseOptionalPrice(formData.get("priceAmount"));
   const parsedLocation = parseOptionalString(formData.get("location"));
@@ -412,7 +390,7 @@ export const updateLesson = withFormAction(async function updateLesson(
     },
   });
 
-  redirect(`/calendar?date=${formatDateParam(scheduledDate)}`);
+  redirect(`/calendar?date=${utcToZurichDate(scheduledDate)}`);
 });
 
 export async function removeLessonParticipant(formData: FormData) {

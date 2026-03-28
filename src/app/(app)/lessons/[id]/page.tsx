@@ -3,21 +3,13 @@ import { notFound } from "next/navigation";
 import Link from "next/link";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { getLabel } from "@/lib/labels";
+import { formatDateTime } from "@/lib/format";
 import styles from "./LessonDetail.module.css";
 
 type Props = {
   params: Promise<{ id: string }>;
 };
 
-function formatDateTime(date: Date): string {
-  return new Intl.DateTimeFormat("fr-CH", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(date);
-}
 
 export default async function LessonDetailPage({ params }: Props) {
   const { id } = await params;

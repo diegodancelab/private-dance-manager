@@ -1,6 +1,7 @@
 "use server";
 
 import { requireAuth } from "@/lib/auth/require-auth";
+import { zurichLocalToUtc, isValidDatetimeLocal } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import {
   ChargeStatus,
@@ -51,14 +52,6 @@ function isValidDecimal(value: string): boolean {
   return /^\d+(\.\d{1,2})?$/.test(value);
 }
 
-function isValidDateTimeLocal(value: string): boolean {
-  if (!value) {
-    return false;
-  }
-
-  const date = new Date(value);
-  return !Number.isNaN(date.getTime());
-}
 
 export const createPayment = withFormAction(async function createPayment(
   _prevState: PaymentFormState,
@@ -103,7 +96,7 @@ export const createPayment = withFormAction(async function createPayment(
     state.errors.currency = "Currency is required.";
   }
 
-  if (paidAt && !isValidDateTimeLocal(paidAt)) {
+  if (paidAt && !isValidDatetimeLocal(paidAt)) {
     state.errors.paidAt = "Paid date is invalid.";
   }
 
@@ -141,7 +134,7 @@ export const createPayment = withFormAction(async function createPayment(
         method,
         status,
         note: parseOptionalString(formData.get("note")),
-        paidAt: paidAt ? new Date(paidAt) : null,
+        paidAt: paidAt ? zurichLocalToUtc(paidAt) : null,
       },
     });
 
@@ -235,7 +228,7 @@ export const updatePayment = withFormAction(async function updatePayment(
     state.errors.currency = "Currency is required.";
   }
 
-  if (paidAt && !isValidDateTimeLocal(paidAt)) {
+  if (paidAt && !isValidDatetimeLocal(paidAt)) {
     state.errors.paidAt = "Paid date is invalid.";
   }
 

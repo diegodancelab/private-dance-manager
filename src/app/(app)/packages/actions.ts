@@ -1,6 +1,7 @@
 "use server";
 
 import { requireAuth } from "@/lib/auth/require-auth";
+import { zurichDateToUtc } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeType, PackageStatus } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
@@ -54,11 +55,13 @@ export const createPackage = withFormAction(async function createPackage(
   if (!currency) state.errors.currency = "Currency is required.";
 
   if (expiresAt) {
-    const parsed = new Date(expiresAt);
-    if (Number.isNaN(parsed.getTime())) {
+    try {
+      const parsed = zurichDateToUtc(expiresAt);
+      if (parsed <= new Date()) {
+        state.errors.expiresAt = "Expiry date must be in the future.";
+      }
+    } catch {
       state.errors.expiresAt = "Expiry date is invalid.";
-    } else if (parsed <= new Date()) {
-      state.errors.expiresAt = "Expiry date must be in the future.";
     }
   }
 
@@ -74,7 +77,7 @@ export const createPackage = withFormAction(async function createPackage(
   }
 
   const totalMinutes = Number(totalHours) * 60;
-  const parsedExpiresAt = expiresAt ? new Date(expiresAt) : null;
+  const parsedExpiresAt = expiresAt ? zurichDateToUtc(expiresAt) : null;
 
   await prisma.$transaction(async (tx) => {
     const pkg = await tx.package.create({
@@ -134,11 +137,13 @@ export const updatePackage = withFormAction(async function updatePackage(
   }
 
   if (expiresAt) {
-    const parsed = new Date(expiresAt);
-    if (Number.isNaN(parsed.getTime())) {
+    try {
+      const parsed = zurichDateToUtc(expiresAt);
+      if (parsed <= new Date()) {
+        state.errors.expiresAt = "Expiry date must be in the future.";
+      }
+    } catch {
       state.errors.expiresAt = "Expiry date is invalid.";
-    } else if (parsed <= new Date()) {
-      state.errors.expiresAt = "Expiry date must be in the future.";
     }
   }
 
@@ -156,7 +161,7 @@ export const updatePackage = withFormAction(async function updatePackage(
   const newTotalMinutes = Number(totalHours) * 60;
   const diff = newTotalMinutes - existing.totalMinutes;
   const newRemainingMinutes = Math.max(existing.remainingMinutes + diff, 0);
-  const parsedExpiresAt = expiresAt ? new Date(expiresAt) : null;
+  const parsedExpiresAt = expiresAt ? zurichDateToUtc(expiresAt) : null;
 
   let newStatus = existing.status;
   if (newRemainingMinutes === 0) {
