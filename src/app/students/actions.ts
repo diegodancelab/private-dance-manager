@@ -4,12 +4,13 @@ import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { UserRole } from "@/generated/prisma/client";
 import type { StudentFormState } from "./form-state";
+import { withFormAction } from "@/lib/errors";
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
-export async function createStudent(
+export const createStudent = withFormAction(async function createStudent(
   _prevState: StudentFormState,
   formData: FormData
 ): Promise<StudentFormState> {
@@ -78,9 +79,9 @@ export async function createStudent(
   });
 
   redirect("/students");
-}
+});
 
-export async function updateStudent(
+export const updateStudent = withFormAction(async function updateStudent(
   _prevState: StudentFormState,
   formData: FormData
 ): Promise<StudentFormState> {
@@ -176,4 +177,4 @@ export async function updateStudent(
   });
 
   redirect(`/students/${id}`);
-}
+});

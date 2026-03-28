@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeType, PackageStatus } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
 import type { PackageFormState } from "./form-state";
+import { withFormAction } from "@/lib/errors";
 
 function isValidDecimal(value: string): boolean {
   return /^\d+(\.\d{1,2})?$/.test(value);
@@ -15,7 +16,7 @@ function isValidPositiveInt(value: string): boolean {
 }
 
 
-export async function createPackage(
+export const createPackage = withFormAction(async function createPackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
@@ -50,8 +51,13 @@ export async function createPackage(
 
   if (!currency) state.errors.currency = "Currency is required.";
 
-  if (expiresAt && Number.isNaN(new Date(expiresAt).getTime())) {
-    state.errors.expiresAt = "Expiry date is invalid.";
+  if (expiresAt) {
+    const parsed = new Date(expiresAt);
+    if (Number.isNaN(parsed.getTime())) {
+      state.errors.expiresAt = "Expiry date is invalid.";
+    } else if (parsed <= new Date()) {
+      state.errors.expiresAt = "Expiry date must be in the future.";
+    }
   }
 
   if (Object.keys(state.errors).length > 0) return state;
@@ -93,9 +99,9 @@ export async function createPackage(
   });
 
   redirect("/packages");
-}
+});
 
-export async function updatePackage(
+export const updatePackage = withFormAction(async function updatePackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
@@ -124,15 +130,20 @@ export async function updatePackage(
     state.errors.totalHours = "Total hours must be a positive integer.";
   }
 
-  if (expiresAt && Number.isNaN(new Date(expiresAt).getTime())) {
-    state.errors.expiresAt = "Expiry date is invalid.";
+  if (expiresAt) {
+    const parsed = new Date(expiresAt);
+    if (Number.isNaN(parsed.getTime())) {
+      state.errors.expiresAt = "Expiry date is invalid.";
+    } else if (parsed <= new Date()) {
+      state.errors.expiresAt = "Expiry date must be in the future.";
+    }
   }
 
   if (Object.keys(state.errors).length > 0) return state;
 
   const existing = await prisma.package.findUnique({
     where: { id },
-    select: { id: true, totalMinutes: true, remainingMinutes: true },
+    select: { id: true, totalMinutes: true, remainingMinutes: true, status: true },
   });
 
   if (!existing) {
@@ -144,16 +155,23 @@ export async function updatePackage(
   const newRemainingMinutes = Math.max(existing.remainingMinutes + diff, 0);
   const parsedExpiresAt = expiresAt ? new Date(expiresAt) : null;
 
+  let newStatus = existing.status;
+  if (newRemainingMinutes === 0) {
+    newStatus = PackageStatus.EXHAUSTED;
+  } else if (existing.status === PackageStatus.EXHAUSTED) {
+    newStatus = PackageStatus.ACTIVE;
+  }
+
   await prisma.package.update({
     where: { id },
     data: {
       name,
       totalMinutes: newTotalMinutes,
       remainingMinutes: newRemainingMinutes,
-      status: newRemainingMinutes === 0 ? PackageStatus.EXHAUSTED : PackageStatus.ACTIVE,
+      status: newStatus,
       expiresAt: parsedExpiresAt,
     },
   });
 
   redirect(`/packages/${id}`);
-}
+});
