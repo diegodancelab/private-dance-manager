@@ -23,24 +23,22 @@ A fullstack SaaS-style web application built for dance teachers to handle lesson
 
 ## Features
 
-- 📅 **Calendar** — Schedule and visualize upcoming lessons
-- 🎓 **Students** — Manage student profiles and progress
-- 📖 **Lessons** — Create and track private, duo, group, or online lessons
-- 📦 **Packages** — Sell hour bundles to students and track consumption per lesson
-- 💳 **Payments** — Record payments (cash, Twint, bank transfer, card)
-- 🧾 **Charges** — Issue charges and track payment status per student
+- **Calendar** — Schedule and visualize upcoming lessons
+- **Students** — Manage student profiles and progress
+- **Lessons** — Create and track private, duo, group, or online lessons
+- **Packages** — Sell hour bundles to students and track consumption per lesson
+- **Payments** — Record payments (cash, Twint, bank transfer, card)
+- **Charges** — Issue charges and track payment status per student
 
 ---
 
-## Getting Started
+## Local Development
 
 ### Prerequisites
 
 - [Node.js](https://nodejs.org/) >= 18
 - [Docker](https://www.docker.com/) & Docker Compose
 - [npm](https://www.npmjs.com/)
-
----
 
 ### 1. Clone the repository
 
@@ -51,20 +49,18 @@ cd private-dance-manager
 
 ### 2. Configure environment variables
 
-Copy the example env file and fill in your values:
-
 ```bash
 cp .env.example .env
 ```
 
-Required variables:
+Edit `.env` with your local values (the defaults match the Docker Compose config):
 
 ```env
-DATABASE_URL=postgresql://USER:PASSWORD@localhost:PORT/DB_NAME
+DATABASE_URL=postgresql://postgres:password@localhost:5432/private_dance_manager
 
 POSTGRES_DB=private_dance_manager
-POSTGRES_USER=your_user
-POSTGRES_PASSWORD=your_password
+POSTGRES_USER=postgres
+POSTGRES_PASSWORD=password
 POSTGRES_PORT=5432
 ```
 
@@ -80,19 +76,25 @@ docker compose up -d
 npm install
 ```
 
-### 5. Run database migrations
+### 5. Generate Prisma client
+
+```bash
+npx prisma generate
+```
+
+### 6. Run database migrations
 
 ```bash
 npx prisma migrate dev
 ```
 
-### 6. (Optional) Seed the database
+### 7. (Optional) Seed the database
 
 ```bash
 npx prisma db seed
 ```
 
-### 7. Start the development server
+### 8. Start the development server
 
 ```bash
 npm run dev
@@ -104,21 +106,91 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 
 ## Available Scripts
 
-| Command           | Description                          |
-|-------------------|--------------------------------------|
-| `npm run dev`     | Start the development server         |
-| `npm run build`   | Build for production                 |
-| `npm run start`   | Start the production server          |
-| `npm run lint`    | Run ESLint                           |
+| Command           | Description                                       |
+|-------------------|---------------------------------------------------|
+| `npm run dev`     | Start the development server                      |
+| `npm run build`   | Generate Prisma client, then build for production |
+| `npm run start`   | Start the production server                       |
+| `npm run lint`    | Run ESLint                                        |
 
 ### Prisma
 
-| Command                        | Description                          |
-|--------------------------------|--------------------------------------|
-| `npx prisma migrate dev`       | Run migrations in development        |
-| `npx prisma db seed`           | Seed the database                    |
-| `npx prisma studio`            | Open Prisma Studio (visual DB editor)|
-| `npx prisma generate`          | Regenerate Prisma client             |
+| Command                        | Description                           |
+|--------------------------------|---------------------------------------|
+| `npx prisma generate`          | Regenerate Prisma client              |
+| `npx prisma migrate dev`       | Run migrations in development         |
+| `npx prisma migrate deploy`    | Apply pending migrations (production) |
+| `npx prisma db seed`           | Seed the database                     |
+| `npx prisma studio`            | Open Prisma Studio (visual DB editor) |
+
+---
+
+## Deployment Strategy
+
+The project uses a **3-branch workflow** on Vercel:
+
+| Branch    | Vercel Environment | Purpose                          |
+|-----------|--------------------|----------------------------------|
+| `prod`    | Production         | Live production app              |
+| `preprod` | Preview (pinned)   | Staging / final validation       |
+| `dev`     | Preview (pinned)   | Remote integration testing       |
+
+Vercel automatically deploys on push to any of these branches. Each branch connects to its own dedicated PostgreSQL database.
+
+### Environment variables per branch
+
+Only `DATABASE_URL` differs between environments. The Docker Compose variables (`POSTGRES_*`) are for local development only and must **not** be set on Vercel.
+
+| Variable        | `dev`                | `preprod`                | `prod`                |
+|-----------------|----------------------|--------------------------|-----------------------|
+| `DATABASE_URL`  | dev database URL     | preprod database URL     | prod database URL     |
+| `POSTGRES_*`    | local only           | local only               | local only            |
+
+---
+
+## Vercel Setup
+
+> **Assumption:** You have a Vercel account and the project is imported from GitHub.
+
+### 1. Import the project
+
+In the Vercel dashboard, import the repository. Vercel will auto-detect Next.js.
+
+### 2. Set the production branch
+
+In **Project Settings → Git → Production Branch**, set `prod` as the production branch.
+
+### 3. Configure environment variables
+
+In **Project Settings → Environment Variables**, add `DATABASE_URL` with a different value for each environment scope:
+
+- **Production** (branch: `prod`) — your production PostgreSQL URL
+- **Preview** — set a default preview value, then **override per branch**:
+  - Branch `preprod` → preprod database URL
+  - Branch `dev` → dev database URL
+
+Vercel supports branch-specific overrides for preview environment variables. Use this to ensure `dev` and `preprod` never share a database.
+
+### 4. Build command
+
+The build command is already configured in `package.json`:
+
+```
+prisma generate && next build
+```
+
+Vercel uses `npm run build` by default, which runs this command. No additional Vercel configuration is required — `prisma generate` regenerates the Prisma client from the schema at build time (the generated output at `src/generated/prisma/` is gitignored and must be generated fresh on each deploy).
+
+### 5. Run migrations on deploy
+
+Vercel does **not** run migrations automatically. You must apply migrations manually before or after deploying a new schema change:
+
+```bash
+# Point to the target database via DATABASE_URL
+DATABASE_URL=<target-db-url> npx prisma migrate deploy
+```
+
+Or use a Vercel deployment hook / GitHub Actions step to run `prisma migrate deploy` as part of your release process.
 
 ---
 
@@ -138,9 +210,9 @@ src/
  │   ├── tables/         # Reusable table components
  │   └── ui/             # Generic UI components
  ├── lib/
- │   ├── prisma/         # Prisma client
- │   ├── utils/          # Utility functions
- │   └── validations/    # Server-side validation
+ │   ├── auth/           # Session-based authentication
+ │   ├── prisma.ts       # Prisma client (uses PrismaPg driver adapter)
+ │   └── utils/          # Utility functions
  └── styles/             # Global styles & design tokens
 
 prisma/
@@ -166,9 +238,8 @@ docs/
 
 ## Roadmap
 
-- [ ] Authentication system
 - [ ] Multi-teacher support
 - [ ] Subscription billing
 - [ ] REST API endpoints
-- [ ] CI/CD pipeline improvements
+- [ ] CI/CD pipeline (auto-migrate on deploy)
 - [ ] Containerized production deployment
