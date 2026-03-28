@@ -169,3 +169,18 @@ type: short description
 - REST API endpoints
 - Full CI/CD pipeline
 - Containerized production deployment
+
+## Business logic validation
+
+When modifying:
+- packages
+- lessons
+- charges
+- payments
+- student summary
+
+Claude MUST:
+- read docs/business-logic-test-scenarios.md
+- verify invariants
+- detect missing validations
+- flag critical risks before implementation
