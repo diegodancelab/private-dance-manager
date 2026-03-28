@@ -132,7 +132,7 @@ export async function updatePackage(
 
   const existing = await prisma.package.findUnique({
     where: { id },
-    select: { id: true, totalMinutes: true, remainingMinutes: true },
+    select: { id: true, totalMinutes: true, remainingMinutes: true, status: true },
   });
 
   if (!existing) {
@@ -144,13 +144,20 @@ export async function updatePackage(
   const newRemainingMinutes = Math.max(existing.remainingMinutes + diff, 0);
   const parsedExpiresAt = expiresAt ? new Date(expiresAt) : null;
 
+  let newStatus = existing.status;
+  if (newRemainingMinutes === 0) {
+    newStatus = PackageStatus.EXHAUSTED;
+  } else if (existing.status === PackageStatus.EXHAUSTED) {
+    newStatus = PackageStatus.ACTIVE;
+  }
+
   await prisma.package.update({
     where: { id },
     data: {
       name,
       totalMinutes: newTotalMinutes,
       remainingMinutes: newRemainingMinutes,
-      status: newRemainingMinutes === 0 ? PackageStatus.EXHAUSTED : PackageStatus.ACTIVE,
+      status: newStatus,
       expiresAt: parsedExpiresAt,
     },
   });

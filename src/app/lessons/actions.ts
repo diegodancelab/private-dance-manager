@@ -441,13 +441,17 @@ export async function assignPackageToParticipant(formData: FormData) {
 
     const pkg = await tx.package.findUnique({
       where: { id: packageId },
-      select: { remainingMinutes: true, status: true, userId: true },
+      select: { remainingMinutes: true, status: true, userId: true, expiresAt: true },
     });
 
     if (!pkg) throw new Error("Package not found.");
 
     if (pkg.status !== PackageStatus.ACTIVE) {
       throw new Error("Package is not active.");
+    }
+
+    if (pkg.expiresAt !== null && pkg.expiresAt < new Date()) {
+      throw new Error("Package has expired.");
     }
 
     if (pkg.userId !== participant.userId) {
