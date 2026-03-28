@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
 import {
   BookingStatus,
@@ -90,6 +91,7 @@ export const createLesson = withFormAction(async function createLesson(
   _prevState: LessonFormState,
   formData: FormData
 ): Promise<LessonFormState> {
+  await requireAuth();
   const title = parseRequiredString(formData.get("title"));
   const description = String(formData.get("description") || "").trim();
   const lessonType = parseLessonType(formData.get("lessonType"));
@@ -237,6 +239,7 @@ export const createLesson = withFormAction(async function createLesson(
 });
 
 export async function addLessonParticipant(formData: FormData) {
+  await requireAuth();
   const lessonId = parseRequiredString(formData.get("lessonId"));
   const userId = parseRequiredString(formData.get("userId"));
 
@@ -283,6 +286,7 @@ export const updateLesson = withFormAction(async function updateLesson(
   _prevState: LessonFormState,
   formData: FormData
 ): Promise<LessonFormState> {
+  await requireAuth();
   const id = parseRequiredString(formData.get("id"));
   const title = parseRequiredString(formData.get("title"));
   const description = String(formData.get("description") || "").trim();
@@ -412,6 +416,7 @@ export const updateLesson = withFormAction(async function updateLesson(
 });
 
 export async function removeLessonParticipant(formData: FormData) {
+  await requireAuth();
   const participantId = parseRequiredString(formData.get("participantId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
 
@@ -442,6 +447,7 @@ export async function removeLessonParticipant(formData: FormData) {
 }
 
 export async function assignPackageToParticipant(formData: FormData) {
+  await requireAuth();
   const participantId = parseRequiredString(formData.get("participantId"));
   const packageId = parseRequiredString(formData.get("packageId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
@@ -524,6 +530,7 @@ export async function assignPackageToParticipant(formData: FormData) {
 }
 
 export async function removePackageFromParticipant(formData: FormData) {
+  await requireAuth();
   const usageId = parseRequiredString(formData.get("usageId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
 
@@ -574,6 +581,7 @@ export async function removePackageFromParticipant(formData: FormData) {
 }
 
 export async function deleteLesson(formData: FormData) {
+  await requireAuth();
   const lessonId = parseRequiredString(formData.get("lessonId"));
 
   if (!lessonId) {

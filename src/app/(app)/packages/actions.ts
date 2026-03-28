@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeType, PackageStatus } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
@@ -20,6 +21,7 @@ export const createPackage = withFormAction(async function createPackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
+  await requireAuth();
   const userId = String(formData.get("userId") || "").trim();
   const name = String(formData.get("name") || "").trim();
   const totalHours = String(formData.get("totalHours") || "").trim();
@@ -105,6 +107,7 @@ export const updatePackage = withFormAction(async function updatePackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
+  await requireAuth();
   const id = String(formData.get("id") || "").trim();
   const name = String(formData.get("name") || "").trim();
   const totalHours = String(formData.get("totalHours") || "").trim();

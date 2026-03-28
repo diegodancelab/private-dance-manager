@@ -1,10 +1,11 @@
 import "dotenv/config";
 
+import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
-import { 
+import {
   PrismaClient,
-  UserRole, 
-  LessonType, 
+  UserRole,
+  LessonType,
   BookingStatus,
   ChargeType,
   ChargeStatus,
@@ -19,26 +20,31 @@ const adapter = new PrismaPg({
 const prisma = new PrismaClient({ adapter });
 
 async function main() {
+  const adminPasswordHash = await bcrypt.hash("admin123", 12);
+  const teacherPasswordHash = await bcrypt.hash("teacher123", 12);
+
   const admin = await prisma.user.upsert({
     where: { email: "admin@privatedancemanager.com" },
-    update: {},
+    update: { passwordHash: adminPasswordHash },
     create: {
       email: "admin@privatedancemanager.com",
       firstName: "Admin",
       lastName: "User",
       role: UserRole.ADMIN,
+      passwordHash: adminPasswordHash,
     },
   });
 
   const teacher = await prisma.user.upsert({
     where: { email: "teacher@privatedancemanager.com" },
-    update: {},
+    update: { passwordHash: teacherPasswordHash },
     create: {
       email: "teacher@privatedancemanager.com",
       firstName: "Diego",
       lastName: "Poli",
       role: UserRole.TEACHER,
       phone: "+41000000000",
+      passwordHash: teacherPasswordHash,
     },
   });
 

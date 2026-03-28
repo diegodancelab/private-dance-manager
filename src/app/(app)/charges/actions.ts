@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
 import { ChargeStatus, ChargeType, UserRole } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
@@ -49,6 +50,7 @@ export const createCharge = withFormAction(async function createCharge(
   _prevState: ChargeFormState,
   formData: FormData
 ): Promise<ChargeFormState> {
+  await requireAuth();
   const userId = parseRequiredString(formData.get("userId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
   const type = parseChargeType(formData.get("type"));
@@ -163,6 +165,7 @@ export const updateCharge = withFormAction(async function updateCharge(
   _prevState: ChargeFormState,
   formData: FormData
 ): Promise<ChargeFormState> {
+  await requireAuth();
   const id = parseRequiredString(formData.get("id"));
   const userId = parseRequiredString(formData.get("userId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));

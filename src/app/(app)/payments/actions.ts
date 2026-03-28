@@ -1,5 +1,6 @@
 "use server";
 
+import { requireAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
 import {
   ChargeStatus,
@@ -63,6 +64,7 @@ export const createPayment = withFormAction(async function createPayment(
   _prevState: PaymentFormState,
   formData: FormData
 ): Promise<PaymentFormState> {
+  await requireAuth();
   const userId = parseRequiredString(formData.get("userId"));
   const amount = parseRequiredString(formData.get("amount"));
   const currency = parseRequiredString(formData.get("currency")) || "CHF";
@@ -188,6 +190,7 @@ export const updatePayment = withFormAction(async function updatePayment(
   _prevState: PaymentFormState,
   formData: FormData
 ): Promise<PaymentFormState> {
+  await requireAuth();
   const id = parseRequiredString(formData.get("id"));
   const userId = parseRequiredString(formData.get("userId"));
   const amount = parseRequiredString(formData.get("amount"));

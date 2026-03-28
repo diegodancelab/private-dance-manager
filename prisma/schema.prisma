@@ -71,6 +71,7 @@ model User {
   phone           String?
   role            UserRole            @default(STUDENT)
   isActive        Boolean             @default(true)
+  passwordHash    String?
   createdAt       DateTime            @default(now())
   updatedAt       DateTime            @updatedAt
 
@@ -80,6 +81,16 @@ model User {
   payments        Payment[]
   progressEntries ProgressEntry[]
   packages        Package[]
+  sessions        Session[]
+}
+
+model Session {
+  id        String   @id @default(cuid())
+  userId    String
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Lesson {
