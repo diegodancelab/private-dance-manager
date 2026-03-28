@@ -2,7 +2,16 @@ import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeStatus } from "@/generated/prisma/client";
 import PaymentCreateForm from "./PaymentCreateForm";
 
-export default async function NewPaymentPage() {
+type Props = {
+  searchParams: Promise<{
+    chargeId?: string;
+    userId?: string;
+    amount?: string;
+  }>;
+};
+
+export default async function NewPaymentPage({ searchParams }: Props) {
+  const { chargeId, userId, amount } = await searchParams;
   const students = await prisma.user.findMany({
     where: { role: UserRole.STUDENT },
     orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
@@ -39,5 +48,11 @@ export default async function NewPaymentPage() {
     alreadyPaid: c.allocations.reduce((sum, a) => sum + Number(a.amount), 0),
   }));
 
-  return <PaymentCreateForm students={students} charges={chargeOptions} />;
+  return (
+    <PaymentCreateForm
+      students={students}
+      charges={chargeOptions}
+      preselect={{ chargeId, userId, amount }}
+    />
+  );
 }

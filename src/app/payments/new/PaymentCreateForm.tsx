@@ -26,14 +26,22 @@ type ChargeOption = {
   alreadyPaid: number;
 };
 
+type Preselect = {
+  chargeId?: string;
+  userId?: string;
+  amount?: string;
+};
+
 type PaymentCreateFormProps = {
   students: StudentOption[];
   charges: ChargeOption[];
+  preselect?: Preselect;
 };
 
 export default function PaymentCreateForm({
   students,
   charges,
+  preselect,
 }: PaymentCreateFormProps) {
   const [state, formAction, isPending] = useActionState(
     createPayment,
@@ -42,8 +50,12 @@ export default function PaymentCreateForm({
 
   const safeState = state ?? initialPaymentFormState;
 
-  const [selectedUserId, setSelectedUserId] = useState(safeState.fields.userId);
-  const [selectedChargeId, setSelectedChargeId] = useState<string | null>(null);
+  const [selectedUserId, setSelectedUserId] = useState(
+    preselect?.userId ?? safeState.fields.userId
+  );
+  const [selectedChargeId, setSelectedChargeId] = useState<string | null>(
+    preselect?.chargeId ?? null
+  );
   const amountRef = useRef<HTMLInputElement>(null);
 
   const studentCharges = charges.filter((c) => c.userId === selectedUserId);
@@ -78,7 +90,7 @@ export default function PaymentCreateForm({
               <select
                 id="userId"
                 name="userId"
-                defaultValue={safeState.fields.userId}
+                defaultValue={preselect?.userId ?? safeState.fields.userId}
                 onChange={(e) => {
                   setSelectedUserId(e.target.value);
                   setSelectedChargeId(null);
@@ -158,7 +170,7 @@ export default function PaymentCreateForm({
                 type="number"
                 min="0"
                 step="0.01"
-                defaultValue={safeState.fields.amount}
+                defaultValue={preselect?.amount ?? safeState.fields.amount}
               />
               {safeState.errors.amount ? (
                 <p className={styles.error}>{safeState.errors.amount}</p>

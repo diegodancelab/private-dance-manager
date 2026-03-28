@@ -51,7 +51,10 @@ export default async function ChargeDetailPage({ params }: Props) {
           <h1 className={styles.cardTitle}>{charge.title}</h1>
 
           <div className={styles.cardActions}>
-            <Link href="/payments/new" className={styles.primaryLink}>
+            <Link
+              href={`/payments/new?chargeId=${charge.id}&userId=${charge.userId}&amount=${remainingBalance.toFixed(2)}`}
+              className={styles.primaryLink}
+            >
               Create payment
             </Link>
             <Link href={`/charges/${charge.id}/edit`} className={styles.secondaryLink}>
