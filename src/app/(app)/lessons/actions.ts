@@ -489,6 +489,10 @@ export async function assignPackageToParticipant(formData: FormData) {
         throw new DomainError("Package does not belong to this student.");
       }
 
+      if (pkg.remainingMinutes <= 0) {
+        throw new DomainError("Package has no remaining minutes.");
+      }
+
       const minutesConsumed = Math.min(lesson.durationMin, pkg.remainingMinutes);
       const newRemaining = pkg.remainingMinutes - minutesConsumed;
 
@@ -500,14 +504,23 @@ export async function assignPackageToParticipant(formData: FormData) {
         },
       });
 
-      await tx.package.update({
-        where: { id: packageId },
+      // Atomic conditional decrement: the WHERE guard ensures that if a
+      // concurrent transaction already consumed these minutes, this update
+      // matches zero rows and we abort — preventing double-consumption.
+      const updated = await tx.package.updateMany({
+        where: { id: packageId, remainingMinutes: { gte: minutesConsumed } },
         data: {
-          remainingMinutes: newRemaining,
+          remainingMinutes: { decrement: minutesConsumed },
           status:
             newRemaining === 0 ? PackageStatus.EXHAUSTED : PackageStatus.ACTIVE,
         },
       });
+
+      if (updated.count === 0) {
+        throw new DomainError(
+          "Package no longer has sufficient minutes. It may have been modified concurrently."
+        );
+      }
     });
   } catch (err) {
     if (
