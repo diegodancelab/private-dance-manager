@@ -9,6 +9,7 @@ import {
 } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
 import type { PaymentFormState } from "./form-state";
+import { withFormAction } from "@/lib/errors";
 
 function parseRequiredString(value: FormDataEntryValue | null): string {
   return String(value || "").trim();
@@ -58,7 +59,7 @@ function isValidDateTimeLocal(value: string): boolean {
   return !Number.isNaN(date.getTime());
 }
 
-export async function createPayment(
+export const createPayment = withFormAction(async function createPayment(
   _prevState: PaymentFormState,
   formData: FormData
 ): Promise<PaymentFormState> {
@@ -181,9 +182,9 @@ export async function createPayment(
   });
 
   redirect(`/payments/${paymentId}`);
-}
+});
 
-export async function updatePayment(
+export const updatePayment = withFormAction(async function updatePayment(
   _prevState: PaymentFormState,
   formData: FormData
 ): Promise<PaymentFormState> {
@@ -292,4 +293,4 @@ export async function updatePayment(
   });
 
   redirect(`/payments/${id}`);
-}
+});

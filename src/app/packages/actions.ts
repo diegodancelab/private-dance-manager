@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeType, PackageStatus } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
 import type { PackageFormState } from "./form-state";
+import { withFormAction } from "@/lib/errors";
 
 function isValidDecimal(value: string): boolean {
   return /^\d+(\.\d{1,2})?$/.test(value);
@@ -15,7 +16,7 @@ function isValidPositiveInt(value: string): boolean {
 }
 
 
-export async function createPackage(
+export const createPackage = withFormAction(async function createPackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
@@ -98,9 +99,9 @@ export async function createPackage(
   });
 
   redirect("/packages");
-}
+});
 
-export async function updatePackage(
+export const updatePackage = withFormAction(async function updatePackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
@@ -173,4 +174,4 @@ export async function updatePackage(
   });
 
   redirect(`/packages/${id}`);
-}
+});

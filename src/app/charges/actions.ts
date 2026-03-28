@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { ChargeStatus, ChargeType, UserRole } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
 import type { ChargeFormState } from "./form-state";
+import { withFormAction } from "@/lib/errors";
 
 function parseRequiredString(value: FormDataEntryValue | null): string {
   return String(value || "").trim();
@@ -44,7 +45,7 @@ function isValidDate(value: string): boolean {
   return !Number.isNaN(date.getTime());
 }
 
-export async function createCharge(
+export const createCharge = withFormAction(async function createCharge(
   _prevState: ChargeFormState,
   formData: FormData
 ): Promise<ChargeFormState> {
@@ -156,9 +157,9 @@ export async function createCharge(
   });
 
   redirect(`/charges/${charge.id}`);
-}
+});
 
-export async function updateCharge(
+export const updateCharge = withFormAction(async function updateCharge(
   _prevState: ChargeFormState,
   formData: FormData
 ): Promise<ChargeFormState> {
@@ -297,4 +298,4 @@ export async function updateCharge(
   });
 
   redirect(`/charges/${id}`);
-}
+});
