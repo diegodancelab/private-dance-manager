@@ -68,14 +68,39 @@ Checks:
 
 ## CL2 — Create lesson + assign student
 
+Test both variants of the calendar creation flow.
+
+### Scenario A — existing student
+
 * create lesson from calendar
-* assign student during creation
+* assign an existing student during creation
 
 Checks:
 
 * student correctly linked to lesson
 * lesson appears in student detail page
 * no orphan lesson without participant (if not allowed)
+
+### Scenario B — new student created inside the calendar flow
+
+* create lesson from calendar
+* create a new student directly from the same flow
+* assign that newly created student to the lesson
+
+Checks:
+
+* student creation works correctly
+* student is persisted before being linked
+* lesson ↔ student relation is valid and consistent
+* lesson appears correctly in both calendar and student detail page
+* no duplicate student created because of retry or double submit
+* no broken intermediate state
+* no lesson without participant
+* no student created without usable linkage if lesson creation fails
+* operation is atomic or safely rolled back on failure
+* validations are sufficient for both lesson and student data
+* UI stays in sync after success or failure
+
 
 ---
 
