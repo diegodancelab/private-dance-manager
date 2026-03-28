@@ -17,6 +17,159 @@ It is used to:
 
 These rules must never be violated.
 
+# Calendar-driven flows
+
+## CL1 — Create lesson from calendar (basic)
+
+* create lesson by clicking on a time slot in the calendar
+
+Checks:
+
+* correct startAt date and time
+* correct default duration (if any)
+* lesson is created successfully
+* appears immediately in calendar view
+* no duplicate entries
+
+---
+
+## CL2 — Create lesson + assign student
+
+* create lesson from calendar
+* assign student during creation
+
+Checks:
+
+* student correctly linked to lesson
+* lesson appears in student detail page
+* no orphan lesson without participant (if not allowed)
+
+---
+
+## CL3 — Create lesson + assign package
+
+* create lesson from calendar
+* assign student
+* assign package
+
+Checks:
+
+* correct decrement of package minutes
+* stored consumed minutes = actual deduction
+* remainingMinutes updated correctly
+* student balance not impacted incorrectly
+
+---
+
+## CL4 — Create lesson with insufficient package minutes
+
+* package has less minutes than lesson duration
+* create lesson from calendar with package assigned
+
+Expected:
+
+* reject OR partial consumption logic (if supported)
+* never allow negative remainingMinutes
+
+---
+
+## CL5 — Create lesson with expired package
+
+* assign expired package during calendar creation
+
+Expected:
+
+* rejected OR explicit warning
+* must not silently consume expired package
+
+---
+
+## CL6 — Modify lesson created from calendar
+
+* create lesson from calendar
+* edit duration or time
+
+Checks:
+
+* package consumption updated OR prevented
+* no inconsistency in remainingMinutes
+
+---
+
+## CL7 — Delete lesson created from calendar
+
+* create lesson with package assigned
+* delete lesson
+
+Checks:
+
+* restore consumed minutes exactly
+* no data inconsistency
+
+---
+
+## CL8 — Drag & drop lesson (calendar interaction)
+
+* move lesson to another time slot
+
+Checks:
+
+* startAt updated correctly
+* no duplicate lesson created
+* related data remains consistent
+
+---
+
+## CL9 — Rapid multiple creations
+
+* create multiple lessons quickly from calendar
+
+Checks:
+
+* no duplicate or ghost lessons
+* no race condition
+* UI stays in sync with backend
+
+---
+
+## CL10 — Cancel lesson from calendar
+
+* cancel lesson directly from calendar UI
+
+Checks:
+
+* status updated correctly
+* package minutes restored if applicable
+* lesson no longer treated as active
+
+---
+
+## CL11 — Concurrent edits from calendar
+
+* user A edits lesson
+* user B edits same lesson
+
+Checks:
+
+* no silent overwrite
+* final state consistent
+* potential conflict handling
+
+---
+
+## CL12 — Network interruption during creation
+
+* create lesson from calendar
+* simulate network failure during request
+
+Checks:
+
+* no partial lesson creation
+* no double creation on retry
+* state consistent after reload
+
+---
+
 ## Packages
 
 * remainingMinutes must never be negative
