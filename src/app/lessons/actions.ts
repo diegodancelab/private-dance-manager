@@ -423,6 +423,7 @@ export async function assignPackageToParticipant(formData: FormData) {
     throw new Error("Missing required fields.");
   }
 
+  try {
   await prisma.$transaction(async (tx) => {
     const lesson = await tx.lesson.findUnique({
       where: { id: lessonId },
@@ -453,8 +454,8 @@ export async function assignPackageToParticipant(formData: FormData) {
       throw new Error("Package does not belong to this student.");
     }
 
-    const minutesConsumed = lesson.durationMin;
-    const newRemaining = Math.max(pkg.remainingMinutes - minutesConsumed, 0);
+    const minutesConsumed = Math.min(lesson.durationMin, pkg.remainingMinutes);
+    const newRemaining = pkg.remainingMinutes - minutesConsumed;
 
     await tx.packageUsage.create({
       data: {
@@ -472,6 +473,15 @@ export async function assignPackageToParticipant(formData: FormData) {
       },
     });
   });
+  } catch (err) {
+    if (
+      err instanceof Prisma.PrismaClientKnownRequestError &&
+      err.code === "P2002"
+    ) {
+      throw new Error("A package is already assigned to this participant.");
+    }
+    throw err;
+  }
 
   redirect(`/lessons/${lessonId}`);
 }
