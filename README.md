@@ -1,4 +1,4 @@
-# 🩰 Private Dance Manager
+#  Private Dance Manager
 
 > Platform for managing private dance lessons, student progress, and learning resources.
 
