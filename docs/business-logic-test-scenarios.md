@@ -17,6 +17,39 @@ It is used to:
 
 These rules must never be violated.
 
+---
+
+## Packages
+
+* remainingMinutes must never be negative
+* remainingMinutes must never exceed totalMinutes unless explicitly allowed
+* expired packages must not be consumable
+* canceled packages must not be usable or reactivated unintentionally
+
+## Charges
+
+* paidAmount must never exceed totalAmount (unless credit logic is explicitly implemented)
+* remainingAmount must always equal totalAmount - paidAmount
+* a fully paid charge must have status = PAID
+
+## Payments
+
+* payment must always be linked to a valid charge
+* deleting a payment must correctly restore charge balance
+
+## Lessons & Package Consumption
+
+* removing a package assignment must restore exactly the consumed minutes
+* consumed minutes must reflect actual deduction, not theoretical values
+* no operation should create or destroy minutes artificially
+
+## Transactions
+
+* multi-step operations must be atomic (all succeed or all fail)
+* no partial writes should leave inconsistent data
+
+---
+
 # Calendar-driven flows
 
 ## CL1 — Create lesson from calendar (basic)
@@ -167,37 +200,6 @@ Checks:
 * no partial lesson creation
 * no double creation on retry
 * state consistent after reload
-
----
-
-## Packages
-
-* remainingMinutes must never be negative
-* remainingMinutes must never exceed totalMinutes unless explicitly allowed
-* expired packages must not be consumable
-* canceled packages must not be usable or reactivated unintentionally
-
-## Charges
-
-* paidAmount must never exceed totalAmount (unless credit logic is explicitly implemented)
-* remainingAmount must always equal totalAmount - paidAmount
-* a fully paid charge must have status = PAID
-
-## Payments
-
-* payment must always be linked to a valid charge
-* deleting a payment must correctly restore charge balance
-
-## Lessons & Package Consumption
-
-* removing a package assignment must restore exactly the consumed minutes
-* consumed minutes must reflect actual deduction, not theoretical values
-* no operation should create or destroy minutes artificially
-
-## Transactions
-
-* multi-step operations must be atomic (all succeed or all fail)
-* no partial writes should leave inconsistent data
 
 ---
 
