@@ -50,8 +50,13 @@ export async function createPackage(
 
   if (!currency) state.errors.currency = "Currency is required.";
 
-  if (expiresAt && Number.isNaN(new Date(expiresAt).getTime())) {
-    state.errors.expiresAt = "Expiry date is invalid.";
+  if (expiresAt) {
+    const parsed = new Date(expiresAt);
+    if (Number.isNaN(parsed.getTime())) {
+      state.errors.expiresAt = "Expiry date is invalid.";
+    } else if (parsed <= new Date()) {
+      state.errors.expiresAt = "Expiry date must be in the future.";
+    }
   }
 
   if (Object.keys(state.errors).length > 0) return state;
@@ -124,8 +129,13 @@ export async function updatePackage(
     state.errors.totalHours = "Total hours must be a positive integer.";
   }
 
-  if (expiresAt && Number.isNaN(new Date(expiresAt).getTime())) {
-    state.errors.expiresAt = "Expiry date is invalid.";
+  if (expiresAt) {
+    const parsed = new Date(expiresAt);
+    if (Number.isNaN(parsed.getTime())) {
+      state.errors.expiresAt = "Expiry date is invalid.";
+    } else if (parsed <= new Date()) {
+      state.errors.expiresAt = "Expiry date must be in the future.";
+    }
   }
 
   if (Object.keys(state.errors).length > 0) return state;

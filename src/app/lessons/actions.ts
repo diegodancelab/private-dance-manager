@@ -126,8 +126,13 @@ export async function createLesson(
   }
 
   const durationMinNumber = parseRequiredNumber(formData.get("durationMin"));
-  if (!durationMin || Number.isNaN(durationMinNumber) || durationMinNumber <= 0) {
-    state.errors.durationMin = "Duration must be greater than 0.";
+  if (
+    !durationMin ||
+    Number.isNaN(durationMinNumber) ||
+    durationMinNumber <= 0 ||
+    !Number.isInteger(durationMinNumber)
+  ) {
+    state.errors.durationMin = "Duration must be a positive integer (minutes).";
   }
 
   if (priceAmount && !isValidDecimal(priceAmount)) {
@@ -308,8 +313,13 @@ export async function updateLesson(
   }
 
   const durationMinNumber = parseRequiredNumber(formData.get("durationMin"));
-  if (!durationMin || Number.isNaN(durationMinNumber) || durationMinNumber <= 0) {
-    state.errors.durationMin = "Duration must be greater than 0.";
+  if (
+    !durationMin ||
+    Number.isNaN(durationMinNumber) ||
+    durationMinNumber <= 0 ||
+    !Number.isInteger(durationMinNumber)
+  ) {
+    state.errors.durationMin = "Duration must be a positive integer (minutes).";
   }
 
   if (priceAmount && !isValidDecimal(priceAmount)) {
