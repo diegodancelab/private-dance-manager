@@ -13,35 +13,70 @@
   color: #111827;
 }
 
+/* Page header: name + quick actions */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.pageTitle {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #111827;
+}
+
+.quickActions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  align-items: center;
+}
+
+.actionBtn {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.6rem;
+  text-decoration: none;
+  background: #111827;
+  color: #ffffff;
+  font-weight: 600;
+  font-size: 0.85rem;
+  white-space: nowrap;
+}
+
+.actionBtn:hover {
+  background: #1f2937;
+}
+
+.actionBtnSecondary {
+  display: inline-flex;
+  align-items: center;
+  padding: 0.5rem 0.85rem;
+  border-radius: 0.6rem;
+  text-decoration: none;
+  background: #ffffff;
+  color: #111827;
+  font-weight: 600;
+  font-size: 0.85rem;
+  border: 1px solid #e5e7eb;
+  white-space: nowrap;
+}
+
+.actionBtnSecondary:hover {
+  background: #f9fafb;
+}
+
+/* Main card */
 .card {
   background: #ffffff;
   border: 1px solid #e5e7eb;
   border-radius: 1rem;
   overflow: hidden;
-}
-
-.cardHeader {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  padding: 1.5rem;
-  border-bottom: 1px solid #e5e7eb;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.cardTitle {
-  margin: 0;
-  font-size: 1.25rem;
-  font-weight: 700;
-  color: #111827;
-}
-
-.cardActions {
-  display: flex;
-  gap: 0.75rem;
-  flex-wrap: wrap;
-  align-items: center;
 }
 
 .cardBody {
@@ -74,39 +109,7 @@
   line-height: 1.4;
 }
 
-.primaryLink {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.55rem 0.9rem;
-  border-radius: 0.6rem;
-  text-decoration: none;
-  background: #111827;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-.primaryLink:hover {
-  background: #1f2937;
-}
-
-.secondaryLink {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.55rem 0.9rem;
-  border-radius: 0.6rem;
-  text-decoration: none;
-  background: #ffffff;
-  color: #111827;
-  font-weight: 600;
-  font-size: 0.9rem;
-  border: 1px solid #e5e7eb;
-}
-
-.secondaryLink:hover {
-  background: #f9fafb;
-}
-
+/* Sections */
 .section {
   border-top: 1px solid #e5e7eb;
   padding: 1.5rem;
@@ -137,6 +140,7 @@
   color: #111827;
 }
 
+/* Tables */
 .tableWrapper {
   overflow-x: auto;
 }
@@ -166,6 +170,7 @@
   vertical-align: top;
 }
 
+/* Progress bars */
 .progressBar {
   height: 6px;
   background: #e5e7eb;
@@ -185,14 +190,22 @@
   font-size: 0.82rem;
   color: #6b7280;
   margin-top: 0.3rem;
+  margin-bottom: 0;
 }
 
-.progressRemaining {
-  font-size: 0.78rem;
-  color: #9ca3af;
-  margin-top: 0.1rem;
+/* Charge-specific */
+.amountDue {
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.9rem;
 }
 
+.overdueDate {
+  color: #dc2626;
+  font-weight: 600;
+}
+
+/* Misc */
 .emptyText {
   margin: 0;
   color: #6b7280;
@@ -200,22 +213,24 @@
 }
 
 .actionLink {
-  color: #111827;
+  color: #4f46e5;
   text-decoration: none;
   font-weight: 500;
+  font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .actionLink:hover {
   text-decoration: underline;
 }
 
-
 @media (max-width: 640px) {
   .infoGrid {
     grid-template-columns: 1fr;
   }
 
-  .cardHeader {
+  .pageHeader {
     flex-direction: column;
+    align-items: flex-start;
   }
 }
