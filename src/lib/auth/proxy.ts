@@ -6,4 +6,4 @@
  * This replaces middleware.ts — protection is applied explicitly
  * in the (app) route group layout, without the Edge runtime.
  */
-export { requireAuth as proxyAuth } from "./require-auth";
+export { requireTeacherAuth as proxyAuth } from "./require-auth";

@@ -1,6 +1,6 @@
 "use server";
 
-import { requireAuth } from "@/lib/auth/require-auth";
+import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { zurichDateToUtc } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeType, PackageStatus } from "@/generated/prisma/client";
@@ -22,7 +22,7 @@ export const createPackage = withFormAction(async function createPackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const userId = String(formData.get("userId") || "").trim();
   const name = String(formData.get("name") || "").trim();
   const totalHours = String(formData.get("totalHours") || "").trim();
@@ -112,7 +112,7 @@ export const updatePackage = withFormAction(async function updatePackage(
   _prevState: PackageFormState,
   formData: FormData
 ): Promise<PackageFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const id = String(formData.get("id") || "").trim();
   const name = String(formData.get("name") || "").trim();
   const totalHours = String(formData.get("totalHours") || "").trim();
@@ -161,6 +161,18 @@ export const updatePackage = withFormAction(async function updatePackage(
   }
 
   const newTotalMinutes = Number(totalHours) * 60;
+  const consumedMinutes = existing.totalMinutes - existing.remainingMinutes;
+
+  if (newTotalMinutes < consumedMinutes) {
+    const minHours = Math.ceil(consumedMinutes / 60);
+    return {
+      ...state,
+      errors: {
+        totalHours: `Cannot reduce below already consumed hours (minimum: ${minHours}h).`,
+      },
+    };
+  }
+
   const diff = newTotalMinutes - existing.totalMinutes;
   const newRemainingMinutes = Math.max(existing.remainingMinutes + diff, 0);
   const parsedExpiresAt = expiresAt ? zurichDateToUtc(expiresAt) : null;

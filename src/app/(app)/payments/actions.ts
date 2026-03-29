@@ -1,6 +1,6 @@
 "use server";
 
-import { requireAuth } from "@/lib/auth/require-auth";
+import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { zurichLocalToUtc, isValidDatetimeLocal } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import {
@@ -57,7 +57,7 @@ export const createPayment = withFormAction(async function createPayment(
   _prevState: PaymentFormState,
   formData: FormData
 ): Promise<PaymentFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const userId = parseRequiredString(formData.get("userId"));
   const amount = parseRequiredString(formData.get("amount"));
   const currency = parseRequiredString(formData.get("currency")) || "CHF";
@@ -90,6 +90,8 @@ export const createPayment = withFormAction(async function createPayment(
     state.errors.amount = "Amount is required.";
   } else if (!isValidDecimal(amount)) {
     state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+  } else if (Number(amount) <= 0) {
+    state.errors.amount = "Amount must be greater than 0.";
   }
 
   if (!currency) {
@@ -126,6 +128,28 @@ export const createPayment = withFormAction(async function createPayment(
 
   const chargeId = parseOptionalString(formData.get("chargeId"));
 
+  // Validate charge ownership and student match before entering the transaction (F-07).
+  if (chargeId) {
+    const charge = await prisma.charge.findFirst({
+      where: { id: chargeId, teacherId: user.id },
+      select: { userId: true },
+    });
+
+    if (!charge) {
+      return {
+        ...state,
+        errors: { form: "Selected charge was not found." },
+      };
+    }
+
+    if (charge.userId !== userId) {
+      return {
+        ...state,
+        errors: { form: "This charge does not belong to the selected student." },
+      };
+    }
+  }
+
   const paymentId = await prisma.$transaction(async (tx) => {
     const payment = await tx.payment.create({
       data: {
@@ -144,13 +168,12 @@ export const createPayment = withFormAction(async function createPayment(
       const charge = await tx.charge.findFirst({
         where: { id: chargeId, teacherId: user.id },
         select: {
-          userId: true,
           amount: true,
           allocations: { select: { amount: true } },
         },
       });
 
-      if (charge && charge.userId === userId) {
+      if (charge) {
         await tx.paymentAllocation.create({
           data: {
             chargeId,
@@ -185,7 +208,7 @@ export const updatePayment = withFormAction(async function updatePayment(
   _prevState: PaymentFormState,
   formData: FormData
 ): Promise<PaymentFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const id = parseRequiredString(formData.get("id"));
   const userId = parseRequiredString(formData.get("userId"));
   const amount = parseRequiredString(formData.get("amount"));
@@ -291,15 +314,21 @@ export const updatePayment = withFormAction(async function updatePayment(
       },
     });
 
-    // Recalculate status for every charge linked to this payment.
+    // Update allocation amounts to match the new payment amount (F-03),
+    // then recalculate status for every linked charge.
     const allocations = await tx.paymentAllocation.findMany({
       where: { paymentId: id },
-      select: { chargeId: true },
+      select: { id: true, chargeId: true },
     });
 
-    for (const { chargeId } of allocations) {
+    for (const allocation of allocations) {
+      await tx.paymentAllocation.update({
+        where: { id: allocation.id },
+        data: { amount },
+      });
+
       const charge = await tx.charge.findUnique({
-        where: { id: chargeId },
+        where: { id: allocation.chargeId },
         select: {
           amount: true,
           status: true,
@@ -321,7 +350,7 @@ export const updatePayment = withFormAction(async function updatePayment(
           : ChargeStatus.PENDING;
 
       await tx.charge.update({
-        where: { id: chargeId },
+        where: { id: allocation.chargeId },
         data: { status: newChargeStatus },
       });
     }

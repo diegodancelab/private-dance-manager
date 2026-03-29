@@ -1,6 +1,6 @@
 "use server";
 
-import { requireAuth } from "@/lib/auth/require-auth";
+import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import {
   zurichLocalToUtc,
   utcToZurichDate,
@@ -69,7 +69,7 @@ export const createLesson = withFormAction(async function createLesson(
   _prevState: LessonFormState,
   formData: FormData
 ): Promise<LessonFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const teacherId = user.id;
 
   const title = parseRequiredString(formData.get("title"));
@@ -155,9 +155,14 @@ export const createLesson = withFormAction(async function createLesson(
   const parsedPriceAmount = parseOptionalPrice(formData.get("priceAmount"));
   const parsedLocation = parseOptionalString(formData.get("location"));
 
-  const conflict = await prisma.lesson.findFirst({
-    where: { teacherId, scheduledAt: scheduledDate },
-    select: { id: true },
+  const newEndTime = new Date(scheduledDate.getTime() + durationMinNumber * 60 * 1000);
+  const nearbyLessons = await prisma.lesson.findMany({
+    where: { teacherId, scheduledAt: { lt: newEndTime } },
+    select: { id: true, scheduledAt: true, durationMin: true },
+  });
+  const conflict = nearbyLessons.find((l) => {
+    const lessonEnd = new Date(l.scheduledAt.getTime() + l.durationMin * 60 * 1000);
+    return lessonEnd > scheduledDate;
   });
 
   if (conflict) {
@@ -194,7 +199,7 @@ export const createLesson = withFormAction(async function createLesson(
 });
 
 export async function addLessonParticipant(formData: FormData) {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const lessonId = parseRequiredString(formData.get("lessonId"));
   const userId = parseRequiredString(formData.get("userId"));
 
@@ -211,7 +216,7 @@ export async function addLessonParticipant(formData: FormData) {
     if (!lesson) throw new DomainError("Lesson not found.");
 
     const student = await prisma.user.findFirst({
-      where: { id: userId, role: UserRole.STUDENT },
+      where: { id: userId, role: UserRole.STUDENT, createdByTeacherId: user.id },
       select: { id: true },
     });
 
@@ -241,7 +246,7 @@ export const updateLesson = withFormAction(async function updateLesson(
   _prevState: LessonFormState,
   formData: FormData
 ): Promise<LessonFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const teacherId = user.id;
 
   const id = parseRequiredString(formData.get("id"));
@@ -323,9 +328,14 @@ export const updateLesson = withFormAction(async function updateLesson(
   const parsedPriceAmount = parseOptionalPrice(formData.get("priceAmount"));
   const parsedLocation = parseOptionalString(formData.get("location"));
 
-  const conflict = await prisma.lesson.findFirst({
-    where: { teacherId, scheduledAt: scheduledDate, id: { not: id } },
-    select: { id: true },
+  const newEndTime = new Date(scheduledDate.getTime() + durationMinNumber * 60 * 1000);
+  const nearbyLessons = await prisma.lesson.findMany({
+    where: { teacherId, scheduledAt: { lt: newEndTime }, id: { not: id } },
+    select: { id: true, scheduledAt: true, durationMin: true },
+  });
+  const conflict = nearbyLessons.find((l) => {
+    const lessonEnd = new Date(l.scheduledAt.getTime() + l.durationMin * 60 * 1000);
+    return lessonEnd > scheduledDate;
   });
 
   if (conflict) {
@@ -358,7 +368,7 @@ export const updateLesson = withFormAction(async function updateLesson(
 });
 
 export async function removeLessonParticipant(formData: FormData) {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const participantId = parseRequiredString(formData.get("participantId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
 
@@ -385,8 +395,37 @@ export async function removeLessonParticipant(formData: FormData) {
       throw new DomainError("Participant does not belong to this lesson.");
     }
 
-    await prisma.lessonParticipant.delete({
-      where: { id: participantId },
+    await prisma.$transaction(async (tx) => {
+      // Restore package minutes if this participant had a package assigned (F-02).
+      const usage = await tx.packageUsage.findUnique({
+        where: { lessonParticipantId: participantId },
+        select: { packageId: true, minutesConsumed: true },
+      });
+
+      if (usage) {
+        const pkg = await tx.package.findUnique({
+          where: { id: usage.packageId },
+          select: { remainingMinutes: true, totalMinutes: true, status: true },
+        });
+
+        if (pkg) {
+          const newRemaining = Math.min(
+            pkg.remainingMinutes + usage.minutesConsumed,
+            pkg.totalMinutes
+          );
+          const newStatus =
+            pkg.status === PackageStatus.EXHAUSTED
+              ? PackageStatus.ACTIVE
+              : pkg.status;
+
+          await tx.package.update({
+            where: { id: usage.packageId },
+            data: { remainingMinutes: newRemaining, status: newStatus },
+          });
+        }
+      }
+
+      await tx.lessonParticipant.delete({ where: { id: participantId } });
     });
   } catch (err) {
     handleNonFormActionError("removeLessonParticipant", err);
@@ -396,7 +435,7 @@ export async function removeLessonParticipant(formData: FormData) {
 }
 
 export async function assignPackageToParticipant(formData: FormData) {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const participantId = parseRequiredString(formData.get("participantId"));
   const packageId = parseRequiredString(formData.get("packageId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
@@ -492,7 +531,7 @@ export async function assignPackageToParticipant(formData: FormData) {
 }
 
 export async function removePackageFromParticipant(formData: FormData) {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const usageId = parseRequiredString(formData.get("usageId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
 
@@ -550,7 +589,7 @@ export async function removePackageFromParticipant(formData: FormData) {
 }
 
 export async function deleteLesson(formData: FormData) {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const lessonId = parseRequiredString(formData.get("lessonId"));
 
   if (!lessonId) {
@@ -565,8 +604,37 @@ export async function deleteLesson(formData: FormData) {
 
     if (!lesson) throw new DomainError("Lesson not found.");
 
-    await prisma.lesson.delete({
-      where: { id: lessonId },
+    await prisma.$transaction(async (tx) => {
+      // Restore package minutes for all participants before cascade deletion (F-01).
+      const usages = await tx.packageUsage.findMany({
+        where: { lessonParticipant: { lessonId } },
+        select: { packageId: true, minutesConsumed: true },
+      });
+
+      for (const usage of usages) {
+        const pkg = await tx.package.findUnique({
+          where: { id: usage.packageId },
+          select: { remainingMinutes: true, totalMinutes: true, status: true },
+        });
+
+        if (!pkg) continue;
+
+        const newRemaining = Math.min(
+          pkg.remainingMinutes + usage.minutesConsumed,
+          pkg.totalMinutes
+        );
+        const newStatus =
+          pkg.status === PackageStatus.EXHAUSTED
+            ? PackageStatus.ACTIVE
+            : pkg.status;
+
+        await tx.package.update({
+          where: { id: usage.packageId },
+          data: { remainingMinutes: newRemaining, status: newStatus },
+        });
+      }
+
+      await tx.lesson.delete({ where: { id: lessonId } });
     });
   } catch (err) {
     handleNonFormActionError("deleteLesson", err);

@@ -57,19 +57,28 @@ export function utcToZurichDate(date: Date): string {
 }
 
 /**
- * Returns true if value matches YYYY-MM-DDTHH:mm and is a valid date/time.
+ * Returns true if value matches YYYY-MM-DDTHH:mm and is a calendrically valid date/time.
  */
 export function isValidDatetimeLocal(value: string): boolean {
-  return /^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}$/.test(value.trim());
+  const match = /^(\d{4})-(\d{2})-(\d{2})T(\d{2}):(\d{2})$/.exec(value.trim());
+  if (!match) return false;
+  const [, yr, mo, dy, hr, mn] = match.map(Number);
+  if (mo < 1 || mo > 12) return false;
+  if (hr > 23 || mn > 59) return false;
+  const d = new Date(Date.UTC(yr, mo - 1, dy));
+  return d.getUTCFullYear() === yr && d.getUTCMonth() + 1 === mo && d.getUTCDate() === dy;
 }
 
 /**
- * Returns true if value matches YYYY-MM-DD and is a valid date.
+ * Returns true if value matches YYYY-MM-DD and is a calendrically valid date.
  */
 export function isValidDate(value: string): boolean {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value.trim())) return false;
-  const d = new Date(value.trim() + "T00:00:00.000Z");
-  return !Number.isNaN(d.getTime());
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value.trim());
+  if (!match) return false;
+  const [, yr, mo, dy] = match.map(Number);
+  if (mo < 1 || mo > 12) return false;
+  const d = new Date(Date.UTC(yr, mo - 1, dy));
+  return d.getUTCFullYear() === yr && d.getUTCMonth() + 1 === mo && d.getUTCDate() === dy;
 }
 
 // --- Internal helpers ---

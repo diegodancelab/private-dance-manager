@@ -1,6 +1,6 @@
 "use server";
 
-import { requireAuth } from "@/lib/auth/require-auth";
+import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "next/navigation";
 import { UserRole } from "@/generated/prisma/client";
@@ -15,7 +15,7 @@ export const createStudent = withFormAction(async function createStudent(
   _prevState: StudentFormState,
   formData: FormData
 ): Promise<StudentFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const firstName = String(formData.get("firstName") || "").trim();
   const lastName = String(formData.get("lastName") || "").trim();
   const email = String(formData.get("email") || "").trim();
@@ -88,7 +88,7 @@ export const updateStudent = withFormAction(async function updateStudent(
   _prevState: StudentFormState,
   formData: FormData
 ): Promise<StudentFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const id = String(formData.get("id") || "").trim();
   const firstName = String(formData.get("firstName") || "").trim();
   const lastName = String(formData.get("lastName") || "").trim();

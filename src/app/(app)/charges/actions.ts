@@ -1,6 +1,6 @@
 "use server";
 
-import { requireAuth } from "@/lib/auth/require-auth";
+import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { zurichDateToUtc, isValidDate } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { ChargeStatus, ChargeType, UserRole } from "@/generated/prisma/client";
@@ -46,7 +46,7 @@ export const createCharge = withFormAction(async function createCharge(
   _prevState: ChargeFormState,
   formData: FormData
 ): Promise<ChargeFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const userId = parseRequiredString(formData.get("userId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
   const type = parseChargeType(formData.get("type"));
@@ -87,6 +87,8 @@ export const createCharge = withFormAction(async function createCharge(
     state.errors.amount = "Amount is required.";
   } else if (!isValidDecimal(amount)) {
     state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+  } else if (Number(amount) <= 0) {
+    state.errors.amount = "Amount must be greater than 0.";
   }
 
   if (!currency) {
@@ -164,7 +166,7 @@ export const updateCharge = withFormAction(async function updateCharge(
   _prevState: ChargeFormState,
   formData: FormData
 ): Promise<ChargeFormState> {
-  const { user } = await requireAuth();
+  const { user } = await requireTeacherAuth();
   const id = parseRequiredString(formData.get("id"));
   const userId = parseRequiredString(formData.get("userId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
@@ -211,6 +213,8 @@ export const updateCharge = withFormAction(async function updateCharge(
     state.errors.amount = "Amount is required.";
   } else if (!isValidDecimal(amount)) {
     state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+  } else if (Number(amount) <= 0) {
+    state.errors.amount = "Amount must be greater than 0.";
   }
 
   if (!currency) {
