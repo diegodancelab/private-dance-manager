@@ -5,7 +5,7 @@ import styles from "./LoginForm.module.css";
 
 export default async function LoginPage() {
   const session = await getSession();
-  if (session) redirect("/");
+  if (session?.user.role === "TEACHER") redirect("/");
 
   return (
     <div className={styles.loginPage}>
