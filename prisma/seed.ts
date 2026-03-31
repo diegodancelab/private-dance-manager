@@ -1,5 +1,13 @@
 import "dotenv/config";
 
+if (process.env.NODE_ENV === "production") {
+  console.error(
+    "ERROR: Seed must not run in production.\n" +
+      "Use `npm run bootstrap:prod` to create the first production user."
+  );
+  process.exit(1);
+}
+
 import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import {

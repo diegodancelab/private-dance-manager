@@ -106,12 +106,14 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 
 ## Available Scripts
 
-| Command           | Description                                       |
-|-------------------|---------------------------------------------------|
-| `npm run dev`     | Start the development server                      |
-| `npm run build`   | Generate Prisma client, then build for production |
-| `npm run start`   | Start the production server                       |
-| `npm run lint`    | Run ESLint                                        |
+| Command                    | Description                                       |
+|----------------------------|---------------------------------------------------|
+| `npm run dev`              | Start the development server                      |
+| `npm run build`            | Generate Prisma client, then build for production |
+| `npm run start`            | Start the production server                       |
+| `npm run lint`             | Run ESLint                                        |
+| `npm run seed:dev`         | Seed the dev database (blocked in production)     |
+| `npm run bootstrap:prod`   | Create the first teacher account in production    |
 
 ### Prisma
 
@@ -120,7 +122,7 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 | `npx prisma generate`          | Regenerate Prisma client              |
 | `npx prisma migrate dev`       | Run migrations in development         |
 | `npx prisma migrate deploy`    | Apply pending migrations (production) |
-| `npx prisma db seed`           | Seed the database                     |
+| `npx prisma db seed`           | Seed the database (dev only)          |
 | `npx prisma studio`            | Open Prisma Studio (visual DB editor) |
 
 ---
@@ -191,6 +193,26 @@ DATABASE_URL=<target-db-url> npx prisma migrate deploy
 ```
 
 Or use a Vercel deployment hook / GitHub Actions step to run `prisma migrate deploy` as part of your release process.
+
+### 6. Create the first production user (one-time)
+
+The dev seed (`prisma db seed`) is **blocked in production** and must never be run against a production database. Use the bootstrap script instead:
+
+```bash
+DATABASE_URL=<prod-db-url> \
+BOOTSTRAP_EMAIL=you@example.com \
+BOOTSTRAP_PASSWORD=<strong-password-min-12-chars> \
+BOOTSTRAP_FIRST_NAME=Diego \
+BOOTSTRAP_LAST_NAME=Poli \
+npm run bootstrap:prod
+```
+
+Requirements:
+- Password must be **at least 12 characters**
+- Known demo passwords (`admin123`, `teacher123`, etc.) are rejected
+- The script is **idempotent** — safe to re-run (updates the user if email already exists)
+
+> Run this from your local machine, pointing `DATABASE_URL` at the production database.
 
 ---
 
