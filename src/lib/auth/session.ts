@@ -56,10 +56,14 @@ export async function getSession(): Promise<Session | null> {
     },
   });
 
-  if (!session) return null;
+  if (!session) {
+    cookieStore.delete(SESSION_COOKIE);
+    return null;
+  }
 
   if (session.expiresAt < new Date()) {
     await prisma.session.delete({ where: { id: sessionId } });
+    cookieStore.delete(SESSION_COOKIE);
     return null;
   }
 
