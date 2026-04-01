@@ -25,7 +25,7 @@ import bcrypt from "bcryptjs";
 import { PrismaPg } from "@prisma/adapter-pg";
 import { PrismaClient, UserRole } from "../src/generated/prisma/client";
 
-const MIN_PASSWORD_LENGTH = 12;
+const MIN_PASSWORD_LENGTH = 8;
 
 const WEAK_PASSWORDS = new Set([
   "admin123",
