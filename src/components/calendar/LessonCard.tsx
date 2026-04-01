@@ -27,6 +27,7 @@ function formatTime(date: Date) {
   return new Intl.DateTimeFormat("fr-CH", {
     hour: "2-digit",
     minute: "2-digit",
+    timeZone: "Europe/Zurich",
   }).format(new Date(date));
 }
 

@@ -1,4 +1,5 @@
 import { formatDateKey, getWeekDays } from "@/lib/calendar";
+import { utcToZurichDate } from "@/lib/dates";
 import LessonCard from "./LessonCard";
 import styles from "./CalendarWeekView.module.css";
 import Link from "next/link";
@@ -47,7 +48,7 @@ export default function CalendarWeekView({
       const key = formatDateKey(day);
 
       accumulator[key] = lessons.filter((lesson) => {
-        return formatDateKey(new Date(lesson.scheduledAt)) === key;
+        return utcToZurichDate(new Date(lesson.scheduledAt)) === key;
       });
 
       return accumulator;
