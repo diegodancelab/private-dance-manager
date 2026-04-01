@@ -79,8 +79,12 @@ export async function login(
     return { ...empty, errors: { form: "Invalid email or password" } };
   }
 
-  // Successful login: clear failed attempts then create the session.
-  await prisma.loginAttempt.deleteMany({ where: { email } });
+  // Successful login: clear failed attempts for this email, then create the session.
+  // Also prune expired attempts globally (opportunistic cleanup — avoids a separate cron job).
+  const expired = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
+  await prisma.loginAttempt.deleteMany({
+    where: { OR: [{ email }, { attemptedAt: { lt: expired } }] },
+  });
   logger.info("login", "Successful login", { email, userId: user.id });
   await createSession(user.id);
   redirect("/");

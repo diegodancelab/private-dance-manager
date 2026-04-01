@@ -286,9 +286,15 @@ describe("login", () => {
 
     await login(emptyState, fd);
 
-    expect(mockAttemptDeleteMany).toHaveBeenCalledWith({
-      where: { email: "teacher@example.com" },
-    });
+    expect(mockAttemptDeleteMany).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: expect.objectContaining({
+          OR: expect.arrayContaining([
+            { email: "teacher@example.com" },
+          ]),
+        }),
+      })
+    );
     expect(mockAttemptCreate).not.toHaveBeenCalled();
   });
 
