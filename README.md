@@ -106,12 +106,16 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 
 ## Available Scripts
 
-| Command           | Description                                       |
-|-------------------|---------------------------------------------------|
-| `npm run dev`     | Start the development server                      |
-| `npm run build`   | Generate Prisma client, then build for production |
-| `npm run start`   | Start the production server                       |
-| `npm run lint`    | Run ESLint                                        |
+| Command                    | Description                                                       |
+|----------------------------|-------------------------------------------------------------------|
+| `npm run dev`              | Start the development server                                      |
+| `npm run build`            | Migrate DB, generate Prisma client, then build for production     |
+| `npm run start`            | Start the production server                                       |
+| `npm run lint`             | Run ESLint                                                        |
+| `npm run migrate:prod`     | Apply pending migrations to the target database (manual use)      |
+| `npm run migrate:status`   | Show pending migrations for the target database                   |
+| `npm run seed:dev`         | Seed the dev database (blocked in production)                     |
+| `npm run bootstrap:prod`   | Create the first teacher account in production (one-time)         |
 
 ### Prisma
 
@@ -120,7 +124,7 @@ The app will be available at [http://localhost:3000](http://localhost:3000).
 | `npx prisma generate`          | Regenerate Prisma client              |
 | `npx prisma migrate dev`       | Run migrations in development         |
 | `npx prisma migrate deploy`    | Apply pending migrations (production) |
-| `npx prisma db seed`           | Seed the database                     |
+| `npx prisma db seed`           | Seed the database (dev only)          |
 | `npx prisma studio`            | Open Prisma Studio (visual DB editor) |
 
 ---
@@ -176,21 +180,55 @@ Vercel supports branch-specific overrides for preview environment variables. Use
 The build command is already configured in `package.json`:
 
 ```
-prisma generate && next build
+prisma migrate deploy && prisma generate && next build
 ```
 
-Vercel uses `npm run build` by default, which runs this command. No additional Vercel configuration is required — `prisma generate` regenerates the Prisma client from the schema at build time (the generated output at `src/generated/prisma/` is gitignored and must be generated fresh on each deploy).
+Vercel uses `npm run build` by default, which runs this command. No additional Vercel configuration is required.
 
-### 5. Run migrations on deploy
+**What each step does:**
+1. `prisma migrate deploy` — applies any pending migrations to the target database (idempotent, safe to run repeatedly)
+2. `prisma generate` — regenerates the Prisma client from the schema (the generated output at `src/generated/prisma/` is gitignored and must be generated fresh on each deploy)
+3. `next build` — compiles the application
 
-Vercel does **not** run migrations automatically. You must apply migrations manually before or after deploying a new schema change:
+> If a migration fails, the build fails and Vercel aborts the deploy. The running production app is never replaced. This is the correct safety behavior.
+
+### 5. Check migration status before deploying
+
+To verify what migrations are pending against a target database before pushing:
 
 ```bash
-# Point to the target database via DATABASE_URL
-DATABASE_URL=<target-db-url> npx prisma migrate deploy
+DATABASE_URL=<target-db-url> npm run migrate:status
 ```
 
-Or use a Vercel deployment hook / GitHub Actions step to run `prisma migrate deploy` as part of your release process.
+### 6. Apply migrations manually (if needed)
+
+For emergency manual migration outside of a build (e.g., fixing a stuck database):
+
+```bash
+DATABASE_URL=<target-db-url> npm run migrate:prod
+```
+
+> **Never use `prisma migrate dev` against a production database.** It can prompt for destructive changes and is designed for local development only.
+
+### 6. Create the first production user (one-time)
+
+The dev seed (`prisma db seed`) is **blocked in production** and must never be run against a production database. Use the bootstrap script instead:
+
+```bash
+DATABASE_URL=<prod-db-url> \
+BOOTSTRAP_EMAIL=you@example.com \
+BOOTSTRAP_PASSWORD=<strong-password-min-12-chars> \
+BOOTSTRAP_FIRST_NAME=Diego \
+BOOTSTRAP_LAST_NAME=Poli \
+npm run bootstrap:prod
+```
+
+Requirements:
+- Password must be **at least 12 characters**
+- Known demo passwords (`admin123`, `teacher123`, etc.) are rejected
+- The script is **idempotent** — safe to re-run (updates the user if email already exists)
+
+> Run this from your local machine, pointing `DATABASE_URL` at the production database.
 
 ---
 
@@ -233,6 +271,7 @@ docs/
 - [Architecture](./docs/architecture.md)
 - [Conventions](./docs/conventions.md)
 - [Design System](./docs/design-system.md)
+- [Production Checklist](./PRODUCTION_CHECKLIST.md)
 
 ---
 

@@ -89,6 +89,9 @@ model User {
   sessions              Session[]
   createdByTeacher      User?               @relation("TeacherCreatedStudents", fields: [createdByTeacherId], references: [id])
   createdStudents       User[]              @relation("TeacherCreatedStudents")
+
+  // Covers: student list (createdByTeacherId + role), student ownership checks
+  @@index([createdByTeacherId, role])
 }
 
 model Session {
@@ -116,6 +119,9 @@ model Lesson {
   teacher       User                @relation("TeacherLessons", fields: [teacherId], references: [id])
   participants  LessonParticipant[]
   charges       Charge[]
+
+  // Covers: list page (teacherId), calendar range (scheduledAt), conflict detection (teacherId + scheduledAt)
+  @@index([teacherId, scheduledAt])
 }
 
 model LessonParticipant {
@@ -166,6 +172,9 @@ model Charge {
   lesson        Lesson?             @relation(fields: [lessonId], references: [id], onDelete: SetNull)
   allocations   PaymentAllocation[]
   package       Package?
+
+  // Covers: list page (teacherId), sorted by createdAt desc
+  @@index([teacherId, createdAt])
 }
 
 model Payment {
@@ -184,6 +193,9 @@ model Payment {
   user          User                @relation("PaymentStudent", fields: [userId], references: [id], onDelete: Cascade)
   teacher       User                @relation("PaymentTeacher", fields: [teacherId], references: [id])
   allocations   PaymentAllocation[]
+
+  // Covers: list page (teacherId), sorted by paidAt desc then createdAt desc
+  @@index([teacherId, paidAt, createdAt])
 }
 
 model PaymentAllocation {
@@ -216,6 +228,9 @@ model Package {
   teacher          User          @relation("PackageTeacher", fields: [teacherId], references: [id])
   charge           Charge?       @relation(fields: [chargeId], references: [id], onDelete: SetNull)
   usages           PackageUsage[]
+
+  // Covers: list page (teacherId), sorted by createdAt desc
+  @@index([teacherId, createdAt])
 }
 
 model PackageUsage {
@@ -227,4 +242,15 @@ model PackageUsage {
 
   package             Package           @relation(fields: [packageId], references: [id], onDelete: Cascade)
   lessonParticipant   LessonParticipant @relation(fields: [lessonParticipantId], references: [id], onDelete: Cascade)
+}
+
+/// Tracks failed login attempts per email for rate limiting.
+/// Records older than the rate-limit window are ignored by queries and
+/// cleaned up periodically during the login flow.
+model LoginAttempt {
+  id          String   @id @default(cuid())
+  email       String
+  attemptedAt DateTime @default(now())
+
+  @@index([email, attemptedAt])
 }

@@ -1,3 +1,5 @@
+import { logger } from "@/lib/logger";
+
 /**
  * Domain errors — expected business rule violations.
  * These are NOT bugs. They represent invalid operations the user should be informed about.
@@ -51,6 +53,7 @@ export function withFormAction<TState extends BaseFormState>(
       if (isNextInternalThrow(err)) throw err;
 
       if (isDomainError(err)) {
+        logger.warn("action", err.message);
         return {
           ...state,
           success: false,
@@ -58,7 +61,10 @@ export function withFormAction<TState extends BaseFormState>(
         };
       }
 
-      console.error("[Action Error]", err);
+      logger.error("action", "Unexpected error in form action", {
+        error: err instanceof Error ? err.message : String(err),
+        stack: err instanceof Error ? err.stack : undefined,
+      });
       return {
         ...state,
         success: false,
@@ -81,7 +87,13 @@ export function handleNonFormActionError(
   err: unknown
 ): never {
   if (isNextInternalThrow(err)) throw err as Error;
-  if (isDomainError(err)) throw err;
-  console.error(`[${context}]`, err);
+  if (isDomainError(err)) {
+    logger.warn(context, err.message);
+    throw err;
+  }
+  logger.error(context, "Unexpected error in action", {
+    error: err instanceof Error ? err.message : String(err),
+    stack: err instanceof Error ? err.stack : undefined,
+  });
   throw new Error("An unexpected error occurred. Please try again.");
 }

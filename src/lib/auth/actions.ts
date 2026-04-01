@@ -4,6 +4,8 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { createSession, deleteSession } from "./session";
+import { sendLoginAlert } from "@/lib/email/sendLoginAlert";
+import { logger } from "@/lib/logger";
 
 export type LoginFormState = {
   success: boolean;
@@ -13,6 +15,9 @@ export type LoginFormState = {
     password?: string;
   };
 };
+
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const RATE_LIMIT_MAX_ATTEMPTS = 5;
 
 export async function login(
   _prevState: LoginFormState,
@@ -26,20 +31,61 @@ export async function login(
   if (!email) return { ...empty, errors: { email: "Email is required" } };
   if (!password) return { ...empty, errors: { password: "Password is required" } };
 
+  // Rate limiting: count failed attempts for this email within the window.
+  const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
+  const recentFailures = await prisma.loginAttempt.count({
+    where: { email, attemptedAt: { gte: windowStart } },
+  });
+
+  if (recentFailures >= RATE_LIMIT_MAX_ATTEMPTS) {
+    // Send alert only once — exactly when the limit is first reached (5th attempt).
+    // recentFailures is counted before recording the new attempt, so at exactly
+    // RATE_LIMIT_MAX_ATTEMPTS the 5th bad attempt just got recorded and we're now on the 6th.
+    if (recentFailures === RATE_LIMIT_MAX_ATTEMPTS) {
+      sendLoginAlert(email).catch((err) => {
+        logger.error("login", "Failed to send security alert email", {
+          email,
+          error: err instanceof Error ? err.message : String(err),
+        });
+      });
+    }
+    logger.warn("login", "Login blocked — rate limit exceeded", {
+      email,
+      recentFailures,
+    });
+    return {
+      ...empty,
+      errors: {
+        form: "Too many failed sign-in attempts. Please try again in 15 minutes.",
+      },
+    };
+  }
+
   const user = await prisma.user.findUnique({
     where: { email },
     select: { id: true, passwordHash: true, isActive: true },
   });
 
   if (!user || !user.passwordHash || !user.isActive) {
+    await prisma.loginAttempt.create({ data: { email } });
+    logger.warn("login", "Failed login attempt — invalid credentials", { email });
     return { ...empty, errors: { form: "Invalid email or password" } };
   }
 
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) {
+    await prisma.loginAttempt.create({ data: { email } });
+    logger.warn("login", "Failed login attempt — wrong password", { email });
     return { ...empty, errors: { form: "Invalid email or password" } };
   }
 
+  // Successful login: clear failed attempts for this email, then create the session.
+  // Also prune expired attempts globally (opportunistic cleanup — avoids a separate cron job).
+  const expired = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
+  await prisma.loginAttempt.deleteMany({
+    where: { OR: [{ email }, { attemptedAt: { lt: expired } }] },
+  });
+  logger.info("login", "Successful login", { email, userId: user.id });
   await createSession(user.id);
   redirect("/");
 }

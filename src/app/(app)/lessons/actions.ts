@@ -134,6 +134,7 @@ export const createLesson = withFormAction(async function createLesson(
       where: {
         id: studentId,
         role: UserRole.STUDENT,
+        createdByTeacherId: teacherId,
       },
       select: {
         id: true,
