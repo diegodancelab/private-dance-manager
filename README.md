@@ -271,6 +271,7 @@ docs/
 - [Architecture](./docs/architecture.md)
 - [Conventions](./docs/conventions.md)
 - [Design System](./docs/design-system.md)
+- [Production Checklist](./PRODUCTION_CHECKLIST.md)
 
 ---
 
