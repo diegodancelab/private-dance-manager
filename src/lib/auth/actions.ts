@@ -14,6 +14,9 @@ export type LoginFormState = {
   };
 };
 
+const RATE_LIMIT_WINDOW_MS = 15 * 60 * 1000; // 15 minutes
+const RATE_LIMIT_MAX_ATTEMPTS = 5;
+
 export async function login(
   _prevState: LoginFormState,
   formData: FormData
@@ -26,20 +29,39 @@ export async function login(
   if (!email) return { ...empty, errors: { email: "Email is required" } };
   if (!password) return { ...empty, errors: { password: "Password is required" } };
 
+  // Rate limiting: count failed attempts for this email within the window.
+  const windowStart = new Date(Date.now() - RATE_LIMIT_WINDOW_MS);
+  const recentFailures = await prisma.loginAttempt.count({
+    where: { email, attemptedAt: { gte: windowStart } },
+  });
+
+  if (recentFailures >= RATE_LIMIT_MAX_ATTEMPTS) {
+    return {
+      ...empty,
+      errors: {
+        form: "Too many failed sign-in attempts. Please try again in 15 minutes.",
+      },
+    };
+  }
+
   const user = await prisma.user.findUnique({
     where: { email },
     select: { id: true, passwordHash: true, isActive: true },
   });
 
   if (!user || !user.passwordHash || !user.isActive) {
+    await prisma.loginAttempt.create({ data: { email } });
     return { ...empty, errors: { form: "Invalid email or password" } };
   }
 
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) {
+    await prisma.loginAttempt.create({ data: { email } });
     return { ...empty, errors: { form: "Invalid email or password" } };
   }
 
+  // Successful login: clear failed attempts then create the session.
+  await prisma.loginAttempt.deleteMany({ where: { email } });
   await createSession(user.id);
   redirect("/");
 }

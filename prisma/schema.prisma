@@ -228,3 +228,14 @@ model PackageUsage {
   package             Package           @relation(fields: [packageId], references: [id], onDelete: Cascade)
   lessonParticipant   LessonParticipant @relation(fields: [lessonParticipantId], references: [id], onDelete: Cascade)
 }
+
+/// Tracks failed login attempts per email for rate limiting.
+/// Records older than the rate-limit window are ignored by queries and
+/// cleaned up periodically during the login flow.
+model LoginAttempt {
+  id          String   @id @default(cuid())
+  email       String
+  attemptedAt DateTime @default(now())
+
+  @@index([email, attemptedAt])
+}
