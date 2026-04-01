@@ -28,6 +28,10 @@ vi.mock("@/lib/prisma", () => ({
   },
 }));
 
+vi.mock("@/lib/email/sendLoginAlert", () => ({
+  sendLoginAlert: vi.fn().mockResolvedValue(undefined),
+}));
+
 vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
 }));

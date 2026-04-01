@@ -5,6 +5,7 @@ import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { createSession, deleteSession } from "./session";
 import { sendLoginAlert } from "@/lib/email/sendLoginAlert";
+import { logger } from "@/lib/logger";
 
 export type LoginFormState = {
   success: boolean;
@@ -42,9 +43,16 @@ export async function login(
     // RATE_LIMIT_MAX_ATTEMPTS the 5th bad attempt just got recorded and we're now on the 6th.
     if (recentFailures === RATE_LIMIT_MAX_ATTEMPTS) {
       sendLoginAlert(email).catch((err) => {
-        console.error("[login-alert] Failed to send security email:", err);
+        logger.error("login", "Failed to send security alert email", {
+          email,
+          error: err instanceof Error ? err.message : String(err),
+        });
       });
     }
+    logger.warn("login", "Login blocked — rate limit exceeded", {
+      email,
+      recentFailures,
+    });
     return {
       ...empty,
       errors: {
@@ -60,17 +68,20 @@ export async function login(
 
   if (!user || !user.passwordHash || !user.isActive) {
     await prisma.loginAttempt.create({ data: { email } });
+    logger.warn("login", "Failed login attempt — invalid credentials", { email });
     return { ...empty, errors: { form: "Invalid email or password" } };
   }
 
   const valid = await bcrypt.compare(password, user.passwordHash);
   if (!valid) {
     await prisma.loginAttempt.create({ data: { email } });
+    logger.warn("login", "Failed login attempt — wrong password", { email });
     return { ...empty, errors: { form: "Invalid email or password" } };
   }
 
   // Successful login: clear failed attempts then create the session.
   await prisma.loginAttempt.deleteMany({ where: { email } });
+  logger.info("login", "Successful login", { email, userId: user.id });
   await createSession(user.id);
   redirect("/");
 }
