@@ -4,9 +4,11 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma migrate deploy && prisma generate && next build",
     "start": "next start",
     "lint": "eslint",
+    "migrate:prod": "prisma migrate deploy",
+    "migrate:status": "prisma migrate status",
     "seed:dev": "prisma db seed",
     "bootstrap:prod": "tsx scripts/bootstrap-prod.ts"
   },
