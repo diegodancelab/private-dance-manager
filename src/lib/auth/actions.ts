@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { createSession, deleteSession } from "./session";
+import { sendLoginAlert } from "@/lib/email/sendLoginAlert";
 
 export type LoginFormState = {
   success: boolean;
@@ -36,6 +37,10 @@ export async function login(
   });
 
   if (recentFailures >= RATE_LIMIT_MAX_ATTEMPTS) {
+    // Send alert only once — exactly when the limit is first reached.
+    if (recentFailures === RATE_LIMIT_MAX_ATTEMPTS) {
+      sendLoginAlert(email).catch(() => {}); // fire-and-forget, non-blocking
+    }
     return {
       ...empty,
       errors: {
