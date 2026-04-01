@@ -37,9 +37,13 @@ export async function login(
   });
 
   if (recentFailures >= RATE_LIMIT_MAX_ATTEMPTS) {
-    // Send alert only once — exactly when the limit is first reached.
+    // Send alert only once — exactly when the limit is first reached (5th attempt).
+    // recentFailures is counted before recording the new attempt, so at exactly
+    // RATE_LIMIT_MAX_ATTEMPTS the 5th bad attempt just got recorded and we're now on the 6th.
     if (recentFailures === RATE_LIMIT_MAX_ATTEMPTS) {
-      sendLoginAlert(email).catch(() => {}); // fire-and-forget, non-blocking
+      sendLoginAlert(email).catch((err) => {
+        console.error("[login-alert] Failed to send security email:", err);
+      });
     }
     return {
       ...empty,
