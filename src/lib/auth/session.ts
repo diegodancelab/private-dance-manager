@@ -35,6 +35,7 @@ export async function createSession(userId: string): Promise<void> {
   });
 }
 
+// Read-only — never modifies cookies. Safe to call during server rendering.
 export async function getSession(): Promise<Session | null> {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get(SESSION_COOKIE)?.value;
@@ -56,16 +57,7 @@ export async function getSession(): Promise<Session | null> {
     },
   });
 
-  if (!session) {
-    cookieStore.delete(SESSION_COOKIE);
-    return null;
-  }
-
-  if (session.expiresAt < new Date()) {
-    await prisma.session.delete({ where: { id: sessionId } });
-    cookieStore.delete(SESSION_COOKIE);
-    return null;
-  }
+  if (!session || session.expiresAt < new Date()) return null;
 
   return {
     id: session.id,
@@ -79,12 +71,13 @@ export async function getSession(): Promise<Session | null> {
   };
 }
 
+// Must only be called from a Server Action or Route Handler.
 export async function deleteSession(): Promise<void> {
   const cookieStore = await cookies();
   const sessionId = cookieStore.get(SESSION_COOKIE)?.value;
 
   if (sessionId) {
-    await prisma.session.delete({ where: { id: sessionId } }).catch(() => {});
+    await prisma.session.deleteMany({ where: { id: sessionId } });
     cookieStore.delete(SESSION_COOKIE);
   }
 }
