@@ -1,0 +1,99 @@
+.section {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+.empty {
+  margin: 0;
+  color: #6b7280;
+  font-size: 0.95rem;
+}
+
+.list {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.card {
+  display: grid;
+  gap: 0.3rem;
+  padding: 0.9rem 1rem;
+  background: #ffffff;
+  border: 1px solid #e5e7eb;
+  border-radius: 0.75rem;
+  text-decoration: none;
+  color: inherit;
+  position: relative;
+  transition: border-color 0.15s;
+}
+
+.card:hover {
+  border-color: #111827;
+}
+
+.next {
+  border-color: #4f46e5;
+  background: #f5f3ff;
+}
+
+.nextBadge {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.15rem 0.5rem;
+  background: #4f46e5;
+  color: #ffffff;
+  font-size: 0.7rem;
+  font-weight: 700;
+  border-radius: 999px;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  margin-bottom: 0.15rem;
+}
+
+.time {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #6b7280;
+}
+
+.lessonTitle {
+  font-weight: 600;
+  color: #111827;
+  font-size: 0.95rem;
+}
+
+.meta {
+  display: flex;
+  gap: 0.5rem;
+  font-size: 0.8rem;
+  color: #6b7280;
+}
+
+.type {
+  font-weight: 500;
+}
+
+.participants {
+  font-size: 0.85rem;
+  color: #374151;
+}
+
+.noParticipant {
+  font-size: 0.85rem;
+  color: #ef4444;
+  font-style: italic;
+}
+
+.location {
+  font-size: 0.8rem;
+  color: #6b7280;
+}
