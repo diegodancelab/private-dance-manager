@@ -1,7 +1,8 @@
 ---
 description: Analyse tous les processus métier du projet et met à jour docs/business-logic-test-scenarios.md
-model: claude-opus-4-6
 ---
+
+> Use model: claude-opus-4-6
 
 Tu es un expert en architecture logicielle et en tests de logique métier. Tu dois analyser l'intégralité du projet **Private Dance Manager** et mettre à jour `docs/business-logic-test-scenarios.md` avec tous les processus métier existants.
 
