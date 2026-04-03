@@ -105,7 +105,7 @@ export async function getStudentDetail(
       }),
 
       prisma.package.findMany({
-        where: { userId: id, teacherId },
+        where: { teacherId, participants: { some: { userId: id } } },
         orderBy: { createdAt: "desc" },
         select: {
           id: true,

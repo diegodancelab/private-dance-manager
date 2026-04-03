@@ -1,5 +1,7 @@
 import type { LessonTypeValue } from "@/lib/lesson-types";
 
+export type BillingMode = "FREE" | "UNIT" | "PACKAGE";
+
 export type LessonFormState = {
   success: boolean;
   message?: string;
@@ -14,6 +16,8 @@ export type LessonFormState = {
     location: string;
     studentId: string;
     bookingStatus: string;
+    billingMode: BillingMode;
+    packageId: string;
   };
   errors: {
     title?: string;
@@ -23,6 +27,8 @@ export type LessonFormState = {
     priceAmount?: string;
     studentId?: string;
     bookingStatus?: string;
+    billingMode?: string;
+    packageId?: string;
     form?: string;
   };
 };
@@ -41,6 +47,8 @@ export const initialLessonFormState: LessonFormState = {
     location: "",
     studentId: "",
     bookingStatus: "CONFIRMED",
+    billingMode: "FREE",
+    packageId: "",
   },
   errors: {},
 };

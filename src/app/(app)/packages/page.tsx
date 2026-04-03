@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { prisma } from "@/lib/prisma";
+import { PackageStatus } from "@/generated/prisma/client";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { requireAuth } from "@/lib/auth/require-auth";
 import Button from "@/components/ui/Button";
@@ -21,15 +22,25 @@ function formatDate(date: Date | null): string {
   }).format(date);
 }
 
-export default async function PackagesPage() {
+type PackagesPageProps = {
+  searchParams: Promise<{ status?: string }>;
+};
+
+export default async function PackagesPage({ searchParams }: PackagesPageProps) {
   const { user } = await requireAuth();
+  const { status } = await searchParams;
+
+  const showAll = status === "all";
 
   const packages = await prisma.package.findMany({
-    where: { teacherId: user.id },
+    where: {
+      teacherId: user.id,
+      ...(showAll ? {} : { status: PackageStatus.ACTIVE }),
+    },
     orderBy: { createdAt: "desc" },
     include: {
-      user: {
-        select: { id: true, firstName: true, lastName: true },
+      participants: {
+        select: { user: { select: { id: true, firstName: true, lastName: true } } },
       },
     },
   });
@@ -44,14 +55,29 @@ export default async function PackagesPage() {
           </p>
         </div>
 
-        <Button href="/packages/new" size="sm">Create package</Button>
+        <div className={styles.headerActions}>
+          {showAll ? (
+            <Link href="/packages" className={styles.filterLink}>
+              Active only
+            </Link>
+          ) : (
+            <Link href="/packages?status=all" className={styles.filterLink}>
+              Show all
+            </Link>
+          )}
+          <Button href="/packages/new" size="sm">Create package</Button>
+        </div>
       </div>
 
       {packages.length === 0 ? (
         <div className={styles.emptyState}>
-          <p className={styles.emptyText}>No packages yet.</p>
+          <p className={styles.emptyText}>
+            {showAll ? "No packages yet." : "No active packages."}
+          </p>
           <p className={styles.emptySubtext}>
-            Create your first package to start tracking prepaid hours.
+            {showAll
+              ? "Create your first package to start tracking prepaid hours."
+              : "All packages are exhausted, expired, or canceled."}
           </p>
         </div>
       ) : (
@@ -59,7 +85,7 @@ export default async function PackagesPage() {
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.tableHeadCell}>Student</th>
+                <th className={styles.tableHeadCell}>Students</th>
                 <th className={styles.tableHeadCell}>Name</th>
                 <th className={styles.tableHeadCell}>Progress</th>
                 <th className={styles.tableHeadCell}>Status</th>
@@ -77,10 +103,14 @@ export default async function PackagesPage() {
                       )
                     : 0;
 
+                const participantNames = pkg.participants
+                  .map((p) => `${p.user.firstName} ${p.user.lastName}`)
+                  .join(", ");
+
                 return (
                   <tr key={pkg.id}>
                     <td className={styles.tableCell}>
-                      {pkg.user.firstName} {pkg.user.lastName}
+                      {participantNames || "—"}
                     </td>
 
                     <td className={styles.tableCell}>{pkg.name}</td>

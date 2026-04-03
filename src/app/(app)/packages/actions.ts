@@ -6,7 +6,7 @@ import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeType, PackageStatus } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
 import type { PackageFormState } from "./form-state";
-import { withFormAction } from "@/lib/errors";
+import { withFormAction, DomainError, handleNonFormActionError } from "@/lib/errors";
 
 function isValidDecimal(value: string): boolean {
   return /^\d+(\.\d{1,2})?$/.test(value);
@@ -82,7 +82,6 @@ export const createPackage = withFormAction(async function createPackage(
   await prisma.$transaction(async (tx) => {
     const pkg = await tx.package.create({
       data: {
-        userId,
         teacherId: user.id,
         name,
         totalMinutes,
@@ -90,6 +89,10 @@ export const createPackage = withFormAction(async function createPackage(
         status: PackageStatus.ACTIVE,
         expiresAt: parsedExpiresAt,
       },
+    });
+
+    await tx.packageParticipant.create({
+      data: { packageId: pkg.id, userId },
     });
 
     await tx.charge.create({
@@ -197,3 +200,79 @@ export const updatePackage = withFormAction(async function updatePackage(
 
   redirect(`/packages/${id}`);
 });
+
+export async function addParticipantToPackage(formData: FormData) {
+  const { user } = await requireTeacherAuth();
+  const packageId = String(formData.get("packageId") || "").trim();
+  const userId = String(formData.get("userId") || "").trim();
+
+  if (!packageId || !userId) {
+    throw new Error("Package id and user id are required.");
+  }
+
+  try {
+    const pkg = await prisma.package.findFirst({
+      where: { id: packageId, teacherId: user.id },
+      select: { id: true },
+    });
+
+    if (!pkg) throw new DomainError("Package not found.");
+
+    const student = await prisma.user.findFirst({
+      where: { id: userId, role: UserRole.STUDENT, createdByTeacherId: user.id },
+      select: { id: true },
+    });
+
+    if (!student) throw new DomainError("Student not found.");
+
+    await prisma.packageParticipant.create({
+      data: { packageId, userId },
+    });
+  } catch (err) {
+    handleNonFormActionError("addParticipantToPackage", err);
+  }
+
+  redirect(`/packages/${packageId}`);
+}
+
+export async function removeParticipantFromPackage(formData: FormData) {
+  const { user } = await requireTeacherAuth();
+  const packageId = String(formData.get("packageId") || "").trim();
+  const userId = String(formData.get("userId") || "").trim();
+
+  if (!packageId || !userId) {
+    throw new Error("Package id and user id are required.");
+  }
+
+  try {
+    const pkg = await prisma.package.findFirst({
+      where: { id: packageId, teacherId: user.id },
+      select: { id: true },
+    });
+
+    if (!pkg) throw new DomainError("Package not found.");
+
+    // Guard: refuse removal if this student has PackageUsage entries for this package
+    const hasUsage = await prisma.packageUsage.findFirst({
+      where: {
+        packageId,
+        lessonParticipant: { userId },
+      },
+      select: { id: true },
+    });
+
+    if (hasUsage) {
+      throw new DomainError(
+        "Cannot remove this participant: they have usage records linked to this package."
+      );
+    }
+
+    await prisma.packageParticipant.delete({
+      where: { packageId_userId: { packageId, userId } },
+    });
+  } catch (err) {
+    handleNonFormActionError("removeParticipantFromPackage", err);
+  }
+
+  redirect(`/packages/${packageId}`);
+}

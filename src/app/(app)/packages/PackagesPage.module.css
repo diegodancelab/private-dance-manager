@@ -109,3 +109,20 @@
 .actionLink:hover {
   text-decoration: underline;
 }
+
+.headerActions {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.filterLink {
+  color: #6b7280;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.filterLink:hover {
+  color: #111827;
+  text-decoration: underline;
+}

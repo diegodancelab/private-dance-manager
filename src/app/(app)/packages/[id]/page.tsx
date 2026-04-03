@@ -2,8 +2,13 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
+import { UserRole } from "@/generated/prisma/client";
 import StatusBadge from "@/components/ui/StatusBadge";
 import styles from "./PackageDetail.module.css";
+import {
+  addParticipantToPackage,
+  removeParticipantFromPackage,
+} from "../actions";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -32,12 +37,15 @@ export default async function PackageDetailPage({ params }: Props) {
   const pkg = await prisma.package.findFirst({
     where: { id, teacherId: user.id },
     include: {
-      user: true,
       charge: true,
+      participants: {
+        include: { user: { select: { id: true, firstName: true, lastName: true } } },
+      },
       usages: {
         include: {
           lessonParticipant: {
             include: {
+              user: { select: { firstName: true, lastName: true } },
               lesson: {
                 select: {
                   id: true,
@@ -54,6 +62,19 @@ export default async function PackageDetailPage({ params }: Props) {
   });
 
   if (!pkg) notFound();
+
+  const participantUserIds = pkg.participants.map((p) => p.userId);
+
+  // Students who can be added as participants (teacher's students, not already participants)
+  const addableStudents = await prisma.user.findMany({
+    where: {
+      role: UserRole.STUDENT,
+      createdByTeacherId: user.id,
+      id: { notIn: participantUserIds },
+    },
+    orderBy: [{ firstName: "asc" }, { lastName: "asc" }],
+    select: { id: true, firstName: true, lastName: true },
+  });
 
   const pct =
     pkg.totalMinutes > 0
@@ -82,13 +103,6 @@ export default async function PackageDetailPage({ params }: Props) {
 
         <div className={styles.cardBody}>
           <div className={styles.infoGrid}>
-            <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Student</span>
-              <span className={styles.infoValue}>
-                {pkg.user.firstName} {pkg.user.lastName}
-              </span>
-            </div>
-
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Status</span>
               <span className={styles.infoValue}><StatusBadge status={pkg.status} /></span>
@@ -134,6 +148,70 @@ export default async function PackageDetailPage({ params }: Props) {
           </div>
         </div>
 
+        {/* Participants section */}
+        <div className={styles.section}>
+          <h2 className={styles.sectionTitle}>
+            Participants ({pkg.participants.length})
+          </h2>
+
+          {pkg.participants.length === 0 ? (
+            <p className={styles.emptyText}>No participants.</p>
+          ) : (
+            <div className={styles.tableWrapper}>
+              <table className={styles.table}>
+                <thead>
+                  <tr>
+                    <th className={styles.tableHeadCell}>Student</th>
+                    <th className={styles.tableHeadCell}>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {pkg.participants.map((pp) => (
+                    <tr key={pp.userId}>
+                      <td className={styles.tableCell}>
+                        {pp.user.firstName} {pp.user.lastName}
+                      </td>
+                      <td className={styles.tableCell}>
+                        <form action={removeParticipantFromPackage}>
+                          <input type="hidden" name="packageId" value={pkg.id} />
+                          <input type="hidden" name="userId" value={pp.userId} />
+                          <button
+                            type="submit"
+                            className={styles.removeButton}
+                          >
+                            Remove
+                          </button>
+                        </form>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+
+          {addableStudents.length > 0 && (
+            <form
+              action={addParticipantToPackage}
+              className={styles.addParticipantForm}
+            >
+              <input type="hidden" name="packageId" value={pkg.id} />
+              <select name="userId" className={styles.addSelect}>
+                <option value="">Add a student…</option>
+                {addableStudents.map((s) => (
+                  <option key={s.id} value={s.id}>
+                    {s.firstName} {s.lastName}
+                  </option>
+                ))}
+              </select>
+              <button type="submit" className={styles.addButton}>
+                Add
+              </button>
+            </form>
+          )}
+        </div>
+
+        {/* Usage history section */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>Usage history</h2>
 
@@ -144,6 +222,7 @@ export default async function PackageDetailPage({ params }: Props) {
               <table className={styles.table}>
                 <thead>
                   <tr>
+                    <th className={styles.tableHeadCell}>Student</th>
                     <th className={styles.tableHeadCell}>Lesson</th>
                     <th className={styles.tableHeadCell}>Date</th>
                     <th className={styles.tableHeadCell}>Consumed</th>
@@ -152,6 +231,10 @@ export default async function PackageDetailPage({ params }: Props) {
                 <tbody>
                   {pkg.usages.map((usage) => (
                     <tr key={usage.id}>
+                      <td className={styles.tableCell}>
+                        {usage.lessonParticipant.user.firstName}{" "}
+                        {usage.lessonParticipant.user.lastName}
+                      </td>
                       <td className={styles.tableCell}>
                         <Link
                           href={`/lessons/${usage.lessonParticipant.lessonId}`}

@@ -9,11 +9,13 @@ import {
 import { prisma } from "@/lib/prisma";
 import {
   BookingStatus,
+  ChargeType,
   LessonType,
   PackageStatus,
   Prisma,
   UserRole,
 } from "@/generated/prisma/client";
+import type { BillingMode } from "./form-state";
 import { redirect } from "next/navigation";
 import type { LessonFormState } from "./form-state";
 import {
@@ -65,6 +67,12 @@ function isValidDecimal(value: string): boolean {
   return /^\d+(\.\d{1,2})?$/.test(value);
 }
 
+function parseBillingMode(value: FormDataEntryValue | null): BillingMode {
+  const parsed = String(value || "").trim();
+  if (parsed === "UNIT" || parsed === "PACKAGE") return parsed;
+  return "FREE";
+}
+
 export const createLesson = withFormAction(async function createLesson(
   _prevState: LessonFormState,
   formData: FormData
@@ -81,6 +89,10 @@ export const createLesson = withFormAction(async function createLesson(
   const location = String(formData.get("location") || "").trim();
   const studentId = String(formData.get("studentId") || "").trim();
   const bookingStatus = parseBookingStatus(formData.get("bookingStatus"));
+  const rawBillingMode = parseBillingMode(formData.get("billingMode"));
+  // If no student is selected, billing mode is always FREE
+  const billingMode: BillingMode = studentId ? rawBillingMode : "FREE";
+  const packageId = String(formData.get("packageId") || "").trim();
 
   const state: LessonFormState = {
     success: false,
@@ -96,6 +108,8 @@ export const createLesson = withFormAction(async function createLesson(
       location,
       studentId,
       bookingStatus,
+      billingMode,
+      packageId,
     },
     errors: {},
   };
@@ -175,25 +189,73 @@ export const createLesson = withFormAction(async function createLesson(
     };
   }
 
-  await prisma.lesson.create({
-    data: {
-      title,
-      description: parsedDescription,
-      lessonType,
-      scheduledAt: scheduledDate,
-      durationMin: durationMinNumber,
-      priceAmount: parsedPriceAmount,
-      location: parsedLocation,
-      teacherId,
-      participants: studentId
-        ? {
-            create: {
-              userId: studentId,
-              status: bookingStatus,
+  await prisma.$transaction(async (tx) => {
+    const lesson = await tx.lesson.create({
+      data: {
+        title,
+        description: parsedDescription,
+        lessonType,
+        scheduledAt: scheduledDate,
+        durationMin: durationMinNumber,
+        priceAmount: parsedPriceAmount,
+        location: parsedLocation,
+        teacherId,
+        participants: studentId
+          ? { create: { userId: studentId, status: bookingStatus } }
+          : undefined,
+      },
+      select: {
+        id: true,
+        participants: studentId ? { select: { id: true } } : false,
+      },
+    });
+
+    if (studentId && billingMode === "UNIT") {
+      const chargeAmount = parsedPriceAmount ?? "0";
+      await tx.charge.create({
+        data: {
+          userId: studentId,
+          teacherId,
+          lessonId: lesson.id,
+          type: ChargeType.LESSON,
+          title,
+          amount: chargeAmount,
+          currency: "CHF",
+        },
+      });
+    }
+
+    if (studentId && billingMode === "PACKAGE" && packageId) {
+      const participantId = lesson.participants[0]?.id;
+      if (participantId) {
+        const pkg = await tx.package.findFirst({
+          where: {
+            id: packageId,
+            teacherId,
+            status: PackageStatus.ACTIVE,
+            participants: { some: { userId: studentId } },
+          },
+          select: { remainingMinutes: true },
+        });
+
+        if (pkg && pkg.remainingMinutes > 0) {
+          const minutesConsumed = Math.min(durationMinNumber, pkg.remainingMinutes);
+          const newRemaining = pkg.remainingMinutes - minutesConsumed;
+
+          await tx.packageUsage.create({
+            data: { packageId, lessonParticipantId: participantId, minutesConsumed },
+          });
+
+          await tx.package.update({
+            where: { id: packageId },
+            data: {
+              remainingMinutes: newRemaining,
+              status: newRemaining === 0 ? PackageStatus.EXHAUSTED : PackageStatus.ACTIVE,
             },
-          }
-        : undefined,
-    },
+          });
+        }
+      }
+    }
   });
 
   redirect(`/calendar?date=${utcToZurichDate(scheduledDate)}`);
@@ -404,25 +466,37 @@ export async function removeLessonParticipant(formData: FormData) {
       });
 
       if (usage) {
-        const pkg = await tx.package.findUnique({
-          where: { id: usage.packageId },
-          select: { remainingMinutes: true, totalMinutes: true, status: true },
+        // Only restore minutes if no other participant is using this same package
+        // for this lesson (i.e. the lesson still happened for the group — F-02).
+        const otherUsageCount = await tx.packageUsage.count({
+          where: {
+            packageId: usage.packageId,
+            lessonParticipant: { lessonId },
+            NOT: { lessonParticipantId: participantId },
+          },
         });
 
-        if (pkg) {
-          const newRemaining = Math.min(
-            pkg.remainingMinutes + usage.minutesConsumed,
-            pkg.totalMinutes
-          );
-          const newStatus =
-            pkg.status === PackageStatus.EXHAUSTED
-              ? PackageStatus.ACTIVE
-              : pkg.status;
-
-          await tx.package.update({
+        if (otherUsageCount === 0) {
+          const pkg = await tx.package.findUnique({
             where: { id: usage.packageId },
-            data: { remainingMinutes: newRemaining, status: newStatus },
+            select: { remainingMinutes: true, totalMinutes: true, status: true },
           });
+
+          if (pkg) {
+            const newRemaining = Math.min(
+              pkg.remainingMinutes + usage.minutesConsumed,
+              pkg.totalMinutes
+            );
+            const newStatus =
+              pkg.status === PackageStatus.EXHAUSTED
+                ? PackageStatus.ACTIVE
+                : pkg.status;
+
+            await tx.package.update({
+              where: { id: usage.packageId },
+              data: { remainingMinutes: newRemaining, status: newStatus },
+            });
+          }
         }
       }
 
@@ -466,7 +540,6 @@ export async function assignPackageToParticipant(formData: FormData) {
         select: {
           remainingMinutes: true,
           status: true,
-          userId: true,
           expiresAt: true,
         },
       });
@@ -481,7 +554,12 @@ export async function assignPackageToParticipant(formData: FormData) {
         throw new DomainError("Package has expired.");
       }
 
-      if (pkg.userId !== participant.userId) {
+      const membership = await tx.packageParticipant.findUnique({
+        where: { packageId_userId: { packageId, userId: participant.userId } },
+        select: { id: true },
+      });
+
+      if (!membership) {
         throw new DomainError("Package does not belong to this student.");
       }
 

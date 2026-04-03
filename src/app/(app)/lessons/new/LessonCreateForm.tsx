@@ -1,6 +1,6 @@
 "use client";
 
-import { useActionState } from "react";
+import { useActionState, useState } from "react";
 import { LESSON_TYPE_OPTIONS } from "@/lib/lesson-types";
 import { createLesson } from "../actions";
 import { initialLessonFormState } from "../form-state";
@@ -16,14 +16,29 @@ type StudentOption = {
   email: string | null;
 };
 
+type PackageOption = {
+  id: string;
+  name: string;
+  remainingMinutes: number;
+};
+
 type LessonCreateFormProps = {
   students: StudentOption[];
+  packagesByStudent: Record<string, PackageOption[]>;
   defaultScheduledAt: string;
   defaultStudentId: string;
 };
 
+function formatMinutes(minutes: number): string {
+  const h = Math.floor(minutes / 60);
+  const m = minutes % 60;
+  if (m === 0) return `${h}h`;
+  return `${h}h ${m}m`;
+}
+
 export default function LessonCreateForm({
   students,
+  packagesByStudent,
   defaultScheduledAt,
   defaultStudentId,
 }: LessonCreateFormProps) {
@@ -38,6 +53,13 @@ export default function LessonCreateForm({
   });
 
   const safeState = state ?? initialLessonFormState;
+
+  const [selectedStudentId, setSelectedStudentId] = useState(defaultStudentId);
+  const [billingMode, setBillingMode] = useState(safeState.fields.billingMode);
+
+  const availablePackages = selectedStudentId
+    ? (packagesByStudent[selectedStudentId] ?? [])
+    : [];
 
   return (
     <FormCard
@@ -147,7 +169,11 @@ export default function LessonCreateForm({
             <select
               id="studentId"
               name="studentId"
-              defaultValue={safeState.fields.studentId}
+              value={selectedStudentId}
+              onChange={(e) => {
+                setSelectedStudentId(e.target.value);
+                if (!e.target.value) setBillingMode("FREE");
+              }}
             >
               <option value="">Unassigned lesson</option>
               {students.map((student) => (
@@ -174,6 +200,50 @@ export default function LessonCreateForm({
               <option value="CANCELED">Canceled</option>
             </select>
           </FormField>
+
+          {selectedStudentId ? (
+            <FormField
+              label="Billing"
+              htmlFor="billingMode"
+              error={safeState.errors.billingMode}
+            >
+              <select
+                id="billingMode"
+                name="billingMode"
+                value={billingMode}
+                onChange={(e) => setBillingMode(e.target.value as typeof billingMode)}
+              >
+                <option value="FREE">Free / assign later</option>
+                <option value="UNIT">Unit charge (create invoice)</option>
+                <option value="PACKAGE">
+                  Deduct from package
+                  {availablePackages.length === 0 ? " (no active package)" : ""}
+                </option>
+              </select>
+            </FormField>
+          ) : (
+            <input type="hidden" name="billingMode" value="FREE" />
+          )}
+
+          {selectedStudentId && billingMode === "PACKAGE" && availablePackages.length > 0 ? (
+            <FormField
+              label="Package"
+              htmlFor="packageId"
+              error={safeState.errors.packageId}
+            >
+              <select
+                id="packageId"
+                name="packageId"
+                defaultValue={safeState.fields.packageId}
+              >
+                {availablePackages.map((pkg) => (
+                  <option key={pkg.id} value={pkg.id}>
+                    {pkg.name} ({formatMinutes(pkg.remainingMinutes)} left)
+                  </option>
+                ))}
+              </select>
+            </FormField>
+          ) : null}
         </div>
 
         {safeState.errors.form ? (

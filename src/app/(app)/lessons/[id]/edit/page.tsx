@@ -71,22 +71,25 @@ export default async function EditLessonPage({ params }: Props) {
     select: { id: true, firstName: true, lastName: true },
   });
 
-  const studentPackages = await prisma.package.findMany({
+  const packageParticipants = await prisma.packageParticipant.findMany({
     where: {
       userId: { in: participantUserIds },
-      status: PackageStatus.ACTIVE,
+      package: { status: PackageStatus.ACTIVE, teacherId: user.id },
     },
-    select: { id: true, userId: true, name: true, remainingMinutes: true },
-    orderBy: { createdAt: "desc" },
+    select: {
+      userId: true,
+      package: { select: { id: true, name: true, remainingMinutes: true } },
+    },
+    orderBy: { package: { createdAt: "desc" } },
   });
 
   const packagesByStudent: Record<
     string,
     { id: string; name: string; remainingMinutes: number }[]
   > = {};
-  for (const pkg of studentPackages) {
-    if (!packagesByStudent[pkg.userId]) packagesByStudent[pkg.userId] = [];
-    packagesByStudent[pkg.userId].push(pkg);
+  for (const pp of packageParticipants) {
+    if (!packagesByStudent[pp.userId]) packagesByStudent[pp.userId] = [];
+    packagesByStudent[pp.userId].push(pp.package);
   }
 
   const initialState: LessonFormState = {

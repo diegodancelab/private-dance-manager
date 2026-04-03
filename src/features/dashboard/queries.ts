@@ -170,7 +170,7 @@ export async function getAlerts(teacherId: string): Promise<DashboardAlert[]> {
       select: {
         id: true,
         remainingMinutes: true,
-        user: { select: { firstName: true, lastName: true } },
+        participants: { select: { user: { select: { firstName: true, lastName: true } } } },
       },
     }),
 
@@ -184,7 +184,7 @@ export async function getAlerts(teacherId: string): Promise<DashboardAlert[]> {
       select: {
         id: true,
         expiresAt: true,
-        user: { select: { firstName: true, lastName: true } },
+        participants: { select: { user: { select: { firstName: true, lastName: true } } } },
       },
     }),
 
@@ -211,10 +211,13 @@ export async function getAlerts(teacherId: string): Promise<DashboardAlert[]> {
   ]);
 
   for (const pkg of lowPackages) {
+    const studentName = pkg.participants
+      .map((p) => `${p.user.firstName} ${p.user.lastName}`)
+      .join(", ");
     alerts.push({
       type: "package_low",
       packageId: pkg.id,
-      studentName: `${pkg.user.firstName} ${pkg.user.lastName}`,
+      studentName,
       remainingMinutes: pkg.remainingMinutes,
     });
   }
@@ -223,10 +226,13 @@ export async function getAlerts(teacherId: string): Promise<DashboardAlert[]> {
     const daysLeft = Math.ceil(
       (pkg.expiresAt!.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
     );
+    const studentName = pkg.participants
+      .map((p) => `${p.user.firstName} ${p.user.lastName}`)
+      .join(", ");
     alerts.push({
       type: "package_expiring",
       packageId: pkg.id,
-      studentName: `${pkg.user.firstName} ${pkg.user.lastName}`,
+      studentName,
       expiresAt: pkg.expiresAt!,
       daysLeft,
     });
