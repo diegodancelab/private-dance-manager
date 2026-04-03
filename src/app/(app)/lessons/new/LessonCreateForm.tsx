@@ -215,9 +215,10 @@ export default function LessonCreateForm({
               >
                 <option value="FREE">Free / assign later</option>
                 <option value="UNIT">Unit charge (create invoice)</option>
-                <option value="PACKAGE">
-                  Deduct from package
-                  {availablePackages.length === 0 ? " (no active package)" : ""}
+                <option value="PACKAGE" disabled={availablePackages.length === 0}>
+                  {availablePackages.length === 0
+                    ? "Deduct from package (no active package)"
+                    : "Deduct from package"}
                 </option>
               </select>
             </FormField>

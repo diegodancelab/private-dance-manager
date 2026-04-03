@@ -139,6 +139,10 @@ export const createLesson = withFormAction(async function createLesson(
       "Price must be a valid amount with up to 2 decimals.";
   }
 
+  if (studentId && billingMode === "PACKAGE" && !packageId) {
+    state.errors.packageId = "Please select a package.";
+  }
+
   if (Object.keys(state.errors).length > 0) {
     return state;
   }
