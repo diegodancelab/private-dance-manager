@@ -3,8 +3,15 @@ import { UserRole } from "@/generated/prisma/client";
 import { requireAuth } from "@/lib/auth/require-auth";
 import ChargeCreateForm from "./ChargeCreateForm";
 
-export default async function NewChargePage() {
+type Props = {
+  searchParams: Promise<{
+    userId?: string;
+  }>;
+};
+
+export default async function NewChargePage({ searchParams }: Props) {
   const { user } = await requireAuth();
+  const { userId } = await searchParams;
 
   const students = await prisma.user.findMany({
     where: {
@@ -36,5 +43,11 @@ export default async function NewChargePage() {
     },
   });
 
-  return <ChargeCreateForm students={students} lessons={lessons} />;
+  return (
+    <ChargeCreateForm
+      students={students}
+      lessons={lessons}
+      defaultUserId={userId}
+    />
+  );
 }

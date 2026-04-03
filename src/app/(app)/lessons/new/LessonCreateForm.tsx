@@ -4,6 +4,9 @@ import { useActionState } from "react";
 import { LESSON_TYPE_OPTIONS } from "@/lib/lesson-types";
 import { createLesson } from "../actions";
 import { initialLessonFormState } from "../form-state";
+import FormCard from "@/components/ui/FormCard";
+import FormField from "@/components/ui/FormField";
+import Button from "@/components/ui/Button";
 import styles from "./LessonCreateForm.module.css";
 
 type StudentOption = {
@@ -37,160 +40,156 @@ export default function LessonCreateForm({
   const safeState = state ?? initialLessonFormState;
 
   return (
-    <div className={styles.page}>
-      <div className={styles.card}>
-        <div className={styles.header}>
-          <p className={styles.eyebrow}>Lessons</p>
-          <h1 className={styles.title}>Create lesson</h1>
-          <p className={styles.subtitle}>
-            Schedule a new lesson and optionally assign a student.
-          </p>
+    <FormCard
+      eyebrow="Lessons"
+      title="Create lesson"
+      subtitle="Schedule a new lesson and optionally assign a student."
+    >
+      <form action={formAction} className={styles.form}>
+        <div className={styles.grid}>
+          <FormField
+            label="Title"
+            htmlFor="title"
+            error={safeState.errors.title}
+            fullWidth
+          >
+            <input
+              id="title"
+              name="title"
+              type="text"
+              defaultValue={safeState.fields.title}
+              placeholder="Private lesson"
+            />
+          </FormField>
+
+          <FormField label="Description" htmlFor="description" fullWidth>
+            <textarea
+              id="description"
+              name="description"
+              defaultValue={safeState.fields.description}
+              rows={4}
+              placeholder="Add lesson notes or description"
+            />
+          </FormField>
+
+          <FormField label="Lesson type" htmlFor="lessonType">
+            <select
+              id="lessonType"
+              name="lessonType"
+              defaultValue={safeState.fields.lessonType}
+            >
+              {LESSON_TYPE_OPTIONS.map((option) => (
+                <option key={option.value} value={option.value}>
+                  {option.label}
+                </option>
+              ))}
+            </select>
+          </FormField>
+
+          <FormField
+            label="Scheduled at"
+            htmlFor="scheduledAt"
+            error={safeState.errors.scheduledAt}
+          >
+            <input
+              id="scheduledAt"
+              name="scheduledAt"
+              type="datetime-local"
+              defaultValue={safeState.fields.scheduledAt}
+            />
+          </FormField>
+
+          <FormField
+            label="Duration (minutes)"
+            htmlFor="durationMin"
+            error={safeState.errors.durationMin}
+          >
+            <input
+              id="durationMin"
+              name="durationMin"
+              type="number"
+              min="1"
+              defaultValue={safeState.fields.durationMin || "60"}
+            />
+          </FormField>
+
+          <FormField
+            label="Price amount"
+            htmlFor="priceAmount"
+            error={safeState.errors.priceAmount}
+          >
+            <input
+              id="priceAmount"
+              name="priceAmount"
+              type="number"
+              min="0"
+              step="0.01"
+              defaultValue={safeState.fields.priceAmount}
+              placeholder="80.00"
+            />
+          </FormField>
+
+          <FormField label="Location" htmlFor="location">
+            <input
+              id="location"
+              name="location"
+              type="text"
+              defaultValue={safeState.fields.location}
+              placeholder="Geneva"
+            />
+          </FormField>
+
+          <FormField
+            label="Student"
+            htmlFor="studentId"
+            error={safeState.errors.studentId}
+          >
+            <select
+              id="studentId"
+              name="studentId"
+              defaultValue={safeState.fields.studentId}
+            >
+              <option value="">Unassigned lesson</option>
+              {students.map((student) => (
+                <option key={student.id} value={student.id}>
+                  {student.firstName} {student.lastName}
+                  {student.email ? ` - ${student.email}` : ""}
+                </option>
+              ))}
+            </select>
+          </FormField>
+
+          <FormField
+            label="Booking status"
+            htmlFor="bookingStatus"
+            error={safeState.errors.bookingStatus}
+          >
+            <select
+              id="bookingStatus"
+              name="bookingStatus"
+              defaultValue={safeState.fields.bookingStatus}
+            >
+              <option value="CONFIRMED">Confirmed</option>
+              <option value="PENDING">Pending</option>
+              <option value="CANCELED">Canceled</option>
+            </select>
+          </FormField>
         </div>
 
-        <form action={formAction} className={styles.form}>
-          <div className={styles.grid}>
-            <div className={`${styles.field} ${styles.fullWidth}`}>
-              <label htmlFor="title">Title</label>
-              <input
-                id="title"
-                name="title"
-                type="text"
-                defaultValue={safeState.fields.title}
-                placeholder="Private lesson"
-              />
-              {safeState.errors.title ? (
-                <p className={styles.error}>{safeState.errors.title}</p>
-              ) : null}
-            </div>
+        {safeState.errors.form ? (
+          <div className={styles.formError}>{safeState.errors.form}</div>
+        ) : null}
 
-            <div className={`${styles.field} ${styles.fullWidth}`}>
-              <label htmlFor="description">Description</label>
-              <textarea
-                id="description"
-                name="description"
-                defaultValue={safeState.fields.description}
-                rows={4}
-                placeholder="Add lesson notes or description"
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="lessonType">Lesson type</label>
-              <select
-                id="lessonType"
-                name="lessonType"
-                defaultValue={safeState.fields.lessonType}
-              >
-                {LESSON_TYPE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="scheduledAt">Scheduled at</label>
-              <input
-                id="scheduledAt"
-                name="scheduledAt"
-                type="datetime-local"
-                defaultValue={safeState.fields.scheduledAt}
-              />
-              {safeState.errors.scheduledAt ? (
-                <p className={styles.error}>{safeState.errors.scheduledAt}</p>
-              ) : null}
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="durationMin">Duration (minutes)</label>
-              <input
-                id="durationMin"
-                name="durationMin"
-                type="number"
-                min="1"
-                defaultValue={safeState.fields.durationMin || "60"}
-              />
-              {safeState.errors.durationMin ? (
-                <p className={styles.error}>{safeState.errors.durationMin}</p>
-              ) : null}
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="priceAmount">Price amount</label>
-              <input
-                id="priceAmount"
-                name="priceAmount"
-                type="number"
-                min="0"
-                step="0.01"
-                defaultValue={safeState.fields.priceAmount}
-                placeholder="80.00"
-              />
-              {safeState.errors.priceAmount ? (
-                <p className={styles.error}>{safeState.errors.priceAmount}</p>
-              ) : null}
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="location">Location</label>
-              <input
-                id="location"
-                name="location"
-                type="text"
-                defaultValue={safeState.fields.location}
-                placeholder="Geneva"
-              />
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="studentId">Student</label>
-              <select
-                id="studentId"
-                name="studentId"
-                defaultValue={safeState.fields.studentId}
-              >
-                <option value="">Unassigned lesson</option>
-                {students.map((student) => (
-                  <option key={student.id} value={student.id}>
-                    {student.firstName} {student.lastName}
-                    {student.email ? ` - ${student.email}` : ""}
-                  </option>
-                ))}
-              </select>
-              {safeState.errors.studentId ? (
-                <p className={styles.error}>{safeState.errors.studentId}</p>
-              ) : null}
-            </div>
-
-            <div className={styles.field}>
-              <label htmlFor="bookingStatus">Booking status</label>
-              <select
-                id="bookingStatus"
-                name="bookingStatus"
-                defaultValue={safeState.fields.bookingStatus}
-              >
-                <option value="CONFIRMED">Confirmed</option>
-                <option value="PENDING">Pending</option>
-                <option value="CANCELED">Canceled</option>
-              </select>
-              {safeState.errors.bookingStatus ? (
-                <p className={styles.error}>{safeState.errors.bookingStatus}</p>
-              ) : null}
-            </div>
-          </div>
-
-          {safeState.errors.form ? (
-            <div className={styles.formError}>{safeState.errors.form}</div>
-          ) : null}
-
-          <div className={styles.actions}>
-            <button type="submit" className={styles.button} disabled={isPending}>
-              {isPending ? "Creating..." : "Create lesson"}
-            </button>
-          </div>
-        </form>
-      </div>
-    </div>
+        <div className={styles.actions}>
+          <Button
+            type="submit"
+            isPending={isPending}
+            pendingLabel="Creating..."
+          >
+            Create lesson
+          </Button>
+        </div>
+      </form>
+    </FormCard>
   );
 }

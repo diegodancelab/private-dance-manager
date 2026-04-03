@@ -52,7 +52,10 @@ export default async function StudentDetailPage({ params }: Props) {
           >
             Add charge
           </Link>
-          <Link href="/packages/new" className={styles.actionBtn}>
+          <Link
+            href={`/packages/new?userId=${student.id}`}
+            className={styles.actionBtn}
+          >
             Add package
           </Link>
           <Link

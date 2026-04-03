@@ -3,8 +3,15 @@ import { UserRole } from "@/generated/prisma/client";
 import { requireAuth } from "@/lib/auth/require-auth";
 import PackageCreateForm from "./PackageCreateForm";
 
-export default async function NewPackagePage() {
+type Props = {
+  searchParams: Promise<{
+    userId?: string;
+  }>;
+};
+
+export default async function NewPackagePage({ searchParams }: Props) {
   const { user } = await requireAuth();
+  const { userId } = await searchParams;
 
   const students = await prisma.user.findMany({
     where: { role: UserRole.STUDENT, createdByTeacherId: user.id },
@@ -18,5 +25,5 @@ export default async function NewPackagePage() {
     },
   });
 
-  return <PackageCreateForm students={students} />;
+  return <PackageCreateForm students={students} defaultUserId={userId} />;
 }
