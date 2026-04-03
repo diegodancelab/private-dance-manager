@@ -36,40 +36,6 @@
   align-items: center;
 }
 
-.actionBtn {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 0.85rem;
-  border-radius: 0.6rem;
-  text-decoration: none;
-  background: #111827;
-  color: #ffffff;
-  font-weight: 600;
-  font-size: 0.85rem;
-  white-space: nowrap;
-}
-
-.actionBtn:hover {
-  background: #1f2937;
-}
-
-.actionBtnSecondary {
-  display: inline-flex;
-  align-items: center;
-  padding: 0.5rem 0.85rem;
-  border-radius: 0.6rem;
-  text-decoration: none;
-  background: #ffffff;
-  color: #111827;
-  font-weight: 600;
-  font-size: 0.85rem;
-  border: 1px solid #e5e7eb;
-  white-space: nowrap;
-}
-
-.actionBtnSecondary:hover {
-  background: #f9fafb;
-}
 
 /* Main card */
 .card {

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import { getLabel } from "@/lib/labels";
 import { requireAuth } from "@/lib/auth/require-auth";
+import Button from "@/components/ui/Button";
 import styles from "./LessonsPage.module.css";
 
 function formatDateTime(date: Date) {
@@ -32,9 +33,7 @@ export default async function LessonsPage() {
           <p className={styles.subtitle}>All scheduled lessons across your students.</p>
         </div>
 
-        <Link href="/lessons/new" className={styles.createLink}>
-          Add lesson
-        </Link>
+        <Button href="/lessons/new" size="sm">Add lesson</Button>
       </div>
 
       {lessons.length === 0 ? (

@@ -2,6 +2,7 @@ import Link from "next/link";
 import { prisma } from "@/lib/prisma";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { requireAuth } from "@/lib/auth/require-auth";
+import Button from "@/components/ui/Button";
 import styles from "./PackagesPage.module.css";
 
 function formatMinutes(minutes: number): string {
@@ -43,9 +44,7 @@ export default async function PackagesPage() {
           </p>
         </div>
 
-        <Link href="/packages/new" className={styles.createLink}>
-          Create package
-        </Link>
+        <Button href="/packages/new" size="sm">Create package</Button>
       </div>
 
       {packages.length === 0 ? (

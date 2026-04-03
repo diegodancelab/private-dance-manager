@@ -2,6 +2,7 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { requireAuth } from "@/lib/auth/require-auth";
+import Button from "@/components/ui/Button";
 import styles from "./ChargesPage.module.css";
 
 function formatAmount(amount: string | number, currency: string) {
@@ -30,9 +31,7 @@ export default async function ChargesPage() {
           <p className={styles.subtitle}>Track what is owed by each student.</p>
         </div>
 
-        <Link href="/charges/new" className={styles.createLink}>
-          Add charge
-        </Link>
+        <Button href="/charges/new" size="sm">Add charge</Button>
       </div>
 
       {charges.length === 0 ? (

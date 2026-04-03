@@ -8,6 +8,7 @@ import StudentChargesSection from "./StudentChargesSection";
 import StudentPackagesSection from "./StudentPackagesSection";
 import StudentLessonsSection from "./StudentLessonsSection";
 import StudentRecentPaymentsSection from "./StudentRecentPaymentsSection";
+import Button from "@/components/ui/Button";
 import styles from "./StudentDetail.module.css";
 
 type Props = {
@@ -34,36 +35,25 @@ export default async function StudentDetailPage({ params }: Props) {
           {student.firstName} {student.lastName}
         </h1>
         <div className={styles.quickActions}>
-          <Link
-            href={`/lessons/new?studentId=${student.id}`}
-            className={styles.actionBtn}
-          >
+          <Button href={`/lessons/new?studentId=${student.id}`} size="sm">
             Add lesson
-          </Link>
-          <Link
-            href={`/payments/new?userId=${student.id}`}
-            className={styles.actionBtn}
-          >
+          </Button>
+          <Button href={`/payments/new?userId=${student.id}`} size="sm">
             Add payment
-          </Link>
-          <Link
-            href={`/charges/new?userId=${student.id}`}
-            className={styles.actionBtn}
-          >
+          </Button>
+          <Button href={`/charges/new?userId=${student.id}`} size="sm">
             Add charge
-          </Link>
-          <Link
-            href={`/packages/new?userId=${student.id}`}
-            className={styles.actionBtn}
-          >
+          </Button>
+          <Button href={`/packages/new?userId=${student.id}`} size="sm">
             Add package
-          </Link>
-          <Link
+          </Button>
+          <Button
             href={`/students/${student.id}/edit`}
-            className={styles.actionBtnSecondary}
+            variant="secondary"
+            size="sm"
           >
             Edit
-          </Link>
+          </Button>
         </div>
       </div>
 

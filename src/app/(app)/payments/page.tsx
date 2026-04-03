@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { getLabel } from "@/lib/labels";
 import { requireAuth } from "@/lib/auth/require-auth";
+import Button from "@/components/ui/Button";
 import styles from "./PaymentsPage.module.css";
 
 function formatAmount(amount: string | number, currency: string) {
@@ -50,9 +51,7 @@ export default async function PaymentsPage() {
           </p>
         </div>
 
-        <Link href="/payments/new" className={styles.createLink}>
-          Create payment
-        </Link>
+        <Button href="/payments/new" size="sm">Create payment</Button>
       </div>
 
       {payments.length === 0 ? (

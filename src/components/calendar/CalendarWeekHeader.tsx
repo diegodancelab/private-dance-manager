@@ -1,4 +1,4 @@
-import Link from "next/link";
+import Button from "@/components/ui/Button";
 import styles from "./CalendarWeekHeader.module.css";
 import { addDays, formatWeekLabel } from "@/lib/calendar";
 
@@ -29,30 +29,33 @@ export default function CalendarWeekHeader({
       </div>
 
       <div className={styles.actions}>
-        <Link
+        <Button
           href={`/calendar?date=${toDateParam(previousWeek)}`}
-          className={styles.button}
+          variant="secondary"
+          size="sm"
         >
           Previous
-        </Link>
+        </Button>
 
-        <Link
+        <Button
           href={`/calendar?date=${toDateParam(today)}`}
-          className={styles.button}
+          variant="secondary"
+          size="sm"
         >
           Today
-        </Link>
+        </Button>
 
-        <Link
+        <Button
           href={`/calendar?date=${toDateParam(nextWeek)}`}
-          className={styles.button}
+          variant="secondary"
+          size="sm"
         >
           Next
-        </Link>
+        </Button>
 
-        <Link href="/lessons/new" className={styles.primaryButton}>
+        <Button href="/lessons/new" size="sm">
           Add lesson
-        </Link>
+        </Button>
       </div>
     </div>
   );

@@ -2,6 +2,7 @@ import { UserRole } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { requireAuth } from "@/lib/auth/require-auth";
+import Button from "@/components/ui/Button";
 import styles from "./StudentsPage.module.css";
 
 export default async function StudentsPage() {
@@ -25,9 +26,7 @@ export default async function StudentsPage() {
           <p className={styles.subtitle}>Manage your students and their contact information.</p>
         </div>
 
-        <Link href="/students/new" className={styles.createLink}>
-          Add student
-        </Link>
+        <Button href="/students/new" size="sm">Add student</Button>
       </div>
 
       {students.length === 0 ? (
