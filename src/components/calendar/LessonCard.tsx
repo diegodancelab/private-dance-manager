@@ -62,11 +62,11 @@ export default function LessonCard({ lesson }: LessonCardProps) {
         </div>
 
         <p className={styles.participants}>
-          {participantNames || "Aucun élève assigné"}
+          {participantNames || "No student assigned"}
         </p>
 
         {lesson.location ? (
-          <p className={styles.location}>📍 {lesson.location}</p>
+          <p className={styles.location}>{lesson.location}</p>
         ) : null}
       </article>
     </Link>
