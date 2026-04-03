@@ -204,10 +204,7 @@ export const createLesson = withFormAction(async function createLesson(
           ? { create: { userId: studentId, status: bookingStatus } }
           : undefined,
       },
-      select: {
-        id: true,
-        participants: studentId ? { select: { id: true } } : false,
-      },
+      select: { id: true },
     });
 
     if (studentId && billingMode === "UNIT") {
@@ -226,8 +223,12 @@ export const createLesson = withFormAction(async function createLesson(
     }
 
     if (studentId && billingMode === "PACKAGE" && packageId) {
-      const participantId = lesson.participants[0]?.id;
-      if (participantId) {
+      const lp = await tx.lessonParticipant.findUnique({
+        where: { lessonId_userId: { lessonId: lesson.id, userId: studentId } },
+        select: { id: true },
+      });
+
+      if (lp) {
         const pkg = await tx.package.findFirst({
           where: {
             id: packageId,
@@ -243,7 +244,7 @@ export const createLesson = withFormAction(async function createLesson(
           const newRemaining = pkg.remainingMinutes - minutesConsumed;
 
           await tx.packageUsage.create({
-            data: { packageId, lessonParticipantId: participantId, minutesConsumed },
+            data: { packageId, lessonParticipantId: lp.id, minutesConsumed },
           });
 
           await tx.package.update({
