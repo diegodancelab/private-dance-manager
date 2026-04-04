@@ -199,6 +199,16 @@
   text-decoration: underline;
 }
 
+.successBanner {
+  padding: 0.875rem 1.25rem;
+  background: #f0fdf4;
+  border: 1px solid #86efac;
+  border-radius: 0.75rem;
+  font-size: 0.9rem;
+  color: #166534;
+  font-weight: 500;
+}
+
 .migrationBanner {
   border-top: 1px solid #fcd34d;
   padding: 1.5rem;

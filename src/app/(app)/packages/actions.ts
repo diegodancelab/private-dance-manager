@@ -295,6 +295,8 @@ export async function migrateUnitLessonsToPackage(formData: FormData) {
         return aDate - bDate;
       });
 
+    let migratedCount = 0;
+
     if (eligible.length > 0) {
       await prisma.$transaction(async (tx) => {
         let remaining = pkg.remainingMinutes;
@@ -315,6 +317,7 @@ export async function migrateUnitLessonsToPackage(formData: FormData) {
           });
 
           remaining -= minutesConsumed;
+          migratedCount++;
         }
 
         await tx.package.update({
@@ -326,6 +329,11 @@ export async function migrateUnitLessonsToPackage(formData: FormData) {
         });
       });
     }
+
+    const skippedCount = eligible.length - migratedCount;
+    const qs = new URLSearchParams({ migrated: String(migratedCount) });
+    if (skippedCount > 0) qs.set("skipped", String(skippedCount));
+    redirect(`/packages/${packageId}?${qs.toString()}`);
   } catch (err) {
     handleNonFormActionError("migrateUnitLessonsToPackage", err);
   }

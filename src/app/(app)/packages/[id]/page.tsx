@@ -13,6 +13,7 @@ import {
 
 type Props = {
   params: Promise<{ id: string }>;
+  searchParams: Promise<{ migrated?: string; skipped?: string }>;
 };
 
 function formatMinutes(minutes: number): string {
@@ -31,8 +32,11 @@ function formatDate(date: Date | null): string {
   }).format(date);
 }
 
-export default async function PackageDetailPage({ params }: Props) {
+export default async function PackageDetailPage({ params, searchParams }: Props) {
   const { id } = await params;
+  const { migrated, skipped } = await searchParams;
+  const migratedResult = migrated ? Number(migrated) : null;
+  const skippedResult = skipped ? Number(skipped) : null;
   const { user } = await requireAuth();
 
   const pkg = await prisma.package.findFirst({
@@ -122,6 +126,17 @@ export default async function PackageDetailPage({ params }: Props) {
       <Link href="/packages" className={styles.backLink}>
         ← Back to packages
       </Link>
+
+      {migratedResult !== null && (
+        <div className={styles.successBanner}>
+          {migratedResult === 0
+            ? "No lessons were migrated."
+            : `${migratedResult} lesson${migratedResult > 1 ? "s" : ""} migrated successfully.`}
+          {skippedResult !== null && skippedResult > 0 && (
+            <> {skippedResult} lesson{skippedResult > 1 ? "s" : ""} skipped — package ran out of minutes.</>
+          )}
+        </div>
+      )}
 
       <div className={styles.card}>
         <div className={styles.cardHeader}>
