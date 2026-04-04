@@ -199,6 +199,40 @@
   text-decoration: underline;
 }
 
+.migrationBanner {
+  border-top: 1px solid #fcd34d;
+  padding: 1.5rem;
+  background: #fffbeb;
+}
+
+.migrationBannerText {
+  margin: 0 0 0.75rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: #92400e;
+}
+
+.migrationBannerNote {
+  margin: 0 0 0.75rem;
+  font-size: 0.85rem;
+  color: #b45309;
+}
+
+.migrateButton {
+  padding: 0.5rem 1rem;
+  background: #4f46e5;
+  color: #ffffff;
+  border: none;
+  border-radius: 0.5rem;
+  font-size: 0.9rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.migrateButton:hover {
+  background: #4338ca;
+}
+
 @media (max-width: 640px) {
   .infoGrid {
     grid-template-columns: 1fr;

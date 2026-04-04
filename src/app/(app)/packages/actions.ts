@@ -3,7 +3,7 @@
 import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { zurichDateToUtc } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
-import { UserRole, ChargeType, PackageStatus } from "@/generated/prisma/client";
+import { UserRole, ChargeType, ChargeStatus, PackageStatus } from "@/generated/prisma/client";
 import { redirect } from "next/navigation";
 import type { PackageFormState } from "./form-state";
 import { withFormAction, DomainError, handleNonFormActionError } from "@/lib/errors";
@@ -230,6 +230,104 @@ export async function addParticipantToPackage(formData: FormData) {
     });
   } catch (err) {
     handleNonFormActionError("addParticipantToPackage", err);
+  }
+
+  redirect(`/packages/${packageId}`);
+}
+
+export async function migrateUnitLessonsToPackage(formData: FormData) {
+  const { user } = await requireTeacherAuth();
+  const packageId = String(formData.get("packageId") || "").trim();
+
+  if (!packageId) throw new Error("Package id is required.");
+
+  try {
+    const pkg = await prisma.package.findFirst({
+      where: { id: packageId, teacherId: user.id, status: PackageStatus.ACTIVE },
+      select: {
+        id: true,
+        remainingMinutes: true,
+        participants: { select: { userId: true } },
+      },
+    });
+
+    if (!pkg) throw new DomainError("Package not found or not active.");
+
+    const studentIds = pkg.participants.map((p) => p.userId);
+    if (studentIds.length === 0) throw new DomainError("No participants assigned to this package.");
+
+    const pendingCharges = await prisma.charge.findMany({
+      where: {
+        teacherId: user.id,
+        userId: { in: studentIds },
+        type: ChargeType.LESSON,
+        status: ChargeStatus.PENDING,
+        lessonId: { not: null },
+      },
+      select: {
+        id: true,
+        userId: true,
+        lesson: {
+          select: {
+            durationMin: true,
+            scheduledAt: true,
+            participants: {
+              where: { userId: { in: studentIds } },
+              select: {
+                id: true,
+                userId: true,
+                packageUsage: { select: { id: true } },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    const eligible = pendingCharges
+      .filter((charge) => {
+        const lp = charge.lesson?.participants.find((p) => p.userId === charge.userId);
+        return lp && !lp.packageUsage;
+      })
+      .sort((a, b) => {
+        const aDate = a.lesson?.scheduledAt.getTime() ?? 0;
+        const bDate = b.lesson?.scheduledAt.getTime() ?? 0;
+        return aDate - bDate;
+      });
+
+    if (eligible.length > 0) {
+      await prisma.$transaction(async (tx) => {
+        let remaining = pkg.remainingMinutes;
+
+        for (const charge of eligible) {
+          if (remaining <= 0) break;
+
+          const lp = charge.lesson!.participants.find((p) => p.userId === charge.userId)!;
+          const minutesConsumed = Math.min(charge.lesson!.durationMin, remaining);
+
+          await tx.charge.update({
+            where: { id: charge.id },
+            data: { status: ChargeStatus.CANCELED },
+          });
+
+          await tx.packageUsage.create({
+            data: { packageId, lessonParticipantId: lp.id, minutesConsumed },
+          });
+
+          remaining -= minutesConsumed;
+        }
+
+        await tx.package.update({
+          where: { id: packageId },
+          data: {
+            remainingMinutes: remaining,
+            status: remaining === 0 ? PackageStatus.EXHAUSTED : PackageStatus.ACTIVE,
+          },
+        });
+      });
+    }
+  } catch (err) {
+    handleNonFormActionError("migrateUnitLessonsToPackage", err);
   }
 
   redirect(`/packages/${packageId}`);

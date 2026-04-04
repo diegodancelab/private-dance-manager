@@ -2,12 +2,13 @@ import { prisma } from "@/lib/prisma";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
-import { UserRole } from "@/generated/prisma/client";
+import { UserRole, ChargeType, ChargeStatus, PackageStatus } from "@/generated/prisma/client";
 import StatusBadge from "@/components/ui/StatusBadge";
 import styles from "./PackageDetail.module.css";
 import {
   addParticipantToPackage,
   removeParticipantFromPackage,
+  migrateUnitLessonsToPackage,
 } from "../actions";
 
 type Props = {
@@ -64,6 +65,41 @@ export default async function PackageDetailPage({ params }: Props) {
   if (!pkg) notFound();
 
   const participantUserIds = pkg.participants.map((p) => p.userId);
+
+  // Count unit-billed lessons eligible for migration (PENDING, no PackageUsage yet)
+  let migratableCount = 0;
+  let blockedCount = 0;
+  if (pkg.status === PackageStatus.ACTIVE && participantUserIds.length > 0) {
+    const [pending, partial] = await Promise.all([
+      prisma.charge.count({
+        where: {
+          teacherId: user.id,
+          userId: { in: participantUserIds },
+          type: ChargeType.LESSON,
+          status: ChargeStatus.PENDING,
+          lesson: {
+            participants: {
+              some: {
+                userId: { in: participantUserIds },
+                packageUsage: null,
+              },
+            },
+          },
+        },
+      }),
+      prisma.charge.count({
+        where: {
+          teacherId: user.id,
+          userId: { in: participantUserIds },
+          type: ChargeType.LESSON,
+          status: ChargeStatus.PARTIALLY_PAID,
+          lessonId: { not: null },
+        },
+      }),
+    ]);
+    migratableCount = pending;
+    blockedCount = partial;
+  }
 
   // Students who can be added as participants (teacher's students, not already participants)
   const addableStudents = await prisma.user.findMany({
@@ -255,6 +291,24 @@ export default async function PackageDetailPage({ params }: Props) {
             </div>
           )}
         </div>
+        {migratableCount > 0 && (
+          <div className={styles.migrationBanner}>
+            <p className={styles.migrationBannerText}>
+              {migratableCount} unit-billed lesson{migratableCount > 1 ? "s" : ""} found without package coverage. Migrate to this package?
+            </p>
+            {blockedCount > 0 && (
+              <p className={styles.migrationBannerNote}>
+                {blockedCount} lesson{blockedCount > 1 ? "s" : ""} with partial payments will be skipped — settle them manually first.
+              </p>
+            )}
+            <form action={migrateUnitLessonsToPackage}>
+              <input type="hidden" name="packageId" value={pkg.id} />
+              <button type="submit" className={styles.migrateButton}>
+                Migrate {migratableCount} lesson{migratableCount > 1 ? "s" : ""}
+              </button>
+            </form>
+          </div>
+        )}
       </div>
     </div>
   );
