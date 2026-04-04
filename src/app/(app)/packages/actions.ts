@@ -79,7 +79,7 @@ export const createPackage = withFormAction(async function createPackage(
   const totalMinutes = Number(totalHours) * 60;
   const parsedExpiresAt = expiresAt ? zurichDateToUtc(expiresAt) : null;
 
-  await prisma.$transaction(async (tx) => {
+  const { id: newPackageId } = await prisma.$transaction(async (tx) => {
     const pkg = await tx.package.create({
       data: {
         teacherId: user.id,
@@ -106,9 +106,11 @@ export const createPackage = withFormAction(async function createPackage(
         package: { connect: { id: pkg.id } },
       },
     });
+
+    return pkg;
   });
 
-  redirect("/packages");
+  redirect(`/packages/${newPackageId}`);
 });
 
 export const updatePackage = withFormAction(async function updatePackage(

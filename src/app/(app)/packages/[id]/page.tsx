@@ -85,7 +85,7 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
             participants: {
               some: {
                 userId: { in: participantUserIds },
-                packageUsage: null,
+                packageUsage: { is: null },
               },
             },
           },
