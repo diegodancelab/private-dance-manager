@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import styles from "./LessonCard.module.css";
 
 type LessonParticipantItem = {
@@ -23,22 +24,32 @@ type LessonCardProps = {
   };
 };
 
-function formatTime(date: Date) {
-  return new Intl.DateTimeFormat("fr-CH", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Zurich",
-  }).format(new Date(date));
-}
+const LOCALE_MAP: Record<string, string> = {
+  fr: "fr-CH",
+  en: "en-GB",
+  es: "es-ES",
+};
 
-function formatEndTime(date: Date, durationMin: number) {
-  const endDate = new Date(date);
-  endDate.setMinutes(endDate.getMinutes() + durationMin);
+export default async function LessonCard({ lesson }: LessonCardProps) {
+  const t = await getTranslations("lessons");
+  const tLabels = await getTranslations("labels");
+  const locale = await getLocale();
+  const dateLocale = LOCALE_MAP[locale] || "fr-CH";
 
-  return formatTime(endDate);
-}
+  function formatTime(date: Date) {
+    return new Intl.DateTimeFormat(dateLocale, {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Europe/Zurich",
+    }).format(new Date(date));
+  }
 
-export default function LessonCard({ lesson }: LessonCardProps) {
+  function formatEndTime(date: Date, durationMin: number) {
+    const endDate = new Date(date);
+    endDate.setMinutes(endDate.getMinutes() + durationMin);
+    return formatTime(endDate);
+  }
+
   const participantNames = lesson.participants
     .map(
       (participant) =>
@@ -57,16 +68,16 @@ export default function LessonCard({ lesson }: LessonCardProps) {
         <div className={styles.title}>{lesson.title}</div>
 
         <div className={styles.meta}>
-          <span>{lesson.lessonType}</span>
+          <span>{tLabels(lesson.lessonType)}</span>
           <span>{lesson.durationMin} min</span>
         </div>
 
         <p className={styles.participants}>
-          {participantNames || "Aucun élève assigné"}
+          {participantNames || t("noStudentAssigned")}
         </p>
 
         {lesson.location ? (
-          <p className={styles.location}>📍 {lesson.location}</p>
+          <p className={styles.location}>{lesson.location}</p>
         ) : null}
       </article>
     </Link>

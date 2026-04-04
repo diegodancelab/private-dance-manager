@@ -25,7 +25,7 @@ vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
 }));
 
-import { createLesson } from "@/app/(app)/lessons/actions";
+import { createLesson } from "@/app/[locale]/(app)/lessons/actions";
 
 const baseState = {
   success: false,

@@ -43,11 +43,11 @@ export function formatDateKey(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export function formatWeekLabel(date: Date): string {
+export function formatWeekLabel(date: Date, dateLocale = "fr-CH"): string {
   const start = getStartOfWeek(date);
   const end = addDays(start, 6);
 
-  const formatter = new Intl.DateTimeFormat("fr-CH", {
+  const formatter = new Intl.DateTimeFormat(dateLocale, {
     day: "numeric",
     month: "short",
     year: "numeric",
@@ -109,11 +109,11 @@ export function getWindowDays(date: Date, mode: CalendarViewMode): Date[] {
 /**
  * Returns a human-readable label for the current window.
  */
-export function formatWindowLabel(date: Date, mode: CalendarViewMode): string {
-  if (mode === "week") return formatWeekLabel(date);
+export function formatWindowLabel(date: Date, mode: CalendarViewMode, dateLocale = "fr-CH"): string {
+  if (mode === "week") return formatWeekLabel(date, dateLocale);
   const start = getStartOfWindow(date, "rolling");
   const end = addDays(start, 6);
-  const fmt = new Intl.DateTimeFormat("fr-CH", {
+  const fmt = new Intl.DateTimeFormat(dateLocale, {
     day: "numeric",
     month: "short",
     year: "numeric",

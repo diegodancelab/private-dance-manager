@@ -1,3 +1,4 @@
+import { getTranslations, getLocale } from "next-intl/server";
 import { formatDateKey, getWindowDays, CalendarViewMode } from "@/lib/calendar";
 import { utcToZurichDate } from "@/lib/dates";
 import LessonCard from "./LessonCard";
@@ -30,19 +31,29 @@ type CalendarWeekViewProps = {
   lessons: LessonItem[];
 };
 
-function formatDayLabel(date: Date): string {
-  return new Intl.DateTimeFormat("fr-CH", {
-    weekday: "short",
-    day: "numeric",
-    month: "short",
-  }).format(date);
-}
+const LOCALE_MAP: Record<string, string> = {
+  fr: "fr-CH",
+  en: "en-GB",
+  es: "es-ES",
+};
 
-export default function CalendarWeekView({
+export default async function CalendarWeekView({
   currentDate,
   viewMode,
   lessons,
 }: CalendarWeekViewProps) {
+  const t = await getTranslations("calendar");
+  const locale = await getLocale();
+  const dateLocale = LOCALE_MAP[locale] || "fr-CH";
+
+  function formatDayLabel(date: Date): string {
+    return new Intl.DateTimeFormat(dateLocale, {
+      weekday: "short",
+      day: "numeric",
+      month: "short",
+    }).format(date);
+  }
+
   const weekDays = getWindowDays(currentDate, viewMode);
   const todayKey = formatDateKey(new Date());
 
@@ -81,7 +92,7 @@ export default function CalendarWeekView({
                   {formatDayLabel(day)}
                 </h2>
                 {isToday && (
-                  <span className={styles.todayBadge}>Aujourd&apos;hui</span>
+                  <span className={styles.todayBadge}>{t("today")}</span>
                 )}
               </div>
 
@@ -91,7 +102,7 @@ export default function CalendarWeekView({
                 variant="secondary"
                 className={styles.addLessonBtn}
               >
-                + Cours
+                {t("addLesson")}
               </Button>
             </header>
 
@@ -101,7 +112,7 @@ export default function CalendarWeekView({
                   <LessonCard key={lesson.id} lesson={lesson} />
                 ))
               ) : (
-                <p className={styles.empty}>Aucun cours</p>
+                <p className={styles.empty}>{t("noLessons")}</p>
               )}
             </div>
           </section>

@@ -1,8 +1,9 @@
 "use client";
 
-import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { Link, usePathname } from "@/i18n/navigation";
 import { logout } from "@/lib/auth/actions";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import styles from "./SidebarNav.module.css";
 
 type SidebarNavProps = {
@@ -10,23 +11,24 @@ type SidebarNavProps = {
 };
 
 const navItems = [
-  { href: "/", label: "Dashboard" },
-  { href: "/calendar", label: "Calendar" },
-  { href: "/lessons", label: "Lessons" },
-  { href: "/students", label: "Students" },
-  { href: "/packages", label: "Packages" },
-  { href: "/charges", label: "Charges" },
-  { href: "/payments", label: "Payments" },
-];
+  { href: "/", labelKey: "dashboard" },
+  { href: "/calendar", labelKey: "calendar" },
+  { href: "/lessons", labelKey: "lessons" },
+  { href: "/students", labelKey: "students" },
+  { href: "/packages", labelKey: "packages" },
+  { href: "/charges", labelKey: "charges" },
+  { href: "/payments", labelKey: "payments" },
+] as const;
 
 export default function SidebarNav({ onNavigate }: SidebarNavProps) {
   const pathname = usePathname();
+  const t = useTranslations("navigation");
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.brand}>
-        <h1 className={styles.logo}>Private Dance Manager</h1>
-        <p className={styles.subtitle}>Teacher dashboard</p>
+        <h1 className={styles.logo}>{t("brand")}</h1>
+        <p className={styles.subtitle}>{t("subtitle")}</p>
       </div>
 
       <nav className={styles.nav} aria-label="Main navigation">
@@ -43,17 +45,20 @@ export default function SidebarNav({ onNavigate }: SidebarNavProps) {
               onClick={onNavigate}
               className={`${styles.link} ${isActive ? styles.active : ""}`}
             >
-              {item.label}
+              {t(item.labelKey)}
             </Link>
           );
         })}
       </nav>
 
-      <form action={logout} className={styles.logoutForm}>
-        <button type="submit" className={styles.logoutButton}>
-          Log out
-        </button>
-      </form>
+      <div className={styles.bottomSection}>
+        <LanguageSwitcher />
+        <form action={logout} className={styles.logoutForm}>
+          <button type="submit" className={styles.logoutButton}>
+            {t("logout")}
+          </button>
+        </form>
+      </div>
     </div>
   );
 }

@@ -50,9 +50,15 @@
   color: #ffffff;
 }
 
-.logoutForm {
+.bottomSection {
   margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
   padding-top: 1rem;
+}
+
+.logoutForm {
 }
 
 .logoutButton {

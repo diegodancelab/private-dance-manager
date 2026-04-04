@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "title": "Private Dance Manager",
+    "description": "Gestiona clases de baile privadas, alumnos, cargos y pagos."
+  },
+  "navigation": {
+    "brand": "Private Dance Manager",
+    "subtitle": "Panel del profesor",
+    "dashboard": "Panel",
+    "calendar": "Calendario",
+    "lessons": "Clases",
+    "students": "Alumnos",
+    "packages": "Paquetes",
+    "charges": "Cargos",
+    "payments": "Pagos",
+    "logout": "Cerrar sesión",
+    "menu": "Menú",
+    "openMenu": "Abrir menú de navegación",
+    "closeMenu": "Cerrar menú de navegación"
+  },
+  "common": {
+    "add": "Añadir",
+    "save": "Guardar",
+    "cancel": "Cancelar",
+    "edit": "Editar",
+    "delete": "Eliminar",
+    "min": "min",
+    "remaining": "restante"
+  },
+  "calendar": {
+    "title": "Calendario",
+    "today": "Hoy",
+    "sevenDays": "7 días",
+    "week": "Semana",
+    "addLesson": "+ Clase",
+    "noLessons": "Sin clases",
+    "viewLabel": "Vista"
+  },
+  "dashboard": {
+    "title": "Panel",
+    "greeting": "Buenos días, {name}.",
+    "createLesson": "+ Crear clase",
+    "addStudent": "+ Añadir alumno",
+    "addPayment": "+ Añadir pago",
+    "today": "Hoy",
+    "noLessonsToday": "No hay clases programadas hoy.",
+    "next": "Siguiente",
+    "noStudentAssigned": "Ningún alumno asignado",
+    "moneyOwed": "Dinero adeudado",
+    "totalOutstanding": "Total pendiente",
+    "allChargesPaid": "Todos los cargos están pagados.",
+    "viewAllCharges": "Ver todos los cargos →",
+    "alerts": "Alertas",
+    "noAlerts": "Nada requiere su atención.",
+    "packageRunningLow": "Paquete casi agotado",
+    "packageExpiringSoon": "Paquete a punto de expirar",
+    "expiringTomorrow": "mañana",
+    "expiringInDays": "en {days} días",
+    "lessonWithoutStudent": "Clase sin alumno",
+    "noPackageAssigned": "Ningún paquete asignado"
+  },
+  "lessons": {
+    "noStudentAssigned": "Ningún alumno asignado",
+    "types": {
+      "PRIVATE": "Privado",
+      "DUO": "Dúo",
+      "GROUP": "Grupo",
+      "ONLINE": "En línea"
+    }
+  },
+  "labels": {
+    "ACTIVE": "Activo",
+    "EXHAUSTED": "Agotado",
+    "EXPIRED": "Expirado",
+    "PARTIALLY_PAID": "Parcialmente pagado",
+    "PAID": "Pagado",
+    "CONFIRMED": "Confirmado",
+    "COMPLETED": "Completado",
+    "REFUNDED": "Reembolsado",
+    "PENDING": "Pendiente",
+    "CANCELED": "Cancelado",
+    "PRIVATE": "Privado",
+    "DUO": "Dúo",
+    "GROUP": "Grupo",
+    "ONLINE": "En línea",
+    "CASH": "Efectivo",
+    "TWINT": "Twint",
+    "BANK_TRANSFER": "Transferencia bancaria",
+    "CARD": "Tarjeta",
+    "LESSON": "Clase",
+    "PACKAGE": "Paquete",
+    "ADJUSTMENT": "Ajuste",
+    "OTHER": "Otro"
+  },
+  "language": {
+    "label": "Idioma",
+    "fr": "FR",
+    "en": "EN",
+    "es": "ES"
+  }
+}

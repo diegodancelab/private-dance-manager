@@ -1,7 +1,14 @@
-import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import Button from "@/components/ui/Button";
 import styles from "./CalendarWeekHeader.module.css";
 import { addDays, formatWindowLabel, CalendarViewMode } from "@/lib/calendar";
+
+const LOCALE_MAP: Record<string, string> = {
+  fr: "fr-CH",
+  en: "en-GB",
+  es: "es-ES",
+};
 
 type CalendarWeekHeaderProps = {
   currentDate: Date;
@@ -15,10 +22,13 @@ function toDateParam(date: Date): string {
   return `${year}-${month}-${day}`;
 }
 
-export default function CalendarWeekHeader({
+export default async function CalendarWeekHeader({
   currentDate,
   viewMode,
 }: CalendarWeekHeaderProps) {
+  const t = await getTranslations("calendar");
+  const locale = await getLocale();
+  const dateLocale = LOCALE_MAP[locale] || "fr-CH";
   const previousWeek = addDays(currentDate, -7);
   const nextWeek = addDays(currentDate, 7);
   const dateParam = toDateParam(currentDate);
@@ -26,25 +36,25 @@ export default function CalendarWeekHeader({
   return (
     <div className={styles.header}>
       <div>
-        <h1 className={styles.title}>Calendrier</h1>
+        <h1 className={styles.title}>{t("title")}</h1>
         <p className={styles.subtitle}>
-          {formatWindowLabel(currentDate, viewMode)}
+          {formatWindowLabel(currentDate, viewMode, dateLocale)}
         </p>
       </div>
 
       <div className={styles.actions}>
-        <div className={styles.viewToggle} role="group" aria-label="Vue">
+        <div className={styles.viewToggle} role="group" aria-label={t("viewLabel")}>
           <Link
             href={`/calendar?date=${dateParam}&view=rolling`}
             className={`${styles.toggleOption} ${viewMode === "rolling" ? styles.toggleActive : ""}`}
           >
-            7 jours
+            {t("sevenDays")}
           </Link>
           <Link
             href={`/calendar?date=${dateParam}&view=week`}
             className={`${styles.toggleOption} ${viewMode === "week" ? styles.toggleActive : ""}`}
           >
-            Semaine
+            {t("week")}
           </Link>
         </div>
 
@@ -61,7 +71,7 @@ export default function CalendarWeekHeader({
           variant="secondary"
           size="sm"
         >
-          Aujourd&apos;hui
+          {t("today")}
         </Button>
 
         <Button
@@ -73,7 +83,7 @@ export default function CalendarWeekHeader({
         </Button>
 
         <Button href="/lessons/new" size="sm">
-          + Cours
+          {t("addLesson")}
         </Button>
       </div>
     </div>

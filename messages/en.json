@@ -1,0 +1,101 @@
+{
+  "metadata": {
+    "title": "Private Dance Manager",
+    "description": "Manage private dance lessons, students, charges, and payments."
+  },
+  "navigation": {
+    "brand": "Private Dance Manager",
+    "subtitle": "Teacher dashboard",
+    "dashboard": "Dashboard",
+    "calendar": "Calendar",
+    "lessons": "Lessons",
+    "students": "Students",
+    "packages": "Packages",
+    "charges": "Charges",
+    "payments": "Payments",
+    "logout": "Log out",
+    "menu": "Menu",
+    "openMenu": "Open navigation menu",
+    "closeMenu": "Close navigation menu"
+  },
+  "common": {
+    "add": "Add",
+    "save": "Save",
+    "cancel": "Cancel",
+    "edit": "Edit",
+    "delete": "Delete",
+    "min": "min",
+    "remaining": "remaining"
+  },
+  "calendar": {
+    "title": "Calendar",
+    "today": "Today",
+    "sevenDays": "7 days",
+    "week": "Week",
+    "addLesson": "+ Lesson",
+    "noLessons": "No lessons",
+    "viewLabel": "View"
+  },
+  "dashboard": {
+    "title": "Dashboard",
+    "greeting": "Good morning, {name}.",
+    "createLesson": "+ Create lesson",
+    "addStudent": "+ Add student",
+    "addPayment": "+ Add payment",
+    "today": "Today",
+    "noLessonsToday": "No lessons scheduled today.",
+    "next": "Next",
+    "noStudentAssigned": "No student assigned",
+    "moneyOwed": "Money owed",
+    "totalOutstanding": "Total outstanding",
+    "allChargesPaid": "All charges are paid.",
+    "viewAllCharges": "View all charges →",
+    "alerts": "Alerts",
+    "noAlerts": "Nothing requires your attention.",
+    "packageRunningLow": "Package running low",
+    "packageExpiringSoon": "Package expiring soon",
+    "expiringTomorrow": "tomorrow",
+    "expiringInDays": "in {days} days",
+    "lessonWithoutStudent": "Lesson without student",
+    "noPackageAssigned": "No package assigned"
+  },
+  "lessons": {
+    "noStudentAssigned": "No student assigned",
+    "types": {
+      "PRIVATE": "Private",
+      "DUO": "Duo",
+      "GROUP": "Group",
+      "ONLINE": "Online"
+    }
+  },
+  "labels": {
+    "ACTIVE": "Active",
+    "EXHAUSTED": "Exhausted",
+    "EXPIRED": "Expired",
+    "PARTIALLY_PAID": "Partially paid",
+    "PAID": "Paid",
+    "CONFIRMED": "Confirmed",
+    "COMPLETED": "Completed",
+    "REFUNDED": "Refunded",
+    "PENDING": "Pending",
+    "CANCELED": "Canceled",
+    "PRIVATE": "Private",
+    "DUO": "Duo",
+    "GROUP": "Group",
+    "ONLINE": "Online",
+    "CASH": "Cash",
+    "TWINT": "Twint",
+    "BANK_TRANSFER": "Bank transfer",
+    "CARD": "Card",
+    "LESSON": "Lesson",
+    "PACKAGE": "Package",
+    "ADJUSTMENT": "Adjustment",
+    "OTHER": "Other"
+  },
+  "language": {
+    "label": "Language",
+    "fr": "FR",
+    "en": "EN",
+    "es": "ES"
+  }
+}
