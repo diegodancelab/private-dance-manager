@@ -25,3 +25,35 @@
   gap: 0.5rem;
   align-items: center;
 }
+
+/* Segmented view toggle */
+.viewToggle {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 999px;
+  padding: 0.2rem;
+  gap: 0.1rem;
+}
+
+.toggleOption {
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #6b7280;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+  white-space: nowrap;
+}
+
+.toggleOption:hover {
+  color: #111827;
+}
+
+.toggleActive {
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}

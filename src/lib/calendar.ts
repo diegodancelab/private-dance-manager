@@ -69,3 +69,54 @@ export function parseCalendarDate(dateParam?: string): Date {
 
   return parsed;
 }
+
+// ─── Rolling week / view mode ───────────────────────────────────────────────
+
+export type CalendarViewMode = "rolling" | "week";
+
+export function parseViewMode(param?: string): CalendarViewMode {
+  return param === "week" ? "week" : "rolling";
+}
+
+/**
+ * Returns the start of the display window.
+ * - rolling: start of the anchor day (today by default)
+ * - week:    Monday of the week containing the anchor
+ */
+export function getStartOfWindow(date: Date, mode: CalendarViewMode): Date {
+  if (mode === "week") return getStartOfWeek(date);
+  const result = new Date(date);
+  result.setHours(0, 0, 0, 0);
+  return result;
+}
+
+/**
+ * Returns the exclusive end of the display window (start + 7 days).
+ */
+export function getEndOfWindow(date: Date, mode: CalendarViewMode): Date {
+  return addDays(getStartOfWindow(date, mode), 7);
+}
+
+/**
+ * Returns the 7 Date objects for the display window.
+ */
+export function getWindowDays(date: Date, mode: CalendarViewMode): Date[] {
+  if (mode === "week") return getWeekDays(date);
+  const start = getStartOfWindow(date, "rolling");
+  return Array.from({ length: 7 }, (_, i) => addDays(start, i));
+}
+
+/**
+ * Returns a human-readable label for the current window.
+ */
+export function formatWindowLabel(date: Date, mode: CalendarViewMode): string {
+  if (mode === "week") return formatWeekLabel(date);
+  const start = getStartOfWindow(date, "rolling");
+  const end = addDays(start, 6);
+  const fmt = new Intl.DateTimeFormat("fr-CH", {
+    day: "numeric",
+    month: "short",
+    year: "numeric",
+  });
+  return `${fmt.format(start)} – ${fmt.format(end)}`;
+}
