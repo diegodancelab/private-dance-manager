@@ -4,7 +4,7 @@ import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { zurichDateToUtc } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeType, ChargeStatus, PackageStatus } from "@/generated/prisma/client";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import type { PackageFormState } from "./form-state";
 import { withFormAction, DomainError, handleNonFormActionError } from "@/lib/errors";
 

@@ -2,7 +2,7 @@
 
 import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import { UserRole } from "@/generated/prisma/client";
 import type { StudentFormState } from "./form-state";
 import { withFormAction } from "@/lib/errors";

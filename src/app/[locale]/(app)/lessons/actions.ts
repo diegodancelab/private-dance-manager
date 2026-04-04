@@ -16,7 +16,7 @@ import {
   UserRole,
 } from "@/generated/prisma/client";
 import type { BillingMode } from "./form-state";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import type { LessonFormState } from "./form-state";
 import {
   DomainError,

@@ -9,7 +9,7 @@ import {
   PaymentStatus,
   UserRole,
 } from "@/generated/prisma/client";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import type { PaymentFormState } from "./form-state";
 import { withFormAction } from "@/lib/errors";
 
