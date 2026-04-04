@@ -5,6 +5,7 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import { getLabel } from "@/lib/labels";
 import { formatDateTime } from "@/lib/format";
 import styles from "./LessonDetail.module.css";
+import { requireAuth } from "@/lib/auth/require-auth";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -13,9 +14,10 @@ type Props = {
 
 export default async function LessonDetailPage({ params }: Props) {
   const { id } = await params;
+  const { user } = await requireAuth();
 
-  const lesson = await prisma.lesson.findUnique({
-    where: { id },
+  const lesson = await prisma.lesson.findFirst({
+    where: { id, teacherId: user.id },
     include: {
       teacher: {
         select: { firstName: true, lastName: true },

@@ -155,8 +155,9 @@ Used by every module. Auth failure redirects to `/login`.
 - **Priority**: Critical
 - **Preconditions**: A session row exists in the DB with `expiresAt` in the past
 - **Steps**: Make any authenticated request using the expired session cookie
-- **Expected**: Session deleted from DB, user redirected to `/login`
+- **Expected**: Session row deleted from DB (cleanup on detection), user redirected to `/login`
 - **What could go wrong**: Expired sessions not cleaned up, user retains access
+- **Notes**: `src/lib/auth/session.ts:60`
 
 ---
 
@@ -186,7 +187,7 @@ Used by every module. Auth failure redirects to `/login`.
 - **Steps**: Log in as that user, trigger any server action (e.g., createLesson)
 - **Expected**: `requireTeacherAuth()` detects `role !== TEACHER` → `redirect("/login")`
 - **What could go wrong**: Layout `requireAuth()` passes because session is valid; only action-level guard catches role mismatch
-- **Notes**: `src/lib/auth/require-auth.ts:22-28`. All write actions use `requireTeacherAuth()`. Read-only pages use `requireAuth()` — a STUDENT user with valid session can still view student detail pages.
+- **Notes**: `src/lib/auth/require-auth.ts:22-28`. All server actions AND the `(app)` layout use `requireTeacherAuth()` (via `proxyAuth()` in `src/lib/auth/proxy.ts`). A STUDENT user with a valid session is blocked at layout level — they cannot access any page under `(app)`, not just write actions.
 
 ---
 
@@ -562,12 +563,12 @@ Teachers schedule lessons with optional student participants. Calendar view show
 ---
 
 **CL-V-03**
-- **Title**: Invalid date components pass format check (Feb 30)
+- **Title**: Invalid date components rejected by calendar round-trip check (Feb 30)
 - **Priority**: Medium
 - **Preconditions**: Teacher authenticated
 - **Steps**: Submit scheduledAt = "2025-02-30T14:00"
-- **Expected**: *(Inferred — weakness)* Format check passes. `zurichLocalToUtc` converts it. JS Date silently normalizes Feb 30 to March 2. Lesson is scheduled on the wrong date with no error.
-- **Notes**: See W-04.
+- **Expected**: `isValidDatetimeLocal` rejects "2025-02-30T14:00" via the calendar round-trip check (Date UTC normalised ≠ day submitted). Validation error returned — lesson not created.
+- **Notes**: `src/lib/dates.ts:62-70`. [FIXED]
 
 ---
 
@@ -1339,6 +1340,15 @@ Teachers record payments from students. Payments can be optionally linked to a c
 
 ---
 
+**PAY-V-04**
+- **Title**: Reject payment update with zero or negative amount
+- **Priority**: High
+- **Steps**: Edit existing payment, change amount to "0" or "-10"
+- **Expected**: `{ errors: { amount: "Amount must be greater than 0." } }` — no allocation update, no charge recalculation
+- **Notes**: `src/app/(app)/payments/actions.ts` — updatePayment. Same guard as createPayment.
+
+---
+
 **PAY-E-01**
 - **Title**: Update payment amount — all linked charges updated in same transaction
 - **Priority**: High
@@ -1741,7 +1751,7 @@ Computed from: `Lesson`, `Package`, `Charge`, `PaymentAllocation`, `PackageUsage
 
 ---
 
-### W-03 — MEDIUM: Invalid date components pass format check
+### ~~W-03 — MEDIUM: Invalid date components pass format check~~ [FIXED]
 
 **File**: `src/lib/dates.ts`
 
@@ -1750,6 +1760,8 @@ Computed from: `Lesson`, `Package`, `Charge`, `PaymentAllocation`, `PackageUsage
 **Impact**: Lessons or charges scheduled on impossible dates get silently shifted to wrong dates.
 
 **Fix direction**: After format check, validate month (1–12) and day (within month's actual range).
+
+**Resolution**: `isValidDatetimeLocal` now validates calendar dates via Date round-trip check (`d.getUTCDate() === dy`). Feb 30 normalises to March 2, which fails the check — validation error returned.
 
 ---
 

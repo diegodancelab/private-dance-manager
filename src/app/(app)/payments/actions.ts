@@ -247,6 +247,8 @@ export const updatePayment = withFormAction(async function updatePayment(
     state.errors.amount = "Amount is required.";
   } else if (!isValidDecimal(amount)) {
     state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+  } else if (Number(amount) <= 0) {
+    state.errors.amount = "Amount must be greater than 0.";
   }
 
   if (!currency) {
