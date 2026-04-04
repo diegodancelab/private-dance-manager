@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { createPackage } from "../actions";
 import { initialPackageFormState } from "../form-state";
@@ -25,6 +26,9 @@ export default function PackageCreateForm({
   students,
   defaultUserId = "",
 }: PackageCreateFormProps) {
+  const t = useTranslations("packagesPage");
+  const tCommon = useTranslations("common");
+
   const [state, formAction, isPending] = useActionState(createPackage, {
     ...initialPackageFormState,
     fields: {
@@ -37,14 +41,14 @@ export default function PackageCreateForm({
 
   return (
     <FormCard
-      eyebrow="Packages"
-      title="Create package"
-      subtitle="Create a prepaid hour package for a student."
+      eyebrow={t("eyebrow")}
+      title={t("createTitle")}
+      subtitle={t("createSubtitle")}
     >
       <form action={formAction} className={styles.form}>
         <div className={styles.grid}>
           <FormField
-            label="Student"
+            label={t("fieldStudent")}
             htmlFor="userId"
             error={safeState.errors.userId}
             fullWidth
@@ -54,7 +58,7 @@ export default function PackageCreateForm({
               name="userId"
               defaultValue={safeState.fields.userId}
             >
-              <option value="">Select a student</option>
+              <option value="">{tCommon("selectStudent")}</option>
               {students.map((student) => (
                 <option key={student.id} value={student.id}>
                   {student.firstName} {student.lastName}
@@ -68,7 +72,7 @@ export default function PackageCreateForm({
           </FormField>
 
           <FormField
-            label="Package name"
+            label={t("fieldName")}
             htmlFor="name"
             error={safeState.errors.name}
             fullWidth
@@ -77,13 +81,13 @@ export default function PackageCreateForm({
               id="name"
               name="name"
               type="text"
-              placeholder="e.g. 10-hour pack"
+              placeholder={t("namePlaceholder")}
               defaultValue={safeState.fields.name}
             />
           </FormField>
 
           <FormField
-            label="Total hours"
+            label={t("fieldTotalHours")}
             htmlFor="totalHours"
             error={safeState.errors.totalHours}
           >
@@ -99,7 +103,7 @@ export default function PackageCreateForm({
           </FormField>
 
           <FormField
-            label="Expires at (optional)"
+            label={t("fieldExpiresAt")}
             htmlFor="expiresAt"
             error={safeState.errors.expiresAt}
           >
@@ -112,7 +116,7 @@ export default function PackageCreateForm({
           </FormField>
 
           <FormField
-            label="Amount"
+            label={t("fieldAmount")}
             htmlFor="amount"
             error={safeState.errors.amount}
           >
@@ -128,7 +132,7 @@ export default function PackageCreateForm({
           </FormField>
 
           <FormField
-            label="Currency"
+            label={t("fieldCurrency")}
             htmlFor="currency"
             error={safeState.errors.currency}
           >
@@ -146,8 +150,8 @@ export default function PackageCreateForm({
         ) : null}
 
         <div className={styles.actions}>
-          <Button type="submit" isPending={isPending} pendingLabel="Creating...">
-            Create package
+          <Button type="submit" isPending={isPending} pendingLabel="...">
+            {t("create")}
           </Button>
         </div>
       </form>

@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { createCharge } from "../actions";
 import { initialChargeFormState } from "../form-state";
@@ -38,6 +39,10 @@ export default function ChargeCreateForm({
   lessons,
   defaultUserId = "",
 }: ChargeCreateFormProps) {
+  const t = useTranslations("chargesPage");
+  const tLabels = useTranslations("labels");
+  const tCommon = useTranslations("common");
+
   const [state, formAction, isPending] = useActionState(createCharge, {
     ...initialChargeFormState,
     fields: {
@@ -50,14 +55,14 @@ export default function ChargeCreateForm({
 
   return (
     <FormCard
-      eyebrow="Charges"
-      title="Create charge"
-      subtitle="Issue a charge to a student for a lesson or service."
+      eyebrow={t("eyebrow")}
+      title={t("createTitle")}
+      subtitle={t("createSubtitle")}
     >
       <form action={formAction} className={styles.form}>
         <div className={styles.grid}>
           <FormField
-            label="Student"
+            label={t("fieldStudent")}
             htmlFor="userId"
             error={safeState.errors.userId}
             fullWidth
@@ -67,7 +72,7 @@ export default function ChargeCreateForm({
               name="userId"
               defaultValue={safeState.fields.userId}
             >
-              <option value="">Select a student</option>
+              <option value="">{tCommon("selectStudent")}</option>
               {students.map((student) => (
                 <option key={student.id} value={student.id}>
                   {student.firstName} {student.lastName}
@@ -81,7 +86,7 @@ export default function ChargeCreateForm({
           </FormField>
 
           <FormField
-            label="Related lesson"
+            label={t("fieldRelatedLesson")}
             htmlFor="lessonId"
             error={safeState.errors.lessonId}
             fullWidth
@@ -91,7 +96,7 @@ export default function ChargeCreateForm({
               name="lessonId"
               defaultValue={safeState.fields.lessonId}
             >
-              <option value="">No lesson linked</option>
+              <option value="">{t("noLessonLinked")}</option>
               {lessons.map((lesson) => (
                 <option key={lesson.id} value={lesson.id}>
                   {lesson.title} - {formatDateTime(lesson.scheduledAt)}
@@ -101,7 +106,7 @@ export default function ChargeCreateForm({
           </FormField>
 
           <FormField
-            label="Title"
+            label={t("fieldTitle")}
             htmlFor="title"
             error={safeState.errors.title}
             fullWidth
@@ -114,7 +119,7 @@ export default function ChargeCreateForm({
             />
           </FormField>
 
-          <FormField label="Description" htmlFor="description" fullWidth>
+          <FormField label={t("fieldDescription")} htmlFor="description" fullWidth>
             <textarea
               id="description"
               name="description"
@@ -123,7 +128,7 @@ export default function ChargeCreateForm({
             />
           </FormField>
 
-          <FormField label="Type" htmlFor="type">
+          <FormField label={t("fieldType")} htmlFor="type">
             <select
               id="type"
               name="type"
@@ -131,13 +136,13 @@ export default function ChargeCreateForm({
             >
               {CHARGE_TYPE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {tLabels(option.value)}
                 </option>
               ))}
             </select>
           </FormField>
 
-          <FormField label="Status" htmlFor="status">
+          <FormField label={t("fieldStatus")} htmlFor="status">
             <select
               id="status"
               name="status"
@@ -145,14 +150,14 @@ export default function ChargeCreateForm({
             >
               {CHARGE_STATUS_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {tLabels(option.value)}
                 </option>
               ))}
             </select>
           </FormField>
 
           <FormField
-            label="Amount"
+            label={t("fieldAmount")}
             htmlFor="amount"
             error={safeState.errors.amount}
           >
@@ -167,7 +172,7 @@ export default function ChargeCreateForm({
           </FormField>
 
           <FormField
-            label="Currency"
+            label={t("fieldCurrency")}
             htmlFor="currency"
             error={safeState.errors.currency}
           >
@@ -180,7 +185,7 @@ export default function ChargeCreateForm({
           </FormField>
 
           <FormField
-            label="Due date"
+            label={t("fieldDueDate")}
             htmlFor="dueAt"
             error={safeState.errors.dueAt}
           >
@@ -198,8 +203,8 @@ export default function ChargeCreateForm({
         ) : null}
 
         <div className={styles.actions}>
-          <Button type="submit" isPending={isPending} pendingLabel="Creating...">
-            Create charge
+          <Button type="submit" isPending={isPending} pendingLabel="...">
+            {t("create")}
           </Button>
         </div>
       </form>

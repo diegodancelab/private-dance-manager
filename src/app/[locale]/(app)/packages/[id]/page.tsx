@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { UserRole, ChargeType, ChargeStatus, PackageStatus } from "@/generated/prisma/client";
+import { getTranslations } from "next-intl/server";
 import StatusBadge from "@/components/ui/StatusBadge";
 import styles from "./PackageDetail.module.css";
 import {
@@ -33,6 +34,7 @@ function formatDate(date: Date | null): string {
 }
 
 export default async function PackageDetailPage({ params, searchParams }: Props) {
+  const tLabels = await getTranslations("labels");
   const { id } = await params;
   const { migrated, skipped } = await searchParams;
   const migratedResult = migrated ? Number(migrated) : null;
@@ -156,7 +158,7 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Status</span>
-              <span className={styles.infoValue}><StatusBadge status={pkg.status} /></span>
+              <span className={styles.infoValue}><StatusBadge status={pkg.status} label={tLabels(pkg.status)} /></span>
             </div>
 
             <div className={styles.infoItem}>

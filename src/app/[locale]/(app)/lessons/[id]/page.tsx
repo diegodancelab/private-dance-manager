@@ -1,8 +1,8 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import StatusBadge from "@/components/ui/StatusBadge";
-import { getLabel } from "@/lib/labels";
 import { formatDateTime } from "@/lib/format";
 import styles from "./LessonDetail.module.css";
 import { requireAuth } from "@/lib/auth/require-auth";
@@ -15,6 +15,7 @@ type Props = {
 export default async function LessonDetailPage({ params }: Props) {
   const { id } = await params;
   const { user } = await requireAuth();
+  const tLabels = await getTranslations("labels");
 
   const lesson = await prisma.lesson.findFirst({
     where: { id, teacherId: user.id },
@@ -58,7 +59,7 @@ export default async function LessonDetailPage({ params }: Props) {
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Type</span>
-              <span className={styles.infoValue}>{getLabel(lesson.lessonType)}</span>
+              <span className={styles.infoValue}>{tLabels(lesson.lessonType)}</span>
             </div>
 
             <div className={styles.infoItem}>
@@ -117,7 +118,7 @@ export default async function LessonDetailPage({ params }: Props) {
                       {participant.user.firstName} {participant.user.lastName}
                     </span>
                     <span className={styles.participantStatus}>
-                      <StatusBadge status={participant.status} />
+                      <StatusBadge status={participant.status} label={tLabels(participant.status)} />
                     </span>
                     {participant.packageUsage ? (
                       <span className={styles.packageTag}>

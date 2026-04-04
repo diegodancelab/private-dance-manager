@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { updateStudent } from "../../actions";
 import type { StudentFormState } from "../../form-state";
@@ -12,6 +13,7 @@ type StudentEditFormProps = {
 export default function StudentEditForm({
   initialState,
 }: StudentEditFormProps) {
+  const t = useTranslations("students");
   const [state, formAction, isPending] = useActionState(
     updateStudent,
     initialState
@@ -23,11 +25,9 @@ export default function StudentEditForm({
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Students</p>
-          <h1 className={styles.title}>Edit student</h1>
-          <p className={styles.subtitle}>
-            Update the student&apos;s profile and contact details.
-          </p>
+          <p className={styles.eyebrow}>{t("eyebrow")}</p>
+          <h1 className={styles.title}>{t("editTitle")}</h1>
+          <p className={styles.subtitle}>{t("editSubtitle")}</p>
         </div>
 
         <form action={formAction} className={styles.form}>
@@ -35,7 +35,7 @@ export default function StudentEditForm({
 
           <div className={styles.grid}>
             <div className={styles.field}>
-              <label htmlFor="firstName">First name</label>
+              <label htmlFor="firstName">{t("firstName")}</label>
               <input
                 id="firstName"
                 name="firstName"
@@ -48,7 +48,7 @@ export default function StudentEditForm({
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="lastName">Last name</label>
+              <label htmlFor="lastName">{t("lastName")}</label>
               <input
                 id="lastName"
                 name="lastName"
@@ -61,7 +61,7 @@ export default function StudentEditForm({
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">{t("email")}</label>
               <input
                 id="email"
                 name="email"
@@ -74,7 +74,7 @@ export default function StudentEditForm({
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="phone">Phone</label>
+              <label htmlFor="phone">{t("phone")}</label>
               <input
                 id="phone"
                 name="phone"
@@ -84,9 +84,7 @@ export default function StudentEditForm({
             </div>
           </div>
 
-          <p className={styles.helper}>
-            At least one contact method is required: email or phone.
-          </p>
+          <p className={styles.helper}>{t("contactHelper")}</p>
 
           {safeState.errors.form ? (
             <div className={styles.formError}>{safeState.errors.form}</div>
@@ -94,7 +92,7 @@ export default function StudentEditForm({
 
           <div className={styles.actions}>
             <button type="submit" className={styles.button} disabled={isPending}>
-              {isPending ? "Updating..." : "Update student"}
+              {isPending ? "..." : t("update")}
             </button>
           </div>
         </form>

@@ -1,7 +1,7 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import StatusBadge from "@/components/ui/StatusBadge";
 import type { RecentPayment } from "@/features/students/queries/getStudentDetail";
-import { getLabel } from "@/lib/labels";
 import { formatDate } from "@/lib/format";
 import styles from "./StudentDetail.module.css";
 
@@ -10,10 +10,11 @@ type Props = {
   studentId: string;
 };
 
-export default function StudentRecentPaymentsSection({
+export default async function StudentRecentPaymentsSection({
   payments,
   studentId,
 }: Props) {
+  const tLabels = await getTranslations("labels");
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>
@@ -47,10 +48,10 @@ export default function StudentRecentPaymentsSection({
                     {payment.amount.toFixed(2)} {payment.currency}
                   </td>
                   <td className={styles.tableCell}>
-                    {payment.method ? getLabel(payment.method) : "—"}
+                    {payment.method ? tLabels(payment.method) : "—"}
                   </td>
                   <td className={styles.tableCell}>
-                    <StatusBadge status={payment.status} />
+                    <StatusBadge status={payment.status} label={tLabels(payment.status)} />
                   </td>
                   <td className={styles.tableCell}>
                     {payment.paidAt ? formatDate(payment.paidAt) : "—"}

@@ -1,7 +1,7 @@
+import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import StatusBadge from "@/components/ui/StatusBadge";
-import { getLabel } from "@/lib/labels";
 import { requireAuth } from "@/lib/auth/require-auth";
 import Button from "@/components/ui/Button";
 import styles from "./PaymentsPage.module.css";
@@ -10,22 +10,30 @@ function formatAmount(amount: string | number, currency: string) {
   return `${amount} ${currency}`;
 }
 
-function formatDateTime(date: Date | null) {
-  if (!date) {
-    return "-";
-  }
-
-  return new Intl.DateTimeFormat("fr-CH", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date));
-}
+const LOCALE_MAP: Record<string, string> = {
+  fr: "fr-CH",
+  en: "en-GB",
+  es: "es-ES",
+};
 
 export default async function PaymentsPage() {
   const { user } = await requireAuth();
+  const t = await getTranslations("paymentsPage");
+  const tLabels = await getTranslations("labels");
+  const tCommon = await getTranslations("common");
+  const locale = await getLocale();
+  const dateLocale = LOCALE_MAP[locale] ?? "fr-CH";
+
+  function formatDateTime(date: Date | null) {
+    if (!date) return "-";
+    return new Intl.DateTimeFormat(dateLocale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(date));
+  }
 
   const payments = await prisma.payment.findMany({
     where: { teacherId: user.id },
@@ -45,33 +53,29 @@ export default async function PaymentsPage() {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.heading}>
-          <h1 className={styles.title}>Payments</h1>
-          <p className={styles.subtitle}>
-            Track received money from your students.
-          </p>
+          <h1 className={styles.title}>{t("title")}</h1>
+          <p className={styles.subtitle}>{t("subtitle")}</p>
         </div>
 
-        <Button href="/payments/new" size="sm">Create payment</Button>
+        <Button href="/payments/new" size="sm">{t("createPayment")}</Button>
       </div>
 
       {payments.length === 0 ? (
         <div className={styles.emptyState}>
-          <p className={styles.emptyText}>No payments yet.</p>
-          <p className={styles.emptySubtext}>
-            Create your first payment to start tracking received money.
-          </p>
+          <p className={styles.emptyText}>{t("noPaymentsTitle")}</p>
+          <p className={styles.emptySubtext}>{t("noPaymentsSubtitle")}</p>
         </div>
       ) : (
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.tableHeadCell}>Student</th>
-                <th className={styles.tableHeadCell}>Amount</th>
-                <th className={styles.tableHeadCell}>Method</th>
-                <th className={styles.tableHeadCell}>Status</th>
-                <th className={styles.tableHeadCell}>Paid at</th>
-                <th className={styles.tableHeadCell}>Actions</th>
+                <th className={styles.tableHeadCell}>{t("colStudent")}</th>
+                <th className={styles.tableHeadCell}>{t("colAmount")}</th>
+                <th className={styles.tableHeadCell}>{t("colMethod")}</th>
+                <th className={styles.tableHeadCell}>{t("colStatus")}</th>
+                <th className={styles.tableHeadCell}>{t("colPaidAt")}</th>
+                <th className={styles.tableHeadCell}></th>
               </tr>
             </thead>
 
@@ -87,11 +91,11 @@ export default async function PaymentsPage() {
                   </td>
 
                   <td className={styles.tableCell}>
-                    {payment.method ? getLabel(payment.method) : "—"}
+                    {payment.method ? tLabels(payment.method) : "—"}
                   </td>
 
                   <td className={styles.tableCell}>
-                    <StatusBadge status={payment.status} />
+                    <StatusBadge status={payment.status} label={tLabels(payment.status)} />
                   </td>
 
                   <td className={styles.tableCell}>
@@ -104,13 +108,13 @@ export default async function PaymentsPage() {
                         href={`/payments/${payment.id}`}
                         className={styles.actionLink}
                       >
-                        View
+                        {tCommon("view")}
                       </Link>
                       <Link
                         href={`/payments/${payment.id}/edit`}
                         className={styles.actionLink}
                       >
-                        Edit
+                        {tCommon("edit")}
                       </Link>
                     </div>
                   </td>

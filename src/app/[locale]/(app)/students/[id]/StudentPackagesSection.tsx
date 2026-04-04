@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import StatusBadge from "@/components/ui/StatusBadge";
 import type { StudentPackageItem } from "@/features/students/queries/getStudentDetail";
@@ -16,7 +17,8 @@ function sortPackages(packages: StudentPackageItem[]): StudentPackageItem[] {
   });
 }
 
-export default function StudentPackagesSection({ packages }: Props) {
+export default async function StudentPackagesSection({ packages }: Props) {
+  const tLabels = await getTranslations("labels");
   const sorted = sortPackages(packages);
 
   return (
@@ -74,7 +76,7 @@ export default function StudentPackagesSection({ packages }: Props) {
                       </span>
                     </td>
                     <td className={styles.tableCell}>
-                      <StatusBadge status={pkg.status} />
+                      <StatusBadge status={pkg.status} label={tLabels(pkg.status)} />
                     </td>
                     <td className={styles.tableCell}>
                       {formatDate(pkg.expiresAt)}

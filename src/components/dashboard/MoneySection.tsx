@@ -16,6 +16,7 @@ function formatAmount(amount: number, currency: string): string {
 
 export default async function MoneySection({ charges, totalOwed, currency }: Props) {
   const t = await getTranslations("dashboard");
+  const tLabels = await getTranslations("labels");
 
   return (
     <section className={styles.section}>
@@ -46,7 +47,7 @@ export default async function MoneySection({ charges, totalOwed, currency }: Pro
                 </div>
                 <div className={styles.rowRight}>
                   <span className={styles.amount}>{formatAmount(due, charge.currency)}</span>
-                  <StatusBadge status={charge.status} />
+                  <StatusBadge status={charge.status} label={tLabels(charge.status)} />
                 </div>
               </Link>
             );

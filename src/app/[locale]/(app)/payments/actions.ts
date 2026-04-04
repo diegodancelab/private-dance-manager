@@ -10,6 +10,7 @@ import {
   UserRole,
 } from "@/generated/prisma/client";
 import { redirect } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import type { PaymentFormState } from "./form-state";
 import { withFormAction } from "@/lib/errors";
 
@@ -58,6 +59,7 @@ export const createPayment = withFormAction(async function createPayment(
   formData: FormData
 ): Promise<PaymentFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const userId = parseRequiredString(formData.get("userId"));
   const amount = parseRequiredString(formData.get("amount"));
   const currency = parseRequiredString(formData.get("currency")) || "CHF";
@@ -83,23 +85,23 @@ export const createPayment = withFormAction(async function createPayment(
   };
 
   if (!userId) {
-    state.errors.userId = "Student is required.";
+    state.errors.userId = t("studentRequired");
   }
 
   if (!amount) {
-    state.errors.amount = "Amount is required.";
+    state.errors.amount = t("amountRequired");
   } else if (!isValidDecimal(amount)) {
-    state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+    state.errors.amount = t("amountInvalid");
   } else if (Number(amount) <= 0) {
-    state.errors.amount = "Amount must be greater than 0.";
+    state.errors.amount = t("amountPositive");
   }
 
   if (!currency) {
-    state.errors.currency = "Currency is required.";
+    state.errors.currency = t("currencyRequired");
   }
 
   if (paidAt && !isValidDatetimeLocal(paidAt)) {
-    state.errors.paidAt = "Paid date is invalid.";
+    state.errors.paidAt = t("paidDateInvalid");
   }
 
   if (Object.keys(state.errors).length > 0) {
@@ -121,7 +123,7 @@ export const createPayment = withFormAction(async function createPayment(
     return {
       ...state,
       errors: {
-        userId: "Selected student was not found.",
+        userId: t("selectedStudentNotFound"),
       },
     };
   }
@@ -138,14 +140,14 @@ export const createPayment = withFormAction(async function createPayment(
     if (!charge) {
       return {
         ...state,
-        errors: { form: "Selected charge was not found." },
+        errors: { form: t("selectedChargeNotFound") },
       };
     }
 
     if (charge.userId !== userId) {
       return {
         ...state,
-        errors: { form: "This charge does not belong to the selected student." },
+        errors: { form: t("chargeNotBelongToStudent") },
       };
     }
   }
@@ -209,6 +211,7 @@ export const updatePayment = withFormAction(async function updatePayment(
   formData: FormData
 ): Promise<PaymentFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const id = parseRequiredString(formData.get("id"));
   const userId = parseRequiredString(formData.get("userId"));
   const amount = parseRequiredString(formData.get("amount"));
@@ -240,23 +243,23 @@ export const updatePayment = withFormAction(async function updatePayment(
   }
 
   if (!userId) {
-    state.errors.userId = "Student is required.";
+    state.errors.userId = t("studentRequired");
   }
 
   if (!amount) {
-    state.errors.amount = "Amount is required.";
+    state.errors.amount = t("amountRequired");
   } else if (!isValidDecimal(amount)) {
-    state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+    state.errors.amount = t("amountInvalid");
   } else if (Number(amount) <= 0) {
-    state.errors.amount = "Amount must be greater than 0.";
+    state.errors.amount = t("amountPositive");
   }
 
   if (!currency) {
-    state.errors.currency = "Currency is required.";
+    state.errors.currency = t("currencyRequired");
   }
 
   if (paidAt && !isValidDatetimeLocal(paidAt)) {
-    state.errors.paidAt = "Paid date is invalid.";
+    state.errors.paidAt = t("paidDateInvalid");
   }
 
   if (Object.keys(state.errors).length > 0) {
@@ -297,7 +300,7 @@ export const updatePayment = withFormAction(async function updatePayment(
     return {
       ...state,
       errors: {
-        userId: "Selected student was not found.",
+        userId: t("selectedStudentNotFound"),
       },
     };
   }

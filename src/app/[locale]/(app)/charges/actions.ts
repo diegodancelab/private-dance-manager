@@ -5,6 +5,7 @@ import { zurichDateToUtc, isValidDate } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { ChargeStatus, ChargeType, UserRole } from "@/generated/prisma/client";
 import { redirect } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import type { ChargeFormState } from "./form-state";
 import { withFormAction } from "@/lib/errors";
 
@@ -47,6 +48,7 @@ export const createCharge = withFormAction(async function createCharge(
   formData: FormData
 ): Promise<ChargeFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const userId = parseRequiredString(formData.get("userId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
   const type = parseChargeType(formData.get("type"));
@@ -76,27 +78,27 @@ export const createCharge = withFormAction(async function createCharge(
   };
 
   if (!userId) {
-    state.errors.userId = "Student is required.";
+    state.errors.userId = t("studentRequired");
   }
 
   if (!title) {
-    state.errors.title = "Title is required.";
+    state.errors.title = t("titleRequired");
   }
 
   if (!amount) {
-    state.errors.amount = "Amount is required.";
+    state.errors.amount = t("amountRequired");
   } else if (!isValidDecimal(amount)) {
-    state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+    state.errors.amount = t("amountInvalid");
   } else if (Number(amount) <= 0) {
-    state.errors.amount = "Amount must be greater than 0.";
+    state.errors.amount = t("amountPositive");
   }
 
   if (!currency) {
-    state.errors.currency = "Currency is required.";
+    state.errors.currency = t("currencyRequired");
   }
 
   if (dueAt && !isValidDate(dueAt)) {
-    state.errors.dueAt = "Due date is invalid.";
+    state.errors.dueAt = t("dueDateInvalid");
   }
 
   if (Object.keys(state.errors).length > 0) {
@@ -118,7 +120,7 @@ export const createCharge = withFormAction(async function createCharge(
     return {
       ...state,
       errors: {
-        userId: "Selected student was not found.",
+        userId: t("selectedStudentNotFound"),
       },
     };
   }
@@ -138,7 +140,7 @@ export const createCharge = withFormAction(async function createCharge(
       return {
         ...state,
         errors: {
-          lessonId: "Selected lesson was not found.",
+          lessonId: t("lessonNotFound"),
         },
       };
     }
@@ -167,6 +169,7 @@ export const updateCharge = withFormAction(async function updateCharge(
   formData: FormData
 ): Promise<ChargeFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const id = parseRequiredString(formData.get("id"));
   const userId = parseRequiredString(formData.get("userId"));
   const lessonId = parseRequiredString(formData.get("lessonId"));
@@ -202,27 +205,27 @@ export const updateCharge = withFormAction(async function updateCharge(
   }
 
   if (!userId) {
-    state.errors.userId = "Student is required.";
+    state.errors.userId = t("studentRequired");
   }
 
   if (!title) {
-    state.errors.title = "Title is required.";
+    state.errors.title = t("titleRequired");
   }
 
   if (!amount) {
-    state.errors.amount = "Amount is required.";
+    state.errors.amount = t("amountRequired");
   } else if (!isValidDecimal(amount)) {
-    state.errors.amount = "Amount must be a valid value with up to 2 decimals.";
+    state.errors.amount = t("amountInvalid");
   } else if (Number(amount) <= 0) {
-    state.errors.amount = "Amount must be greater than 0.";
+    state.errors.amount = t("amountPositive");
   }
 
   if (!currency) {
-    state.errors.currency = "Currency is required.";
+    state.errors.currency = t("currencyRequired");
   }
 
   if (dueAt && !isValidDate(dueAt)) {
-    state.errors.dueAt = "Due date is invalid.";
+    state.errors.dueAt = t("dueDateInvalid");
   }
 
   if (Object.keys(state.errors).length > 0) {
@@ -243,7 +246,7 @@ export const updateCharge = withFormAction(async function updateCharge(
     return {
       ...state,
       errors: {
-        form: "Charge not found.",
+        form: t("chargeNotFound"),
       },
     };
   }
@@ -263,7 +266,7 @@ export const updateCharge = withFormAction(async function updateCharge(
     return {
       ...state,
       errors: {
-        userId: "Selected student was not found.",
+        userId: t("selectedStudentNotFound"),
       },
     };
   }
@@ -283,7 +286,7 @@ export const updateCharge = withFormAction(async function updateCharge(
       return {
         ...state,
         errors: {
-          lessonId: "Selected lesson was not found.",
+          lessonId: t("lessonNotFound"),
         },
       };
     }

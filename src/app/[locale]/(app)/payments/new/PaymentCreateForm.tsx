@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState, useState, useRef } from "react";
 import { createPayment } from "../actions";
 import { initialPaymentFormState } from "../form-state";
@@ -46,6 +47,10 @@ export default function PaymentCreateForm({
   charges,
   preselect,
 }: PaymentCreateFormProps) {
+  const t = useTranslations("paymentsPage");
+  const tLabels = useTranslations("labels");
+  const tCommon = useTranslations("common");
+
   const [state, formAction, isPending] = useActionState(
     createPayment,
     initialPaymentFormState
@@ -77,14 +82,14 @@ export default function PaymentCreateForm({
 
   return (
     <FormCard
-      eyebrow="Payments"
-      title="Create payment"
-      subtitle="Record a payment received from a student."
+      eyebrow={t("eyebrow")}
+      title={t("createTitle")}
+      subtitle={t("createSubtitle")}
     >
       <form action={formAction} className={styles.form}>
         <div className={styles.grid}>
           <FormField
-            label="Student"
+            label={t("fieldStudent")}
             htmlFor="userId"
             error={safeState.errors.userId}
             fullWidth
@@ -98,7 +103,7 @@ export default function PaymentCreateForm({
                 setSelectedChargeId(null);
               }}
             >
-              <option value="">Select a student</option>
+              <option value="">{tCommon("selectStudent")}</option>
               {students.map((student) => (
                 <option key={student.id} value={student.id}>
                   {student.firstName} {student.lastName}
@@ -112,7 +117,7 @@ export default function PaymentCreateForm({
           </FormField>
 
           {selectedUserId && studentCharges.length > 0 ? (
-            <FormField label="Allocate to charge (optional)" fullWidth>
+            <FormField label={t("fieldAllocate")} fullWidth>
               <div className={styles.chargeList}>
                 {studentCharges.map((charge) => {
                   const pct =
@@ -147,7 +152,7 @@ export default function PaymentCreateForm({
                         />
                       </div>
                       <span className={styles.chargeRemaining}>
-                        {remaining.toFixed(2)} {charge.currency} remaining
+                        {remaining.toFixed(2)} {charge.currency} {tCommon("remaining")}
                       </span>
                     </button>
                   );
@@ -160,7 +165,7 @@ export default function PaymentCreateForm({
           ) : null}
 
           <FormField
-            label="Amount"
+            label={t("fieldAmount")}
             htmlFor="amount"
             error={safeState.errors.amount}
           >
@@ -176,7 +181,7 @@ export default function PaymentCreateForm({
           </FormField>
 
           <FormField
-            label="Currency"
+            label={t("fieldCurrency")}
             htmlFor="currency"
             error={safeState.errors.currency}
           >
@@ -188,22 +193,22 @@ export default function PaymentCreateForm({
             />
           </FormField>
 
-          <FormField label="Method" htmlFor="method">
+          <FormField label={t("fieldMethod")} htmlFor="method">
             <select
               id="method"
               name="method"
               defaultValue={safeState.fields.method}
             >
-              <option value="">No method specified</option>
+              <option value="">{tCommon("noMethodSpecified")}</option>
               {PAYMENT_METHOD_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {tLabels(option.value)}
                 </option>
               ))}
             </select>
           </FormField>
 
-          <FormField label="Status" htmlFor="status">
+          <FormField label={t("fieldStatus")} htmlFor="status">
             <select
               id="status"
               name="status"
@@ -211,14 +216,14 @@ export default function PaymentCreateForm({
             >
               {PAYMENT_STATUS_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {tLabels(option.value)}
                 </option>
               ))}
             </select>
           </FormField>
 
           <FormField
-            label="Paid at"
+            label={t("fieldPaidAt")}
             htmlFor="paidAt"
             error={safeState.errors.paidAt}
             fullWidth
@@ -231,7 +236,7 @@ export default function PaymentCreateForm({
             />
           </FormField>
 
-          <FormField label="Note" htmlFor="note" fullWidth>
+          <FormField label={t("fieldNote")} htmlFor="note" fullWidth>
             <textarea
               id="note"
               name="note"
@@ -246,8 +251,8 @@ export default function PaymentCreateForm({
         ) : null}
 
         <div className={styles.actions}>
-          <Button type="submit" isPending={isPending} pendingLabel="Creating...">
-            Create payment
+          <Button type="submit" isPending={isPending} pendingLabel="...">
+            {t("create")}
           </Button>
         </div>
       </form>

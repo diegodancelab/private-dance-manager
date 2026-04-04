@@ -5,6 +5,7 @@ import { zurichDateToUtc } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeType, ChargeStatus, PackageStatus } from "@/generated/prisma/client";
 import { redirect } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import type { PackageFormState } from "./form-state";
 import { withFormAction, DomainError, handleNonFormActionError } from "@/lib/errors";
 
@@ -23,6 +24,7 @@ export const createPackage = withFormAction(async function createPackage(
   formData: FormData
 ): Promise<PackageFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const userId = String(formData.get("userId") || "").trim();
   const name = String(formData.get("name") || "").trim();
   const totalHours = String(formData.get("totalHours") || "").trim();
@@ -37,31 +39,31 @@ export const createPackage = withFormAction(async function createPackage(
     errors: {},
   };
 
-  if (!userId) state.errors.userId = "Student is required.";
-  if (!name) state.errors.name = "Name is required.";
+  if (!userId) state.errors.userId = t("studentRequired");
+  if (!name) state.errors.name = t("packageNameRequired");
 
   if (!totalHours) {
-    state.errors.totalHours = "Total hours is required.";
+    state.errors.totalHours = t("totalHoursRequired");
   } else if (!isValidPositiveInt(totalHours)) {
-    state.errors.totalHours = "Total hours must be a positive integer.";
+    state.errors.totalHours = t("totalHoursInvalid");
   }
 
   if (!amount) {
-    state.errors.amount = "Amount is required.";
+    state.errors.amount = t("amountRequired");
   } else if (!isValidDecimal(amount)) {
-    state.errors.amount = "Amount must be a valid number with up to 2 decimals.";
+    state.errors.amount = t("amountInvalid");
   }
 
-  if (!currency) state.errors.currency = "Currency is required.";
+  if (!currency) state.errors.currency = t("currencyRequired");
 
   if (expiresAt) {
     try {
       const parsed = zurichDateToUtc(expiresAt);
       if (parsed <= new Date()) {
-        state.errors.expiresAt = "Expiry date must be in the future.";
+        state.errors.expiresAt = t("expiryFuture");
       }
     } catch {
-      state.errors.expiresAt = "Expiry date is invalid.";
+      state.errors.expiresAt = t("expiryInvalid");
     }
   }
 
@@ -73,7 +75,7 @@ export const createPackage = withFormAction(async function createPackage(
   });
 
   if (!student) {
-    return { ...state, errors: { userId: "Selected student was not found." } };
+    return { ...state, errors: { userId: t("selectedStudentNotFound") } };
   }
 
   const totalMinutes = Number(totalHours) * 60;
@@ -118,6 +120,7 @@ export const updatePackage = withFormAction(async function updatePackage(
   formData: FormData
 ): Promise<PackageFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const id = String(formData.get("id") || "").trim();
   const name = String(formData.get("name") || "").trim();
   const totalHours = String(formData.get("totalHours") || "").trim();
@@ -135,22 +138,22 @@ export const updatePackage = withFormAction(async function updatePackage(
     return { ...state, errors: { form: "Package id is required." } };
   }
 
-  if (!name) state.errors.name = "Name is required.";
+  if (!name) state.errors.name = t("packageNameRequired");
 
   if (!totalHours) {
-    state.errors.totalHours = "Total hours is required.";
+    state.errors.totalHours = t("totalHoursRequired");
   } else if (!isValidPositiveInt(totalHours)) {
-    state.errors.totalHours = "Total hours must be a positive integer.";
+    state.errors.totalHours = t("totalHoursInvalid");
   }
 
   if (expiresAt) {
     try {
       const parsed = zurichDateToUtc(expiresAt);
       if (parsed <= new Date()) {
-        state.errors.expiresAt = "Expiry date must be in the future.";
+        state.errors.expiresAt = t("expiryFuture");
       }
     } catch {
-      state.errors.expiresAt = "Expiry date is invalid.";
+      state.errors.expiresAt = t("expiryInvalid");
     }
   }
 

@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
+import { getTranslations } from "next-intl/server";
 import StatusBadge from "@/components/ui/StatusBadge";
-import { getLabel } from "@/lib/labels";
 import styles from "./PaymentDetail.module.css";
 
 type Props = {
@@ -15,6 +15,7 @@ type Props = {
 export default async function PaymentDetailPage({ params }: Props) {
   const { id } = await params;
   const { user } = await requireAuth();
+  const tLabels = await getTranslations("labels");
 
   const payment = await prisma.payment.findFirst({
     where: {
@@ -75,12 +76,12 @@ export default async function PaymentDetailPage({ params }: Props) {
 
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Method</span>
-              <span className={styles.infoValue}>{payment.method ? getLabel(payment.method) : "—"}</span>
+              <span className={styles.infoValue}>{payment.method ? tLabels(payment.method) : "—"}</span>
             </div>
 
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Status</span>
-              <span className={styles.infoValue}><StatusBadge status={payment.status} /></span>
+              <span className={styles.infoValue}><StatusBadge status={payment.status} label={tLabels(payment.status)} /></span>
             </div>
 
             <div className={styles.infoItem}>

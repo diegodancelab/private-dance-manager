@@ -3,6 +3,7 @@
 import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
 import { redirect } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import { UserRole } from "@/generated/prisma/client";
 import type { StudentFormState } from "./form-state";
 import { withFormAction } from "@/lib/errors";
@@ -16,6 +17,7 @@ export const createStudent = withFormAction(async function createStudent(
   formData: FormData
 ): Promise<StudentFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const firstName = String(formData.get("firstName") || "").trim();
   const lastName = String(formData.get("lastName") || "").trim();
   const email = String(formData.get("email") || "").trim();
@@ -35,19 +37,19 @@ export const createStudent = withFormAction(async function createStudent(
   };
 
   if (!firstName) {
-    state.errors.firstName = "First name is required.";
+    state.errors.firstName = t("firstNameRequired");
   }
 
   if (!lastName) {
-    state.errors.lastName = "Last name is required.";
+    state.errors.lastName = t("lastNameRequired");
   }
 
   if (!email && !phone) {
-    state.errors.form = "At least one contact method is required: email or phone.";
+    state.errors.form = t("contactRequired");
   }
 
   if (email && !isValidEmail(email)) {
-    state.errors.email = "Please enter a valid email address.";
+    state.errors.email = t("emailInvalid");
   }
 
   if (Object.keys(state.errors).length > 0) {
@@ -64,7 +66,7 @@ export const createStudent = withFormAction(async function createStudent(
       return {
         ...state,
         errors: {
-          email: "This email is already used by another user.",
+          email: t("emailAlreadyUsed"),
         },
       };
     }
@@ -89,6 +91,7 @@ export const updateStudent = withFormAction(async function updateStudent(
   formData: FormData
 ): Promise<StudentFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const id = String(formData.get("id") || "").trim();
   const firstName = String(formData.get("firstName") || "").trim();
   const lastName = String(formData.get("lastName") || "").trim();
@@ -114,19 +117,19 @@ export const updateStudent = withFormAction(async function updateStudent(
   }
 
   if (!firstName) {
-    state.errors.firstName = "First name is required.";
+    state.errors.firstName = t("firstNameRequired");
   }
 
   if (!lastName) {
-    state.errors.lastName = "Last name is required.";
+    state.errors.lastName = t("lastNameRequired");
   }
 
   if (!email && !phone) {
-    state.errors.form = "At least one contact method is required: email or phone.";
+    state.errors.form = t("contactRequired");
   }
 
   if (email && !isValidEmail(email)) {
-    state.errors.email = "Please enter a valid email address.";
+    state.errors.email = t("emailInvalid");
   }
 
   if (Object.keys(state.errors).length > 0) {
@@ -164,7 +167,7 @@ export const updateStudent = withFormAction(async function updateStudent(
       return {
         ...state,
         errors: {
-          email: "This email is already used by another user.",
+          email: t("emailAlreadyUsed"),
         },
       };
     }

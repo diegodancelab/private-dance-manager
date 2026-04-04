@@ -17,6 +17,7 @@ import {
 } from "@/generated/prisma/client";
 import type { BillingMode } from "./form-state";
 import { redirect } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import type { LessonFormState } from "./form-state";
 import {
   DomainError,
@@ -78,6 +79,7 @@ export const createLesson = withFormAction(async function createLesson(
   formData: FormData
 ): Promise<LessonFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const teacherId = user.id;
 
   const title = parseRequiredString(formData.get("title"));
@@ -115,13 +117,13 @@ export const createLesson = withFormAction(async function createLesson(
   };
 
   if (!title) {
-    state.errors.title = "Title is required.";
+    state.errors.title = t("titleRequired");
   }
 
   if (!scheduledAt) {
-    state.errors.scheduledAt = "Scheduled date is required.";
+    state.errors.scheduledAt = t("scheduledRequired");
   } else if (!isValidDatetimeLocal(scheduledAt)) {
-    state.errors.scheduledAt = "Scheduled date is invalid.";
+    state.errors.scheduledAt = t("scheduledInvalid");
   }
 
   const durationMinNumber = parseRequiredNumber(formData.get("durationMin"));
@@ -131,16 +133,15 @@ export const createLesson = withFormAction(async function createLesson(
     durationMinNumber <= 0 ||
     !Number.isInteger(durationMinNumber)
   ) {
-    state.errors.durationMin = "Duration must be a positive integer (minutes).";
+    state.errors.durationMin = t("durationInvalid");
   }
 
   if (priceAmount && !isValidDecimal(priceAmount)) {
-    state.errors.priceAmount =
-      "Price must be a valid amount with up to 2 decimals.";
+    state.errors.priceAmount = t("priceInvalid");
   }
 
   if (studentId && billingMode === "PACKAGE" && !packageId) {
-    state.errors.packageId = "Please select a package.";
+    state.errors.packageId = t("packageRequired");
   }
 
   if (Object.keys(state.errors).length > 0) {
@@ -163,7 +164,7 @@ export const createLesson = withFormAction(async function createLesson(
       return {
         ...state,
         errors: {
-          studentId: "Selected student was not found.",
+          studentId: t("selectedStudentNotFound"),
         },
       };
     }
@@ -315,6 +316,7 @@ export const updateLesson = withFormAction(async function updateLesson(
   formData: FormData
 ): Promise<LessonFormState> {
   const { user } = await requireTeacherAuth();
+  const t = await getTranslations("validation");
   const teacherId = user.id;
 
   const id = parseRequiredString(formData.get("id"));
@@ -350,13 +352,13 @@ export const updateLesson = withFormAction(async function updateLesson(
   }
 
   if (!title) {
-    state.errors.title = "Title is required.";
+    state.errors.title = t("titleRequired");
   }
 
   if (!scheduledAt) {
-    state.errors.scheduledAt = "Scheduled date is required.";
+    state.errors.scheduledAt = t("scheduledRequired");
   } else if (!isValidDatetimeLocal(scheduledAt)) {
-    state.errors.scheduledAt = "Scheduled date is invalid.";
+    state.errors.scheduledAt = t("scheduledInvalid");
   }
 
   const durationMinNumber = parseRequiredNumber(formData.get("durationMin"));
@@ -366,12 +368,11 @@ export const updateLesson = withFormAction(async function updateLesson(
     durationMinNumber <= 0 ||
     !Number.isInteger(durationMinNumber)
   ) {
-    state.errors.durationMin = "Duration must be a positive integer (minutes).";
+    state.errors.durationMin = t("durationInvalid");
   }
 
   if (priceAmount && !isValidDecimal(priceAmount)) {
-    state.errors.priceAmount =
-      "Price must be a valid amount with up to 2 decimals.";
+    state.errors.priceAmount = t("priceInvalid");
   }
 
   if (Object.keys(state.errors).length > 0) {
@@ -387,7 +388,7 @@ export const updateLesson = withFormAction(async function updateLesson(
   if (!existingLesson) {
     return {
       ...state,
-      errors: { form: "Lesson not found." },
+      errors: { form: t("lessonNotFound") },
     };
   }
 

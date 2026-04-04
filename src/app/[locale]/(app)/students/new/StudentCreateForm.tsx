@@ -1,11 +1,13 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { createStudent } from "../actions";
 import { initialStudentFormState } from "../form-state";
 import styles from "./StudentCreateForm.module.css";
 
 export default function StudentCreateForm() {
+  const t = useTranslations("students");
   const [state, formAction, isPending] = useActionState(
     createStudent,
     initialStudentFormState
@@ -17,17 +19,15 @@ export default function StudentCreateForm() {
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Students</p>
-          <h1 className={styles.title}>Create student</h1>
-          <p className={styles.subtitle}>
-            Add a new student and their contact details.
-          </p>
+          <p className={styles.eyebrow}>{t("eyebrow")}</p>
+          <h1 className={styles.title}>{t("createTitle")}</h1>
+          <p className={styles.subtitle}>{t("createSubtitle")}</p>
         </div>
 
         <form action={formAction} className={styles.form}>
           <div className={styles.grid}>
             <div className={styles.field}>
-              <label htmlFor="firstName">First name</label>
+              <label htmlFor="firstName">{t("firstName")}</label>
               <input
                 id="firstName"
                 name="firstName"
@@ -40,7 +40,7 @@ export default function StudentCreateForm() {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="lastName">Last name</label>
+              <label htmlFor="lastName">{t("lastName")}</label>
               <input
                 id="lastName"
                 name="lastName"
@@ -53,7 +53,7 @@ export default function StudentCreateForm() {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="email">Email</label>
+              <label htmlFor="email">{t("email")}</label>
               <input
                 id="email"
                 name="email"
@@ -66,7 +66,7 @@ export default function StudentCreateForm() {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="phone">Phone</label>
+              <label htmlFor="phone">{t("phone")}</label>
               <input
                 id="phone"
                 name="phone"
@@ -76,9 +76,7 @@ export default function StudentCreateForm() {
             </div>
           </div>
 
-          <p className={styles.helper}>
-            At least one contact method is required: email or phone.
-          </p>
+          <p className={styles.helper}>{t("contactHelper")}</p>
 
           {safeState.errors.form ? (
             <div className={styles.formError}>{safeState.errors.form}</div>
@@ -86,7 +84,7 @@ export default function StudentCreateForm() {
 
           <div className={styles.actions}>
             <button type="submit" className={styles.button} disabled={isPending}>
-              {isPending ? "Creating..." : "Create student"}
+              {isPending ? "..." : t("create")}
             </button>
           </div>
         </form>

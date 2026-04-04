@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import StatusBadge from "@/components/ui/StatusBadge";
 import type { UnpaidCharge } from "@/features/students/queries/getStudentDetail";
@@ -9,7 +10,8 @@ type Props = {
   studentId: string;
 };
 
-export default function StudentChargesSection({ charges, studentId }: Props) {
+export default async function StudentChargesSection({ charges, studentId }: Props) {
+  const tLabels = await getTranslations("labels");
   const now = new Date();
 
   return (
@@ -70,7 +72,7 @@ export default function StudentChargesSection({ charges, studentId }: Props) {
                       </span>
                     </td>
                     <td className={styles.tableCell}>
-                      <StatusBadge status={charge.status} />
+                      <StatusBadge status={charge.status} label={tLabels(charge.status)} />
                     </td>
                     <td
                       className={`${styles.tableCell} ${isOverdue ? styles.overdueDate : ""}`}

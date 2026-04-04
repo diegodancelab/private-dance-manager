@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
 import { LESSON_TYPE_OPTIONS } from "@/lib/lesson-types";
 import { createLesson } from "../actions";
@@ -42,6 +43,10 @@ export default function LessonCreateForm({
   defaultScheduledAt,
   defaultStudentId,
 }: LessonCreateFormProps) {
+  const t = useTranslations("lessonsPage");
+  const tLabels = useTranslations("labels");
+  const tCommon = useTranslations("common");
+
   const [state, formAction, isPending] = useActionState(createLesson, {
     ...initialLessonFormState,
     fields: {
@@ -63,14 +68,14 @@ export default function LessonCreateForm({
 
   return (
     <FormCard
-      eyebrow="Lessons"
-      title="Create lesson"
-      subtitle="Schedule a new lesson and optionally assign a student."
+      eyebrow={t("eyebrow")}
+      title={t("createTitle")}
+      subtitle={t("createSubtitle")}
     >
       <form action={formAction} className={styles.form}>
         <div className={styles.grid}>
           <FormField
-            label="Title"
+            label={t("fieldTitle")}
             htmlFor="title"
             error={safeState.errors.title}
             fullWidth
@@ -80,21 +85,21 @@ export default function LessonCreateForm({
               name="title"
               type="text"
               defaultValue={safeState.fields.title}
-              placeholder="Private lesson"
+              placeholder={t("titlePlaceholder")}
             />
           </FormField>
 
-          <FormField label="Description" htmlFor="description" fullWidth>
+          <FormField label={t("fieldDescription")} htmlFor="description" fullWidth>
             <textarea
               id="description"
               name="description"
               defaultValue={safeState.fields.description}
               rows={4}
-              placeholder="Add lesson notes or description"
+              placeholder={t("descPlaceholder")}
             />
           </FormField>
 
-          <FormField label="Lesson type" htmlFor="lessonType">
+          <FormField label={t("fieldType")} htmlFor="lessonType">
             <select
               id="lessonType"
               name="lessonType"
@@ -102,14 +107,14 @@ export default function LessonCreateForm({
             >
               {LESSON_TYPE_OPTIONS.map((option) => (
                 <option key={option.value} value={option.value}>
-                  {option.label}
+                  {tLabels(option.value)}
                 </option>
               ))}
             </select>
           </FormField>
 
           <FormField
-            label="Scheduled at"
+            label={t("fieldScheduledAt")}
             htmlFor="scheduledAt"
             error={safeState.errors.scheduledAt}
           >
@@ -122,7 +127,7 @@ export default function LessonCreateForm({
           </FormField>
 
           <FormField
-            label="Duration (minutes)"
+            label={t("fieldDuration")}
             htmlFor="durationMin"
             error={safeState.errors.durationMin}
           >
@@ -136,7 +141,7 @@ export default function LessonCreateForm({
           </FormField>
 
           <FormField
-            label="Price amount"
+            label={t("fieldPrice")}
             htmlFor="priceAmount"
             error={safeState.errors.priceAmount}
           >
@@ -151,18 +156,18 @@ export default function LessonCreateForm({
             />
           </FormField>
 
-          <FormField label="Location" htmlFor="location">
+          <FormField label={t("fieldLocation")} htmlFor="location">
             <input
               id="location"
               name="location"
               type="text"
               defaultValue={safeState.fields.location}
-              placeholder="Geneva"
+              placeholder={t("locationPlaceholder")}
             />
           </FormField>
 
           <FormField
-            label="Student"
+            label={t("fieldStudent")}
             htmlFor="studentId"
             error={safeState.errors.studentId}
           >
@@ -175,7 +180,7 @@ export default function LessonCreateForm({
                 if (!e.target.value) setBillingMode("FREE");
               }}
             >
-              <option value="">Unassigned lesson</option>
+              <option value="">{t("unassignedLesson")}</option>
               {students.map((student) => (
                 <option key={student.id} value={student.id}>
                   {student.firstName} {student.lastName}
@@ -186,7 +191,7 @@ export default function LessonCreateForm({
           </FormField>
 
           <FormField
-            label="Booking status"
+            label={t("fieldBookingStatus")}
             htmlFor="bookingStatus"
             error={safeState.errors.bookingStatus}
           >
@@ -195,15 +200,15 @@ export default function LessonCreateForm({
               name="bookingStatus"
               defaultValue={safeState.fields.bookingStatus}
             >
-              <option value="CONFIRMED">Confirmed</option>
-              <option value="PENDING">Pending</option>
-              <option value="CANCELED">Canceled</option>
+              <option value="CONFIRMED">{tLabels("CONFIRMED")}</option>
+              <option value="PENDING">{tLabels("PENDING")}</option>
+              <option value="CANCELED">{tLabels("CANCELED")}</option>
             </select>
           </FormField>
 
           {selectedStudentId ? (
             <FormField
-              label="Billing"
+              label={t("fieldBilling")}
               htmlFor="billingMode"
               error={safeState.errors.billingMode}
             >
@@ -213,12 +218,12 @@ export default function LessonCreateForm({
                 value={billingMode}
                 onChange={(e) => setBillingMode(e.target.value as typeof billingMode)}
               >
-                <option value="FREE">Free / assign later</option>
-                <option value="UNIT">Unit charge (create invoice)</option>
+                <option value="FREE">{t("billingFree")}</option>
+                <option value="UNIT">{t("billingUnit")}</option>
                 <option value="PACKAGE" disabled={availablePackages.length === 0}>
                   {availablePackages.length === 0
-                    ? "Deduct from package (no active package)"
-                    : "Deduct from package"}
+                    ? t("billingPackageNoActive")
+                    : t("billingPackage")}
                 </option>
               </select>
             </FormField>
@@ -228,7 +233,7 @@ export default function LessonCreateForm({
 
           {selectedStudentId && billingMode === "PACKAGE" && availablePackages.length > 0 ? (
             <FormField
-              label="Package"
+              label={t("fieldPackage")}
               htmlFor="packageId"
               error={safeState.errors.packageId}
             >
@@ -239,7 +244,7 @@ export default function LessonCreateForm({
               >
                 {availablePackages.map((pkg) => (
                   <option key={pkg.id} value={pkg.id}>
-                    {pkg.name} ({formatMinutes(pkg.remainingMinutes)} left)
+                    {pkg.name} ({formatMinutes(pkg.remainingMinutes)} {tCommon("remaining")})
                   </option>
                 ))}
               </select>
@@ -255,9 +260,9 @@ export default function LessonCreateForm({
           <Button
             type="submit"
             isPending={isPending}
-            pendingLabel="Creating..."
+            pendingLabel="..."
           >
-            Create lesson
+            {t("create")}
           </Button>
         </div>
       </form>

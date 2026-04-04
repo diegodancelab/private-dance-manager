@@ -1,22 +1,33 @@
+import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
-import { getLabel } from "@/lib/labels";
 import { requireAuth } from "@/lib/auth/require-auth";
 import Button from "@/components/ui/Button";
 import styles from "./LessonsPage.module.css";
 
-function formatDateTime(date: Date) {
-  return new Intl.DateTimeFormat("fr-CH", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-  }).format(new Date(date));
-}
+const LOCALE_MAP: Record<string, string> = {
+  fr: "fr-CH",
+  en: "en-GB",
+  es: "es-ES",
+};
 
 export default async function LessonsPage() {
   const { user } = await requireAuth();
+  const t = await getTranslations("lessonsPage");
+  const tLabels = await getTranslations("labels");
+  const tCommon = await getTranslations("common");
+  const locale = await getLocale();
+  const dateLocale = LOCALE_MAP[locale] ?? "fr-CH";
+
+  function formatDateTime(date: Date) {
+    return new Intl.DateTimeFormat(dateLocale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
+    }).format(new Date(date));
+  }
 
   const lessons = await prisma.lesson.findMany({
     where: { teacherId: user.id },
@@ -29,27 +40,27 @@ export default async function LessonsPage() {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.heading}>
-          <h1 className={styles.title}>Lessons</h1>
-          <p className={styles.subtitle}>All scheduled lessons across your students.</p>
+          <h1 className={styles.title}>{t("title")}</h1>
+          <p className={styles.subtitle}>{t("subtitle")}</p>
         </div>
 
-        <Button href="/lessons/new" size="sm">Add lesson</Button>
+        <Button href="/lessons/new" size="sm">{t("addLesson")}</Button>
       </div>
 
       {lessons.length === 0 ? (
         <div className={styles.emptyState}>
-          <p className={styles.emptyText}>No lessons yet.</p>
-          <p className={styles.emptySubtext}>Create your first lesson to get started.</p>
+          <p className={styles.emptyText}>{t("noLessonsTitle")}</p>
+          <p className={styles.emptySubtext}>{t("noLessonsSubtitle")}</p>
         </div>
       ) : (
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.tableHeadCell}>Title</th>
-                <th className={styles.tableHeadCell}>Type</th>
-                <th className={styles.tableHeadCell}>Scheduled at</th>
-                <th className={styles.tableHeadCell}>Actions</th>
+                <th className={styles.tableHeadCell}>{t("colTitle")}</th>
+                <th className={styles.tableHeadCell}>{t("colType")}</th>
+                <th className={styles.tableHeadCell}>{t("colScheduledAt")}</th>
+                <th className={styles.tableHeadCell}></th>
               </tr>
             </thead>
 
@@ -58,7 +69,7 @@ export default async function LessonsPage() {
                 <tr key={lesson.id}>
                   <td className={styles.tableCell}>{lesson.title}</td>
 
-                  <td className={styles.tableCell}>{getLabel(lesson.lessonType)}</td>
+                  <td className={styles.tableCell}>{tLabels(lesson.lessonType)}</td>
 
                   <td className={styles.tableCell}>
                     {formatDateTime(lesson.scheduledAt)}
@@ -70,7 +81,7 @@ export default async function LessonsPage() {
                         href={`/lessons/${lesson.id}`}
                         className={styles.actionLink}
                       >
-                        View
+                        {tCommon("view")}
                       </Link>
                     </div>
                   </td>

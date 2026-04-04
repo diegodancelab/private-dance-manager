@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import { UserRole } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
@@ -7,6 +8,8 @@ import styles from "./StudentsPage.module.css";
 
 export default async function StudentsPage() {
   const { user } = await requireAuth();
+  const t = await getTranslations("students");
+  const tCommon = await getTranslations("common");
 
   const students = await prisma.user.findMany({
     where: {
@@ -22,27 +25,27 @@ export default async function StudentsPage() {
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.heading}>
-          <h1 className={styles.title}>Students</h1>
-          <p className={styles.subtitle}>Manage your students and their contact information.</p>
+          <h1 className={styles.title}>{t("title")}</h1>
+          <p className={styles.subtitle}>{t("subtitle")}</p>
         </div>
 
-        <Button href="/students/new" size="sm">Add student</Button>
+        <Button href="/students/new" size="sm">{t("addStudent")}</Button>
       </div>
 
       {students.length === 0 ? (
         <div className={styles.emptyState}>
-          <p className={styles.emptyText}>No students yet.</p>
-          <p className={styles.emptySubtext}>Add your first student to get started.</p>
+          <p className={styles.emptyText}>{t("noStudentsTitle")}</p>
+          <p className={styles.emptySubtext}>{t("noStudentsSubtitle")}</p>
         </div>
       ) : (
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.tableHeadCell}>Name</th>
-                <th className={styles.tableHeadCell}>Email</th>
-                <th className={styles.tableHeadCell}>Phone</th>
-                <th className={styles.tableHeadCell}>Actions</th>
+                <th className={styles.tableHeadCell}>{t("colName")}</th>
+                <th className={styles.tableHeadCell}>{t("colEmail")}</th>
+                <th className={styles.tableHeadCell}>{t("colPhone")}</th>
+                <th className={styles.tableHeadCell}></th>
               </tr>
             </thead>
 
@@ -63,13 +66,13 @@ export default async function StudentsPage() {
                         href={`/students/${student.id}`}
                         className={styles.actionLink}
                       >
-                        View
+                        {tCommon("view")}
                       </Link>
                       <Link
                         href={`/students/${student.id}/edit`}
                         className={styles.actionLink}
                       >
-                        Edit
+                        {tCommon("edit")}
                       </Link>
                     </div>
                   </td>

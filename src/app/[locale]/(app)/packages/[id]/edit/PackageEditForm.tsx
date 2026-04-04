@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { updatePackage } from "../../actions";
 import type { PackageFormState } from "../../form-state";
@@ -10,6 +11,7 @@ type PackageEditFormProps = {
 };
 
 export default function PackageEditForm({ initialState }: PackageEditFormProps) {
+  const t = useTranslations("packagesPage");
   const [state, formAction, isPending] = useActionState(
     updatePackage,
     initialState
@@ -21,11 +23,9 @@ export default function PackageEditForm({ initialState }: PackageEditFormProps) 
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Packages</p>
-          <h1 className={styles.title}>Edit package</h1>
-          <p className={styles.subtitle}>
-            Update the package name, total hours, or expiry date.
-          </p>
+          <p className={styles.eyebrow}>{t("eyebrow")}</p>
+          <h1 className={styles.title}>{t("editTitle")}</h1>
+          <p className={styles.subtitle}>{t("editSubtitle")}</p>
         </div>
 
         <form action={formAction} className={styles.form}>
@@ -33,7 +33,7 @@ export default function PackageEditForm({ initialState }: PackageEditFormProps) 
 
           <div className={styles.grid}>
             <div className={`${styles.field} ${styles.fullWidth}`}>
-              <label htmlFor="name">Package name</label>
+              <label htmlFor="name">{t("fieldName")}</label>
               <input
                 id="name"
                 name="name"
@@ -46,7 +46,7 @@ export default function PackageEditForm({ initialState }: PackageEditFormProps) 
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="totalHours">Total hours</label>
+              <label htmlFor="totalHours">{t("fieldTotalHours")}</label>
               <input
                 id="totalHours"
                 name="totalHours"
@@ -61,7 +61,7 @@ export default function PackageEditForm({ initialState }: PackageEditFormProps) 
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="expiresAt">Expires at (optional)</label>
+              <label htmlFor="expiresAt">{t("fieldExpiresAt")}</label>
               <input
                 id="expiresAt"
                 name="expiresAt"
@@ -80,7 +80,7 @@ export default function PackageEditForm({ initialState }: PackageEditFormProps) 
 
           <div className={styles.actions}>
             <button type="submit" className={styles.button} disabled={isPending}>
-              {isPending ? "Updating..." : "Update package"}
+              {isPending ? "..." : t("update")}
             </button>
           </div>
         </form>

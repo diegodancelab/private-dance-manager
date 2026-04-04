@@ -1,5 +1,6 @@
 "use client";
 
+import { useTranslations } from "next-intl";
 import { useActionState } from "react";
 import { updateLesson } from "../../actions";
 import type { LessonFormState } from "../../form-state";
@@ -11,6 +12,8 @@ type LessonEditFormProps = {
 };
 
 export default function LessonEditForm({ initialState }: LessonEditFormProps) {
+  const t = useTranslations("lessonsPage");
+  const tLabels = useTranslations("labels");
   const [state, formAction, isPending] = useActionState(
     updateLesson,
     initialState
@@ -22,11 +25,9 @@ export default function LessonEditForm({ initialState }: LessonEditFormProps) {
     <div className={styles.page}>
       <div className={styles.card}>
         <div className={styles.header}>
-          <p className={styles.eyebrow}>Lessons</p>
-          <h1 className={styles.title}>Edit lesson</h1>
-          <p className={styles.subtitle}>
-            Update the lesson information, schedule and pricing.
-          </p>
+          <p className={styles.eyebrow}>{t("eyebrow")}</p>
+          <h1 className={styles.title}>{t("editTitle")}</h1>
+          <p className={styles.subtitle}>{t("editSubtitle")}</p>
         </div>
 
         <form action={formAction} className={styles.form}>
@@ -34,13 +35,13 @@ export default function LessonEditForm({ initialState }: LessonEditFormProps) {
 
           <div className={styles.grid}>
             <div className={`${styles.field} ${styles.fullWidth}`}>
-              <label htmlFor="title">Title</label>
+              <label htmlFor="title">{t("fieldTitle")}</label>
               <input
                 id="title"
                 name="title"
                 type="text"
                 defaultValue={safeState.fields.title}
-                placeholder="Private lesson"
+                placeholder={t("titlePlaceholder")}
               />
               {safeState.errors.title ? (
                 <p className={styles.error}>{safeState.errors.title}</p>
@@ -48,18 +49,18 @@ export default function LessonEditForm({ initialState }: LessonEditFormProps) {
             </div>
 
             <div className={`${styles.field} ${styles.fullWidth}`}>
-              <label htmlFor="description">Description</label>
+              <label htmlFor="description">{t("fieldDescription")}</label>
               <textarea
                 id="description"
                 name="description"
                 rows={4}
                 defaultValue={safeState.fields.description}
-                placeholder="Add lesson notes or description"
+                placeholder={t("descPlaceholder")}
               />
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="lessonType">Lesson type</label>
+              <label htmlFor="lessonType">{t("fieldType")}</label>
               <select
                 id="lessonType"
                 name="lessonType"
@@ -67,14 +68,14 @@ export default function LessonEditForm({ initialState }: LessonEditFormProps) {
               >
                 {LESSON_TYPE_OPTIONS.map((option) => (
                   <option key={option.value} value={option.value}>
-                    {option.label}
+                    {tLabels(option.value)}
                   </option>
                 ))}
               </select>
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="scheduledAt">Scheduled at</label>
+              <label htmlFor="scheduledAt">{t("fieldScheduledAt")}</label>
               <input
                 id="scheduledAt"
                 name="scheduledAt"
@@ -87,7 +88,7 @@ export default function LessonEditForm({ initialState }: LessonEditFormProps) {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="durationMin">Duration (minutes)</label>
+              <label htmlFor="durationMin">{t("fieldDuration")}</label>
               <input
                 id="durationMin"
                 name="durationMin"
@@ -101,7 +102,7 @@ export default function LessonEditForm({ initialState }: LessonEditFormProps) {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="priceAmount">Price amount</label>
+              <label htmlFor="priceAmount">{t("fieldPrice")}</label>
               <input
                 id="priceAmount"
                 name="priceAmount"
@@ -117,16 +118,15 @@ export default function LessonEditForm({ initialState }: LessonEditFormProps) {
             </div>
 
             <div className={styles.field}>
-              <label htmlFor="location">Location</label>
+              <label htmlFor="location">{t("fieldLocation")}</label>
               <input
                 id="location"
                 name="location"
                 type="text"
                 defaultValue={safeState.fields.location}
-                placeholder="Geneva"
+                placeholder={t("locationPlaceholder")}
               />
             </div>
-
           </div>
 
           {safeState.errors.form ? (
@@ -135,7 +135,7 @@ export default function LessonEditForm({ initialState }: LessonEditFormProps) {
 
           <div className={styles.actions}>
             <button type="submit" className={styles.button} disabled={isPending}>
-              {isPending ? "Updating..." : "Update lesson"}
+              {isPending ? "..." : t("update")}
             </button>
           </div>
         </form>

@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
+import { getTranslations } from "next-intl/server";
 import StatusBadge from "@/components/ui/StatusBadge";
-import { getLabel } from "@/lib/labels";
 import styles from "./ChargeDetail.module.css";
 
 type Props = {
@@ -15,6 +15,7 @@ type Props = {
 export default async function ChargeDetailPage({ params }: Props) {
   const { id } = await params;
   const { user } = await requireAuth();
+  const tLabels = await getTranslations("labels");
 
   const charge = await prisma.charge.findFirst({
     where: {
@@ -77,7 +78,7 @@ export default async function ChargeDetailPage({ params }: Props) {
 
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Type</span>
-              <span className={styles.infoValue}>{getLabel(charge.type)}</span>
+              <span className={styles.infoValue}>{tLabels(charge.type)}</span>
             </div>
 
             <div className={styles.infoItem}>
@@ -89,7 +90,7 @@ export default async function ChargeDetailPage({ params }: Props) {
 
             <div className={styles.infoItem}>
               <span className={styles.infoLabel}>Status</span>
-              <span className={styles.infoValue}><StatusBadge status={charge.status} /></span>
+              <span className={styles.infoValue}><StatusBadge status={charge.status} label={tLabels(charge.status)} /></span>
             </div>
 
             <div className={styles.infoItem}>
@@ -153,10 +154,10 @@ export default async function ChargeDetailPage({ params }: Props) {
                         {allocation.amount.toString()} {charge.currency}
                       </td>
                       <td className={styles.tableCell}>
-                        {allocation.payment.method ? getLabel(allocation.payment.method) : "—"}
+                        {allocation.payment.method ? tLabels(allocation.payment.method) : "—"}
                       </td>
                       <td className={styles.tableCell}>
-                        <StatusBadge status={allocation.payment.status} />
+                        <StatusBadge status={allocation.payment.status} label={tLabels(allocation.payment.status)} />
                       </td>
                     </tr>
                   ))}

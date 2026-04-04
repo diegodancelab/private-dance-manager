@@ -1,3 +1,4 @@
+import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { PackageStatus } from "@/generated/prisma/client";
@@ -13,14 +14,11 @@ function formatMinutes(minutes: number): string {
   return `${h}h ${m}m`;
 }
 
-function formatDate(date: Date | null): string {
-  if (!date) return "—";
-  return new Intl.DateTimeFormat("fr-CH", {
-    day: "2-digit",
-    month: "2-digit",
-    year: "numeric",
-  }).format(date);
-}
+const LOCALE_MAP: Record<string, string> = {
+  fr: "fr-CH",
+  en: "en-GB",
+  es: "es-ES",
+};
 
 type PackagesPageProps = {
   searchParams: Promise<{ status?: string }>;
@@ -28,9 +26,23 @@ type PackagesPageProps = {
 
 export default async function PackagesPage({ searchParams }: PackagesPageProps) {
   const { user } = await requireAuth();
+  const t = await getTranslations("packagesPage");
+  const tLabels = await getTranslations("labels");
+  const tCommon = await getTranslations("common");
+  const locale = await getLocale();
+  const dateLocale = LOCALE_MAP[locale] ?? "fr-CH";
   const { status } = await searchParams;
 
   const showAll = status === "all";
+
+  function formatDate(date: Date | null): string {
+    if (!date) return "—";
+    return new Intl.DateTimeFormat(dateLocale, {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    }).format(date);
+  }
 
   const packages = await prisma.package.findMany({
     where: {
@@ -49,35 +61,33 @@ export default async function PackagesPage({ searchParams }: PackagesPageProps) 
     <div className={styles.page}>
       <div className={styles.header}>
         <div className={styles.heading}>
-          <h1 className={styles.title}>Packages</h1>
-          <p className={styles.subtitle}>
-            Manage prepaid hour packages for your students.
-          </p>
+          <h1 className={styles.title}>{t("title")}</h1>
+          <p className={styles.subtitle}>{t("subtitle")}</p>
         </div>
 
         <div className={styles.headerActions}>
           {showAll ? (
             <Link href="/packages" className={styles.filterLink}>
-              Active only
+              {t("activeOnly")}
             </Link>
           ) : (
             <Link href="/packages?status=all" className={styles.filterLink}>
-              Show all
+              {t("showAll")}
             </Link>
           )}
-          <Button href="/packages/new" size="sm">Create package</Button>
+          <Button href="/packages/new" size="sm">{t("createPackage")}</Button>
         </div>
       </div>
 
       {packages.length === 0 ? (
         <div className={styles.emptyState}>
           <p className={styles.emptyText}>
-            {showAll ? "No packages yet." : "No active packages."}
+            {showAll ? t("noPackagesTitle") : t("noActivePackagesTitle")}
           </p>
           <p className={styles.emptySubtext}>
             {showAll
-              ? "Create your first package to start tracking prepaid hours."
-              : "All packages are exhausted, expired, or canceled."}
+              ? t("noPackagesSubtitle")
+              : t("noActivePackagesSubtitle")}
           </p>
         </div>
       ) : (
@@ -85,12 +95,12 @@ export default async function PackagesPage({ searchParams }: PackagesPageProps) 
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.tableHeadCell}>Students</th>
-                <th className={styles.tableHeadCell}>Name</th>
-                <th className={styles.tableHeadCell}>Progress</th>
-                <th className={styles.tableHeadCell}>Status</th>
-                <th className={styles.tableHeadCell}>Expires</th>
-                <th className={styles.tableHeadCell}>Actions</th>
+                <th className={styles.tableHeadCell}>{t("colStudents")}</th>
+                <th className={styles.tableHeadCell}>{t("colName")}</th>
+                <th className={styles.tableHeadCell}>{t("colProgress")}</th>
+                <th className={styles.tableHeadCell}>{t("colStatus")}</th>
+                <th className={styles.tableHeadCell}>{t("colExpires")}</th>
+                <th className={styles.tableHeadCell}></th>
               </tr>
             </thead>
 
@@ -128,7 +138,9 @@ export default async function PackagesPage({ searchParams }: PackagesPageProps) 
                       </p>
                     </td>
 
-                    <td className={styles.tableCell}><StatusBadge status={pkg.status} /></td>
+                    <td className={styles.tableCell}>
+                      <StatusBadge status={pkg.status} label={tLabels(pkg.status)} />
+                    </td>
 
                     <td className={styles.tableCell}>
                       {formatDate(pkg.expiresAt)}
@@ -140,13 +152,13 @@ export default async function PackagesPage({ searchParams }: PackagesPageProps) 
                           href={`/packages/${pkg.id}`}
                           className={styles.actionLink}
                         >
-                          View
+                          {tCommon("view")}
                         </Link>
                         <Link
                           href={`/packages/${pkg.id}/edit`}
                           className={styles.actionLink}
                         >
-                          Edit
+                          {tCommon("edit")}
                         </Link>
                       </div>
                     </td>
