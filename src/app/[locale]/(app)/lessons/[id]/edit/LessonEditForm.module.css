@@ -156,7 +156,7 @@
   transform: none;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 767px) {
   .card {
     padding: 1.25rem;
     border-radius: 18px;

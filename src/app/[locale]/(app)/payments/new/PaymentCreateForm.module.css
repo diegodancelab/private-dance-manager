@@ -93,7 +93,7 @@
   color: #6b7280;
 }
 
-@media (max-width: 760px) {
+@media (max-width: 767px) {
   .grid {
     grid-template-columns: 1fr;
   }
