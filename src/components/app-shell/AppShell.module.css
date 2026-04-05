@@ -94,7 +94,8 @@
   left: 0;
   width: 280px;
   max-width: 85vw;
-  height: 100vh;
+  height: 100vh; /* fallback for older browsers */
+  height: 100dvh; /* dynamic viewport height — excludes Safari bottom toolbar */
   background: #ffffff;
   border-right: 1px solid #e5e7eb;
   box-shadow: 4px 0 24px rgba(0, 0, 0, 0.1);
