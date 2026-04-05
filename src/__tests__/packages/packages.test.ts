@@ -41,8 +41,8 @@ vi.mock("@/lib/prisma", () => {
 
 vi.mock("next/navigation", () => ({ redirect: vi.fn() }));
 
-import { createPackage } from "@/app/(app)/packages/actions";
-import { assignPackageToParticipant } from "@/app/(app)/lessons/actions";
+import { createPackage } from "@/app/[locale]/(app)/packages/actions";
+import { assignPackageToParticipant } from "@/app/[locale]/(app)/lessons/actions";
 
 // ----------------------------------------------------------------------------
 // createPackage tests

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useTranslations } from "next-intl";
 import SidebarNav from "./SidebarNav";
 import styles from "./AppShell.module.css";
 
@@ -10,6 +11,7 @@ type AppShellProps = {
 
 export default function AppShell({ children }: AppShellProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const t = useTranslations("navigation");
 
   function openMobileMenu() {
     setIsMobileMenuOpen(true);
@@ -31,14 +33,14 @@ export default function AppShell({ children }: AppShellProps) {
             type="button"
             onClick={openMobileMenu}
             className={styles.menuButton}
-            aria-label="Open navigation menu"
+            aria-label={t("openMenu")}
             aria-expanded={isMobileMenuOpen}
             aria-controls="mobile-sidebar"
           >
             ☰
           </button>
 
-          <div className={styles.mobileTitle}>Private Dance Manager</div>
+          <div className={styles.mobileTitle}>{t("brand")}</div>
         </header>
 
         <main className={styles.content}>{children}</main>
@@ -50,7 +52,7 @@ export default function AppShell({ children }: AppShellProps) {
             type="button"
             className={styles.overlay}
             onClick={closeMobileMenu}
-            aria-label="Close navigation menu"
+            aria-label={t("closeMenu")}
           />
 
           <aside
@@ -59,12 +61,12 @@ export default function AppShell({ children }: AppShellProps) {
             aria-label="Mobile navigation"
           >
             <div className={styles.mobileSidebarHeader}>
-              <span className={styles.mobileSidebarTitle}>Menu</span>
+              <span className={styles.mobileSidebarTitle}>{t("menu")}</span>
               <button
                 type="button"
                 onClick={closeMobileMenu}
                 className={styles.closeButton}
-                aria-label="Close navigation menu"
+                aria-label={t("closeMenu")}
               >
                 ✕
               </button>

@@ -1,4 +1,5 @@
-import Link from "next/link";
+import { getTranslations, getLocale } from "next-intl/server";
+import { Link } from "@/i18n/navigation";
 import type { TodayLesson } from "@/features/dashboard/queries";
 import { getLabel } from "@/lib/labels";
 import styles from "./TodaySection.module.css";
@@ -8,19 +9,30 @@ type Props = {
   now: Date;
 };
 
-function formatTime(date: Date): string {
-  return new Intl.DateTimeFormat("fr-CH", {
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZone: "Europe/Zurich",
-  }).format(date);
-}
+const LOCALE_MAP: Record<string, string> = {
+  fr: "fr-CH",
+  en: "en-GB",
+  es: "es-ES",
+};
 
-function formatEndTime(date: Date, durationMin: number): string {
-  return formatTime(new Date(date.getTime() + durationMin * 60 * 1000));
-}
+export default async function TodaySection({ lessons, now }: Props) {
+  const t = await getTranslations("dashboard");
+  const tLabels = await getTranslations("labels");
+  const locale = await getLocale();
+  const dateLocale = LOCALE_MAP[locale] || "fr-CH";
 
-export default function TodaySection({ lessons, now }: Props) {
+  function formatTime(date: Date): string {
+    return new Intl.DateTimeFormat(dateLocale, {
+      hour: "2-digit",
+      minute: "2-digit",
+      timeZone: "Europe/Zurich",
+    }).format(date);
+  }
+
+  function formatEndTime(date: Date, durationMin: number): string {
+    return formatTime(new Date(date.getTime() + durationMin * 60 * 1000));
+  }
+
   // Next upcoming lesson = first one that hasn't ended yet
   const nextLesson = lessons.find((l) => {
     const end = new Date(l.scheduledAt.getTime() + l.durationMin * 60 * 1000);
@@ -29,10 +41,10 @@ export default function TodaySection({ lessons, now }: Props) {
 
   return (
     <section className={styles.section}>
-      <h2 className={styles.title}>Today</h2>
+      <h2 className={styles.title}>{t("today")}</h2>
 
       {lessons.length === 0 ? (
-        <p className={styles.empty}>No lessons scheduled today.</p>
+        <p className={styles.empty}>{t("noLessonsToday")}</p>
       ) : (
         <div className={styles.list}>
           {lessons.map((lesson) => {
@@ -43,7 +55,7 @@ export default function TodaySection({ lessons, now }: Props) {
                 href={`/lessons/${lesson.id}/edit`}
                 className={`${styles.card} ${isNext ? styles.next : ""}`}
               >
-                {isNext && <span className={styles.nextBadge}>Next</span>}
+                {isNext && <span className={styles.nextBadge}>{t("next")}</span>}
 
                 <div className={styles.time}>
                   {formatTime(lesson.scheduledAt)} — {formatEndTime(lesson.scheduledAt, lesson.durationMin)}
@@ -52,7 +64,7 @@ export default function TodaySection({ lessons, now }: Props) {
                 <div className={styles.lessonTitle}>{lesson.title}</div>
 
                 <div className={styles.meta}>
-                  <span className={styles.type}>{getLabel(lesson.lessonType)}</span>
+                  <span className={styles.type}>{tLabels(lesson.lessonType)}</span>
                   <span className={styles.duration}>{lesson.durationMin} min</span>
                 </div>
 
@@ -63,11 +75,11 @@ export default function TodaySection({ lessons, now }: Props) {
                       .join(", ")}
                   </div>
                 ) : (
-                  <div className={styles.noParticipant}>No student assigned</div>
+                  <div className={styles.noParticipant}>{t("noStudentAssigned")}</div>
                 )}
 
                 {lesson.location && (
-                  <div className={styles.location}>📍 {lesson.location}</div>
+                  <div className={styles.location}>{lesson.location}</div>
                 )}
               </Link>
             );

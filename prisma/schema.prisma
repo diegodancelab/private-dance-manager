@@ -84,7 +84,7 @@ model User {
   taughtPayments        Payment[]           @relation("PaymentTeacher")
   progressEntries       ProgressEntry[]     @relation("ProgressEntryStudent")
   taughtProgressEntries ProgressEntry[]     @relation("ProgressEntryTeacher")
-  packages              Package[]           @relation("PackageStudent")
+  packageParticipants   PackageParticipant[]
   taughtPackages        Package[]           @relation("PackageTeacher")
   sessions              Session[]
   createdByTeacher      User?               @relation("TeacherCreatedStudents", fields: [createdByTeacherId], references: [id])
@@ -213,7 +213,6 @@ model PaymentAllocation {
 
 model Package {
   id               String        @id @default(cuid())
-  userId           String
   teacherId        String
   chargeId         String?       @unique
   name             String
@@ -224,13 +223,24 @@ model Package {
   createdAt        DateTime      @default(now())
   updatedAt        DateTime      @updatedAt
 
-  user             User          @relation("PackageStudent", fields: [userId], references: [id], onDelete: Cascade)
-  teacher          User          @relation("PackageTeacher", fields: [teacherId], references: [id])
-  charge           Charge?       @relation(fields: [chargeId], references: [id], onDelete: SetNull)
+  teacher          User                 @relation("PackageTeacher", fields: [teacherId], references: [id])
+  charge           Charge?              @relation(fields: [chargeId], references: [id], onDelete: SetNull)
+  participants     PackageParticipant[]
   usages           PackageUsage[]
 
   // Covers: list page (teacherId), sorted by createdAt desc
   @@index([teacherId, createdAt])
+}
+
+model PackageParticipant {
+  id        String  @id @default(cuid())
+  packageId String
+  userId    String
+
+  package   Package @relation(fields: [packageId], references: [id], onDelete: Cascade)
+  user      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([packageId, userId])
 }
 
 model PackageUsage {

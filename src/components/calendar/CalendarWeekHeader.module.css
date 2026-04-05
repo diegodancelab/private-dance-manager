@@ -22,41 +22,38 @@
 .actions {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.75rem;
-}
-
-.button,
-.primaryButton {
-  display: inline-flex;
+  gap: 0.5rem;
   align-items: center;
-  justify-content: center;
-  min-height: 42px;
-  padding: 0.7rem 1rem;
-  border-radius: 0.75rem;
-  text-decoration: none;
-  font-weight: 500;
-  transition:
-    background-color 0.2s ease,
-    color 0.2s ease,
-    border-color 0.2s ease;
 }
 
-.button {
+/* Segmented view toggle */
+.viewToggle {
+  display: flex;
+  background: #f3f4f6;
+  border-radius: 999px;
+  padding: 0.2rem;
+  gap: 0.1rem;
+}
+
+.toggleOption {
+  padding: 0.35rem 0.9rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  color: #6b7280;
+  transition:
+    background 0.15s ease,
+    color 0.15s ease;
+  white-space: nowrap;
+}
+
+.toggleOption:hover {
+  color: #111827;
+}
+
+.toggleActive {
   background: #ffffff;
   color: #111827;
-  border: 1px solid #d1d5db;
-}
-
-.button:hover {
-  background: #f9fafb;
-}
-
-.primaryButton {
-  background: #4f46e5;
-  color: #ffffff;
-  border: 1px solid #4f46e5;
-}
-
-.primaryButton:hover {
-  background: #4338ca;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
 }

@@ -57,10 +57,11 @@ export async function getSession(): Promise<Session | null> {
     },
   });
 
-  if (!session) return null;
-
-  if (session.expiresAt < new Date()) {
-    await prisma.session.delete({ where: { id: sessionId } });
+  if (!session || session.expiresAt < new Date()) {
+    // Cleanup expired session row (DB only — cannot modify cookies during rendering)
+    if (session) {
+      await prisma.session.delete({ where: { id: sessionId } }).catch(() => {});
+    }
     return null;
   }
 

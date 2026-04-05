@@ -1,4 +1,4 @@
-import { redirect } from "next/navigation";
+import { redirect } from "@/lib/server-redirect";
 import { getSession, type Session } from "./session";
 
 /**
@@ -9,7 +9,7 @@ import { getSession, type Session } from "./session";
 export async function requireAuth(): Promise<Session> {
   const session = await getSession();
   if (!session) {
-    redirect("/login");
+    return redirect("/login");
   }
   return session;
 }
@@ -22,7 +22,7 @@ export async function requireAuth(): Promise<Session> {
 export async function requireTeacherAuth(): Promise<Session> {
   const session = await requireAuth();
   if (session.user.role !== "TEACHER") {
-    redirect("/login");
+    return redirect("/login");
   }
   return session;
 }
