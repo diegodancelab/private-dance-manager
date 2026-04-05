@@ -22,3 +22,27 @@ body {
 a {
   color: inherit;
 }
+
+/* ── Global focus styles ─────────────────────────────────────────────────── */
+
+/* Remove default outline — we provide our own via :focus-visible */
+*:focus {
+  outline: none;
+}
+
+/* Keyboard-only focus ring for all interactive elements */
+*:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* ── Hover guard for touch devices ──────────────────────────────────────── */
+
+/* Only apply hover effects on devices that support true hover (not touch) */
+@media (hover: none) {
+  a:hover,
+  button:hover {
+    opacity: 1;
+  }
+}
