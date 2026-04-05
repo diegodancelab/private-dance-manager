@@ -16,7 +16,7 @@ import {
   UserRole,
 } from "@/generated/prisma/client";
 import type { BillingMode } from "./form-state";
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "@/lib/server-redirect";
 import { getTranslations } from "next-intl/server";
 import type { LessonFormState } from "./form-state";
 import {
@@ -264,7 +264,7 @@ export const createLesson = withFormAction(async function createLesson(
     }
   });
 
-  redirect(`/calendar?date=${utcToZurichDate(scheduledDate)}`);
+  return redirect(`/calendar?date=${utcToZurichDate(scheduledDate)}`);
 });
 
 export async function addLessonParticipant(formData: FormData) {
@@ -308,7 +308,7 @@ export async function addLessonParticipant(formData: FormData) {
     handleNonFormActionError("addLessonParticipant", err);
   }
 
-  redirect(`/lessons/${lessonId}`);
+  return redirect(`/lessons/${lessonId}`);
 }
 
 export const updateLesson = withFormAction(async function updateLesson(
@@ -342,6 +342,8 @@ export const updateLesson = withFormAction(async function updateLesson(
       location,
       studentId: "",
       bookingStatus: BookingStatus.CONFIRMED,
+      billingMode: "FREE",
+      packageId: "",
     },
     errors: {},
   };
@@ -433,7 +435,7 @@ export const updateLesson = withFormAction(async function updateLesson(
     },
   });
 
-  redirect(`/calendar?date=${utcToZurichDate(scheduledDate)}`);
+  return redirect(`/calendar?date=${utcToZurichDate(scheduledDate)}`);
 });
 
 export async function removeLessonParticipant(formData: FormData) {
@@ -512,7 +514,7 @@ export async function removeLessonParticipant(formData: FormData) {
     handleNonFormActionError("removeLessonParticipant", err);
   }
 
-  redirect(`/lessons/${lessonId}`);
+  return redirect(`/lessons/${lessonId}`);
 }
 
 export async function assignPackageToParticipant(formData: FormData) {
@@ -612,7 +614,7 @@ export async function assignPackageToParticipant(formData: FormData) {
     handleNonFormActionError("assignPackageToParticipant", err);
   }
 
-  redirect(`/lessons/${lessonId}`);
+  return redirect(`/lessons/${lessonId}`);
 }
 
 export async function removePackageFromParticipant(formData: FormData) {
@@ -670,7 +672,7 @@ export async function removePackageFromParticipant(formData: FormData) {
     handleNonFormActionError("removePackageFromParticipant", err);
   }
 
-  redirect(`/lessons/${lessonId}`);
+  return redirect(`/lessons/${lessonId}`);
 }
 
 export async function deleteLesson(formData: FormData) {
@@ -725,5 +727,5 @@ export async function deleteLesson(formData: FormData) {
     handleNonFormActionError("deleteLesson", err);
   }
 
-  redirect("/lessons");
+  return redirect("/lessons");
 }

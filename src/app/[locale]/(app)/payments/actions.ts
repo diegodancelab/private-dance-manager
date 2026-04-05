@@ -9,7 +9,7 @@ import {
   PaymentStatus,
   UserRole,
 } from "@/generated/prisma/client";
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "@/lib/server-redirect";
 import { getTranslations } from "next-intl/server";
 import type { PaymentFormState } from "./form-state";
 import { withFormAction } from "@/lib/errors";
@@ -203,7 +203,7 @@ export const createPayment = withFormAction(async function createPayment(
     return payment.id;
   });
 
-  redirect(`/payments/${paymentId}`);
+  return redirect(`/payments/${paymentId}`);
 });
 
 export const updatePayment = withFormAction(async function updatePayment(
@@ -361,5 +361,5 @@ export const updatePayment = withFormAction(async function updatePayment(
     }
   });
 
-  redirect(`/payments/${id}`);
+  return redirect(`/payments/${id}`);
 });

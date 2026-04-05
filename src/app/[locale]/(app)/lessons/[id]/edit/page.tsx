@@ -106,6 +106,8 @@ export default async function EditLessonPage({ params }: Props) {
       location: lesson.location ?? "",
       studentId: "",
       bookingStatus: "CONFIRMED",
+      billingMode: "FREE",
+      packageId: "",
     },
     errors: {},
   };

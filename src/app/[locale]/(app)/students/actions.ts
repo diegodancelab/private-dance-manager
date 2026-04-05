@@ -2,7 +2,7 @@
 
 import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "@/lib/server-redirect";
 import { getTranslations } from "next-intl/server";
 import { UserRole } from "@/generated/prisma/client";
 import type { StudentFormState } from "./form-state";
@@ -83,7 +83,7 @@ export const createStudent = withFormAction(async function createStudent(
     },
   });
 
-  redirect("/students");
+  return redirect("/students");
 });
 
 export const updateStudent = withFormAction(async function updateStudent(
@@ -184,5 +184,5 @@ export const updateStudent = withFormAction(async function updateStudent(
     },
   });
 
-  redirect(`/students/${id}`);
+  return redirect(`/students/${id}`);
 });

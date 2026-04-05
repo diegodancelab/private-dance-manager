@@ -25,6 +25,15 @@ vi.mock("next/navigation", () => ({
   redirect: vi.fn(),
 }));
 
+vi.mock("@/lib/server-redirect", () => ({
+  redirect: vi.fn(),
+}));
+
+vi.mock("next-intl/server", () => ({
+  getTranslations: vi.fn().mockResolvedValue((key: string) => key),
+  getLocale: vi.fn().mockResolvedValue("fr"),
+}));
+
 import { createLesson } from "@/app/[locale]/(app)/lessons/actions";
 
 const baseState = {
@@ -41,6 +50,8 @@ const baseState = {
     location: "",
     studentId: "",
     bookingStatus: "CONFIRMED" as const,
+    billingMode: "FREE" as const,
+    packageId: "",
   },
   errors: {},
 };

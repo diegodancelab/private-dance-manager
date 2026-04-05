@@ -4,7 +4,7 @@ import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { zurichDateToUtc } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeType, ChargeStatus, PackageStatus } from "@/generated/prisma/client";
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "@/lib/server-redirect";
 import { getTranslations } from "next-intl/server";
 import type { PackageFormState } from "./form-state";
 import { withFormAction, DomainError, handleNonFormActionError } from "@/lib/errors";
@@ -112,7 +112,7 @@ export const createPackage = withFormAction(async function createPackage(
     return pkg;
   });
 
-  redirect(`/packages/${newPackageId}`);
+  return redirect(`/packages/${newPackageId}`);
 });
 
 export const updatePackage = withFormAction(async function updatePackage(
@@ -203,7 +203,7 @@ export const updatePackage = withFormAction(async function updatePackage(
     },
   });
 
-  redirect(`/packages/${id}`);
+  return redirect(`/packages/${id}`);
 });
 
 export async function addParticipantToPackage(formData: FormData) {
@@ -237,7 +237,7 @@ export async function addParticipantToPackage(formData: FormData) {
     handleNonFormActionError("addParticipantToPackage", err);
   }
 
-  redirect(`/packages/${packageId}`);
+  return redirect(`/packages/${packageId}`);
 }
 
 export async function migrateUnitLessonsToPackage(formData: FormData) {
@@ -338,12 +338,12 @@ export async function migrateUnitLessonsToPackage(formData: FormData) {
     const skippedCount = eligible.length - migratedCount;
     const qs = new URLSearchParams({ migrated: String(migratedCount) });
     if (skippedCount > 0) qs.set("skipped", String(skippedCount));
-    redirect(`/packages/${packageId}?${qs.toString()}`);
+    return redirect(`/packages/${packageId}?${qs.toString()}`);
   } catch (err) {
     handleNonFormActionError("migrateUnitLessonsToPackage", err);
   }
 
-  redirect(`/packages/${packageId}`);
+  return redirect(`/packages/${packageId}`);
 }
 
 export async function removeParticipantFromPackage(formData: FormData) {
@@ -385,5 +385,5 @@ export async function removeParticipantFromPackage(formData: FormData) {
     handleNonFormActionError("removeParticipantFromPackage", err);
   }
 
-  redirect(`/packages/${packageId}`);
+  return redirect(`/packages/${packageId}`);
 }

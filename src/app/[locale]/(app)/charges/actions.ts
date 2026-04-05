@@ -4,7 +4,7 @@ import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { zurichDateToUtc, isValidDate } from "@/lib/dates";
 import { prisma } from "@/lib/prisma";
 import { ChargeStatus, ChargeType, UserRole } from "@/generated/prisma/client";
-import { redirect } from "@/i18n/navigation";
+import { redirect } from "@/lib/server-redirect";
 import { getTranslations } from "next-intl/server";
 import type { ChargeFormState } from "./form-state";
 import { withFormAction } from "@/lib/errors";
@@ -161,7 +161,7 @@ export const createCharge = withFormAction(async function createCharge(
     },
   });
 
-  redirect(`/charges/${charge.id}`);
+  return redirect(`/charges/${charge.id}`);
 });
 
 export const updateCharge = withFormAction(async function updateCharge(
@@ -331,5 +331,5 @@ export const updateCharge = withFormAction(async function updateCharge(
     });
   });
 
-  redirect(`/charges/${id}`);
+  return redirect(`/charges/${id}`);
 });
