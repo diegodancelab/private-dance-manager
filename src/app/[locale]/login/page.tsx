@@ -1,5 +1,5 @@
 import { getSession } from "@/lib/auth/session";
-import { redirect } from "next/navigation";
+import { redirect } from "@/i18n/navigation";
 import LoginForm from "./LoginForm";
 import styles from "./LoginForm.module.css";
 
