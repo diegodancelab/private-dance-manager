@@ -6,10 +6,6 @@ import { logout } from "@/lib/auth/actions";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
 import styles from "./SidebarNav.module.css";
 
-type SidebarNavProps = {
-  onNavigate?: () => void;
-};
-
 const navItems = [
   { href: "/", labelKey: "dashboard" },
   { href: "/calendar", labelKey: "calendar" },
@@ -20,7 +16,7 @@ const navItems = [
   { href: "/payments", labelKey: "payments" },
 ] as const;
 
-export default function SidebarNav({ onNavigate }: SidebarNavProps) {
+export default function SidebarNav() {
   const pathname = usePathname();
   const t = useTranslations("navigation");
 
@@ -42,7 +38,7 @@ export default function SidebarNav({ onNavigate }: SidebarNavProps) {
             <Link
               key={item.href}
               href={item.href}
-              onClick={onNavigate}
+
               className={`${styles.link} ${isActive ? styles.active : ""}`}
             >
               {t(item.labelKey)}

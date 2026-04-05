@@ -67,11 +67,11 @@ export default async function LessonsPage() {
             <tbody>
               {lessons.map((lesson) => (
                 <tr key={lesson.id}>
-                  <td className={styles.tableCell}>{lesson.title}</td>
+                  <td className={styles.tableCell} data-label={t("colTitle")}>{lesson.title}</td>
 
-                  <td className={styles.tableCell}>{tLabels(lesson.lessonType)}</td>
+                  <td className={styles.tableCell} data-label={t("colType")}>{tLabels(lesson.lessonType)}</td>
 
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colScheduledAt")}>
                     {formatDateTime(lesson.scheduledAt)}
                   </td>
 

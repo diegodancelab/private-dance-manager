@@ -82,23 +82,23 @@ export default async function PaymentsPage() {
             <tbody>
               {payments.map((payment) => (
                 <tr key={payment.id}>
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colStudent")}>
                     {payment.user.firstName} {payment.user.lastName}
                   </td>
 
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colAmount")}>
                     {formatAmount(String(payment.amount), payment.currency)}
                   </td>
 
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colMethod")}>
                     {payment.method ? tLabels(payment.method) : "—"}
                   </td>
 
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colStatus")}>
                     <StatusBadge status={payment.status} label={tLabels(payment.status)} />
                   </td>
 
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colPaidAt")}>
                     {formatDateTime(payment.paidAt)}
                   </td>
 

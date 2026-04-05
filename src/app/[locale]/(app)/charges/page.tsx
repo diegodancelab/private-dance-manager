@@ -69,25 +69,25 @@ export default async function ChargesPage() {
             <tbody>
               {charges.map((charge) => (
                 <tr key={charge.id}>
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colStudent")}>
                     {charge.user.firstName} {charge.user.lastName}
                   </td>
 
-                  <td className={styles.tableCell}>{charge.title}</td>
+                  <td className={styles.tableCell} data-label={t("colTitle")}>{charge.title}</td>
 
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colAmount")}>
                     {formatAmount(charge.amount.toString(), charge.currency)}
                   </td>
 
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colStatus")}>
                     <StatusBadge status={charge.status} label={tLabels(charge.status)} />
                   </td>
 
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colLesson")}>
                     {charge.lesson ? charge.lesson.title : "—"}
                   </td>
 
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colCreated")}>
                     {charge.createdAt.toLocaleDateString(dateLocale)}
                   </td>
 

@@ -88,3 +88,62 @@
 .actionLink:hover {
   text-decoration: underline;
 }
+/* ── Mobile: table → cards ────────────────────────────────────────────────── */
+
+@media (max-width: 639px) {
+  .tableWrapper {
+    overflow-x: visible;
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    padding: 0;
+  }
+
+  .table {
+    min-width: unset;
+    width: 100%;
+  }
+
+  .table thead {
+    display: none;
+  }
+
+  .table tbody tr {
+    display: block;
+    background: #ffffff;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.75rem;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+  }
+
+  .tableCell {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.6rem 1rem;
+    border-bottom: 1px solid #f3f4f6;
+  }
+
+  .tableCell:last-child {
+    border-bottom: none;
+  }
+
+  .tableCell::before {
+    content: attr(data-label);
+    font-size: 0.78rem;
+    font-weight: 600;
+    color: #6b7280;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    flex-shrink: 0;
+    min-width: 80px;
+  }
+
+  /* Hide label for action cells */
+  .tableCell:empty::before,
+  .tableCell:has(.actions)::before {
+    display: none;
+  }
+}
