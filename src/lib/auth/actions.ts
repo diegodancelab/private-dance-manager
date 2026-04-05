@@ -1,6 +1,6 @@
 "use server";
 
-import { redirect } from "next/navigation";
+import { redirect } from "@/lib/server-redirect";
 import bcrypt from "bcryptjs";
 import { prisma } from "@/lib/prisma";
 import { createSession, deleteSession } from "./session";
@@ -87,10 +87,10 @@ export async function login(
   });
   logger.info("login", "Successful login", { email, userId: user.id });
   await createSession(user.id);
-  redirect("/");
+  return redirect("/");
 }
 
 export async function logout(): Promise<void> {
   await deleteSession();
-  redirect("/login");
+  return redirect("/login");
 }
