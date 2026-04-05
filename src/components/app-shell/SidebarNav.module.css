@@ -45,6 +45,11 @@
   background: #f3f4f6;
 }
 
+.link:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
+}
+
 .active {
   background: #111827;
   color: #ffffff;
@@ -81,4 +86,9 @@
 .logoutButton:hover {
   background: #f3f4f6;
   color: #111827;
+}
+
+.logoutButton:focus-visible {
+  outline: 2px solid #4f46e5;
+  outline-offset: 2px;
 }

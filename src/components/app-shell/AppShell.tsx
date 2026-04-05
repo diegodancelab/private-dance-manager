@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { usePathname } from "@/i18n/navigation";
 import SidebarNav from "./SidebarNav";
 import styles from "./AppShell.module.css";
 
@@ -10,16 +11,26 @@ type AppShellProps = {
 };
 
 export default function AppShell({ children }: AppShellProps) {
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("navigation");
+  const pathname = usePathname();
 
-  function openMobileMenu() {
-    setIsMobileMenuOpen(true);
-  }
+  // Close sidebar on navigation
+  useEffect(() => {
+    setIsOpen(false);
+  }, [pathname]);
 
-  function closeMobileMenu() {
-    setIsMobileMenuOpen(false);
-  }
+  // Scroll lock while sidebar is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "";
+    }
+    return () => {
+      document.body.style.overflow = "";
+    };
+  }, [isOpen]);
 
   return (
     <div className={styles.container}>
@@ -31,13 +42,17 @@ export default function AppShell({ children }: AppShellProps) {
         <header className={styles.mobileHeader}>
           <button
             type="button"
-            onClick={openMobileMenu}
+            onClick={() => setIsOpen(true)}
             className={styles.menuButton}
             aria-label={t("openMenu")}
-            aria-expanded={isMobileMenuOpen}
+            aria-expanded={isOpen}
             aria-controls="mobile-sidebar"
           >
-            ☰
+            <svg width="20" height="20" viewBox="0 0 20 20" fill="none" aria-hidden="true">
+              <rect y="3" width="20" height="2" rx="1" fill="currentColor" />
+              <rect y="9" width="20" height="2" rx="1" fill="currentColor" />
+              <rect y="15" width="20" height="2" rx="1" fill="currentColor" />
+            </svg>
           </button>
 
           <div className={styles.mobileTitle}>{t("brand")}</div>
@@ -46,36 +61,39 @@ export default function AppShell({ children }: AppShellProps) {
         <main className={styles.content}>{children}</main>
       </div>
 
-      {isMobileMenuOpen && (
-        <>
+      {/* Overlay — always rendered for CSS transition */}
+      <button
+        type="button"
+        className={`${styles.overlay} ${isOpen ? styles.overlayVisible : ""}`}
+        onClick={() => setIsOpen(false)}
+        aria-label={t("closeMenu")}
+        tabIndex={isOpen ? 0 : -1}
+      />
+
+      {/* Mobile sidebar — always rendered for CSS transition */}
+      <aside
+        id="mobile-sidebar"
+        className={`${styles.mobileSidebar} ${isOpen ? styles.mobileSidebarOpen : ""}`}
+        aria-label="Mobile navigation"
+        aria-hidden={!isOpen}
+      >
+        <div className={styles.mobileSidebarHeader}>
+          <span className={styles.mobileSidebarTitle}>{t("menu")}</span>
           <button
             type="button"
-            className={styles.overlay}
-            onClick={closeMobileMenu}
+            onClick={() => setIsOpen(false)}
+            className={styles.closeButton}
             aria-label={t("closeMenu")}
-          />
-
-          <aside
-            id="mobile-sidebar"
-            className={styles.mobileSidebar}
-            aria-label="Mobile navigation"
+            tabIndex={isOpen ? 0 : -1}
           >
-            <div className={styles.mobileSidebarHeader}>
-              <span className={styles.mobileSidebarTitle}>{t("menu")}</span>
-              <button
-                type="button"
-                onClick={closeMobileMenu}
-                className={styles.closeButton}
-                aria-label={t("closeMenu")}
-              >
-                ✕
-              </button>
-            </div>
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <path d="M1 1L15 15M15 1L1 15" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+          </button>
+        </div>
 
-            <SidebarNav onNavigate={closeMobileMenu} />
-          </aside>
-        </>
-      )}
+        <SidebarNav />
+      </aside>
     </div>
   );
 }
