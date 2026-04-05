@@ -52,13 +52,13 @@ export default async function StudentsPage() {
             <tbody>
               {students.map((student) => (
                 <tr key={student.id}>
-                  <td className={styles.tableCell}>
+                  <td className={styles.tableCell} data-label={t("colName")}>
                     {student.firstName} {student.lastName}
                   </td>
 
-                  <td className={styles.tableCell}>{student.email ?? "—"}</td>
+                  <td className={styles.tableCell} data-label={t("colEmail")}>{student.email ?? "—"}</td>
 
-                  <td className={styles.tableCell}>{student.phone ?? "—"}</td>
+                  <td className={styles.tableCell} data-label={t("colPhone")}>{student.phone ?? "—"}</td>
 
                   <td className={styles.tableCell}>
                     <div className={styles.actions}>

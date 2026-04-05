@@ -119,13 +119,13 @@ export default async function PackagesPage({ searchParams }: PackagesPageProps) 
 
                 return (
                   <tr key={pkg.id}>
-                    <td className={styles.tableCell}>
+                    <td className={styles.tableCell} data-label={t("colStudents")}>
                       {participantNames || "—"}
                     </td>
 
-                    <td className={styles.tableCell}>{pkg.name}</td>
+                    <td className={styles.tableCell} data-label={t("colName")}>{pkg.name}</td>
 
-                    <td className={styles.tableCell}>
+                    <td className={styles.tableCell} data-label={t("colProgress")}>
                       <div className={styles.progressBar}>
                         <div
                           className={styles.progressFill}
@@ -138,11 +138,11 @@ export default async function PackagesPage({ searchParams }: PackagesPageProps) 
                       </p>
                     </td>
 
-                    <td className={styles.tableCell}>
+                    <td className={styles.tableCell} data-label={t("colStatus")}>
                       <StatusBadge status={pkg.status} label={tLabels(pkg.status)} />
                     </td>
 
-                    <td className={styles.tableCell}>
+                    <td className={styles.tableCell} data-label={t("colExpires")}>
                       {formatDate(pkg.expiresAt)}
                     </td>
 
