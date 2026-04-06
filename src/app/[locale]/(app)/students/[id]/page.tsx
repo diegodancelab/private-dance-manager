@@ -1,5 +1,6 @@
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
+import { getTranslations } from "next-intl/server";
 import { getStudentDetail } from "@/features/students/queries/getStudentDetail";
 import { requireAuth } from "@/lib/auth/require-auth";
 import StudentSummaryCards from "./StudentSummaryCards";
@@ -18,6 +19,8 @@ type Props = {
 export default async function StudentDetailPage({ params }: Props) {
   const { id } = await params;
   const { user } = await requireAuth();
+  const t = await getTranslations("studentDetail");
+  const tCommon = await getTranslations("common");
   const data = await getStudentDetail(id, user.id);
 
   if (!data) notFound();
@@ -27,7 +30,7 @@ export default async function StudentDetailPage({ params }: Props) {
   return (
     <div className={styles.page}>
       <Link href="/students" className={styles.backLink}>
-        ← Back to students
+        {t("back")}
       </Link>
 
       <div className={styles.pageHeader}>
@@ -36,23 +39,23 @@ export default async function StudentDetailPage({ params }: Props) {
         </h1>
         <div className={styles.quickActions}>
           <Button href={`/lessons/new?studentId=${student.id}`} size="sm">
-            Add lesson
+            {t("addLesson")}
           </Button>
           <Button href={`/payments/new?userId=${student.id}`} size="sm">
-            Add payment
+            {t("addPayment")}
           </Button>
           <Button href={`/charges/new?userId=${student.id}`} size="sm">
-            Add charge
+            {t("addCharge")}
           </Button>
           <Button href={`/packages/new?userId=${student.id}`} size="sm">
-            Add package
+            {t("addPackage")}
           </Button>
           <Button
             href={`/students/${student.id}/edit`}
             variant="secondary"
             size="sm"
           >
-            Edit
+            {tCommon("edit")}
           </Button>
         </div>
       </div>

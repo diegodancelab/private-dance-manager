@@ -1,6 +1,6 @@
+import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { UpcomingLesson } from "@/features/students/queries/getStudentDetail";
-import { getLabel } from "@/lib/labels";
 import { formatDateTime } from "@/lib/format";
 import styles from "./StudentDetail.module.css";
 
@@ -8,23 +8,26 @@ type Props = {
   lessons: UpcomingLesson[];
 };
 
-export default function StudentLessonsSection({ lessons }: Props) {
+export default async function StudentLessonsSection({ lessons }: Props) {
+  const t = await getTranslations("studentDetail");
+  const tLabels = await getTranslations("labels");
+
   return (
     <div className={styles.section}>
-      <h2 className={styles.sectionTitle}>Upcoming lessons</h2>
+      <h2 className={styles.sectionTitle}>{t("sectionUpcomingLessons")}</h2>
 
       {lessons.length === 0 ? (
-        <p className={styles.emptyText}>No upcoming lessons.</p>
+        <p className={styles.emptyText}>{t("noUpcomingLessons")}</p>
       ) : (
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.tableHeadCell}>Lesson</th>
-                <th className={styles.tableHeadCell}>Date & time</th>
-                <th className={styles.tableHeadCell}>Duration</th>
-                <th className={styles.tableHeadCell}>Type</th>
-                <th className={styles.tableHeadCell}>Location</th>
+                <th className={styles.tableHeadCell}>{t("colLesson")}</th>
+                <th className={styles.tableHeadCell}>{t("colDateTime")}</th>
+                <th className={styles.tableHeadCell}>{t("colDuration")}</th>
+                <th className={styles.tableHeadCell}>{t("colType")}</th>
+                <th className={styles.tableHeadCell}>{t("colLocation")}</th>
                 <th className={styles.tableHeadCell}></th>
               </tr>
             </thead>
@@ -39,7 +42,7 @@ export default function StudentLessonsSection({ lessons }: Props) {
                     {lesson.durationMin} min
                   </td>
                   <td className={styles.tableCell}>
-                    {getLabel(lesson.lessonType)}
+                    {tLabels(lesson.lessonType)}
                   </td>
                   <td className={styles.tableCell}>
                     {lesson.location ?? "—"}
@@ -49,7 +52,7 @@ export default function StudentLessonsSection({ lessons }: Props) {
                       href={`/lessons/${lesson.id}`}
                       className={styles.actionLink}
                     >
-                      Open lesson
+                      {t("openLesson")}
                     </Link>
                   </td>
                 </tr>

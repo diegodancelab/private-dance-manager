@@ -16,6 +16,8 @@ export default async function LessonDetailPage({ params }: Props) {
   const { id } = await params;
   const { user } = await requireAuth();
   const tLabels = await getTranslations("labels");
+  const t = await getTranslations("lessonDetail");
+  const tCommon = await getTranslations("common");
 
   const lesson = await prisma.lesson.findFirst({
     where: { id, teacherId: user.id },
@@ -39,7 +41,7 @@ export default async function LessonDetailPage({ params }: Props) {
   return (
     <div className={styles.page}>
       <Link href="/lessons" className={styles.backLink}>
-        ← Back to lessons
+        {t("back")}
       </Link>
 
       <div className={styles.card}>
@@ -50,7 +52,7 @@ export default async function LessonDetailPage({ params }: Props) {
               href={`/lessons/${lesson.id}/edit`}
               className={styles.secondaryLink}
             >
-              Edit
+              {tCommon("edit")}
             </Link>
           </div>
         </div>
@@ -58,36 +60,36 @@ export default async function LessonDetailPage({ params }: Props) {
         <div className={styles.cardBody}>
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Type</span>
+              <span className={styles.infoLabel}>{t("labelType")}</span>
               <span className={styles.infoValue}>{tLabels(lesson.lessonType)}</span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Scheduled at</span>
+              <span className={styles.infoLabel}>{t("labelScheduledAt")}</span>
               <span className={styles.infoValue}>
                 {formatDateTime(lesson.scheduledAt)}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Duration</span>
+              <span className={styles.infoLabel}>{t("labelDuration")}</span>
               <span className={styles.infoValue}>{lesson.durationMin} min</span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Price</span>
+              <span className={styles.infoLabel}>{t("labelPrice")}</span>
               <span className={styles.infoValue}>
                 {lesson.priceAmount ? `${lesson.priceAmount} CHF` : "—"}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Location</span>
+              <span className={styles.infoLabel}>{t("labelLocation")}</span>
               <span className={styles.infoValue}>{lesson.location ?? "—"}</span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Teacher</span>
+              <span className={styles.infoLabel}>{t("labelTeacher")}</span>
               <span className={styles.infoValue}>
                 {lesson.teacher.firstName} {lesson.teacher.lastName}
               </span>
@@ -95,7 +97,7 @@ export default async function LessonDetailPage({ params }: Props) {
 
             {lesson.description ? (
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Description</span>
+                <span className={styles.infoLabel}>{t("labelDescription")}</span>
                 <span className={styles.infoValue}>{lesson.description}</span>
               </div>
             ) : null}
@@ -104,11 +106,11 @@ export default async function LessonDetailPage({ params }: Props) {
 
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
-            Participants ({lesson.participants.length})
+            {t("sectionParticipants", { count: lesson.participants.length })}
           </h2>
 
           {lesson.participants.length === 0 ? (
-            <p className={styles.emptyText}>No students assigned.</p>
+            <p className={styles.emptyText}>{t("noStudentsAssigned")}</p>
           ) : (
             <div className={styles.participantList}>
               {lesson.participants.map((participant) => (

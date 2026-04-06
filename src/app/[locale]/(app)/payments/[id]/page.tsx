@@ -16,6 +16,8 @@ export default async function PaymentDetailPage({ params }: Props) {
   const { id } = await params;
   const { user } = await requireAuth();
   const tLabels = await getTranslations("labels");
+  const t = await getTranslations("paymentDetail");
+  const tCommon = await getTranslations("common");
 
   const payment = await prisma.payment.findFirst({
     where: {
@@ -39,7 +41,7 @@ export default async function PaymentDetailPage({ params }: Props) {
   return (
     <div className={styles.page}>
       <Link href="/payments" className={styles.backLink}>
-        ← Back to payments
+        {t("back")}
       </Link>
 
       <div className={styles.card}>
@@ -53,7 +55,7 @@ export default async function PaymentDetailPage({ params }: Props) {
               href={`/payments/${payment.id}/edit`}
               className={styles.secondaryLink}
             >
-              Edit
+              {tCommon("edit")}
             </Link>
           </div>
         </div>
@@ -61,31 +63,31 @@ export default async function PaymentDetailPage({ params }: Props) {
         <div className={styles.cardBody}>
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Student</span>
+              <span className={styles.infoLabel}>{t("labelStudent")}</span>
               <span className={styles.infoValue}>
                 {payment.user.firstName} {payment.user.lastName}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Amount</span>
+              <span className={styles.infoLabel}>{t("labelAmount")}</span>
               <span className={styles.infoValue}>
                 {payment.amount.toString()} {payment.currency}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Method</span>
+              <span className={styles.infoLabel}>{t("labelMethod")}</span>
               <span className={styles.infoValue}>{payment.method ? tLabels(payment.method) : "—"}</span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Status</span>
+              <span className={styles.infoLabel}>{t("labelStatus")}</span>
               <span className={styles.infoValue}><StatusBadge status={payment.status} label={tLabels(payment.status)} /></span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Paid at</span>
+              <span className={styles.infoLabel}>{t("labelPaidAt")}</span>
               <span className={styles.infoValue}>
                 {payment.paidAt
                   ? new Intl.DateTimeFormat("fr-CH", {
@@ -101,7 +103,7 @@ export default async function PaymentDetailPage({ params }: Props) {
 
             {payment.note ? (
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Note</span>
+                <span className={styles.infoLabel}>{t("labelNote")}</span>
                 <span className={styles.infoValue}>{payment.note}</span>
               </div>
             ) : null}
@@ -109,17 +111,17 @@ export default async function PaymentDetailPage({ params }: Props) {
         </div>
 
         <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Charge allocations</h2>
+          <h2 className={styles.sectionTitle}>{t("sectionChargeAllocations")}</h2>
 
           {payment.allocations.length === 0 ? (
-            <p className={styles.emptyText}>No allocations.</p>
+            <p className={styles.emptyText}>{t("noAllocations")}</p>
           ) : (
             <div className={styles.tableWrapper}>
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th className={styles.tableHeadCell}>Charge</th>
-                    <th className={styles.tableHeadCell}>Amount</th>
+                    <th className={styles.tableHeadCell}>{t("colCharge")}</th>
+                    <th className={styles.tableHeadCell}>{t("colAmount")}</th>
                   </tr>
                 </thead>
                 <tbody>
