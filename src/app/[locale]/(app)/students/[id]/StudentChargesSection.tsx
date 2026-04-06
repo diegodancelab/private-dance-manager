@@ -12,32 +12,33 @@ type Props = {
 
 export default async function StudentChargesSection({ charges, studentId }: Props) {
   const tLabels = await getTranslations("labels");
+  const t = await getTranslations("studentDetail");
   const now = new Date();
 
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Unpaid charges</h2>
+        <h2 className={styles.sectionTitle}>{t("sectionUnpaidCharges")}</h2>
         <Link
           href={`/charges/new?userId=${studentId}`}
           className={styles.sectionLink}
         >
-          Add charge
+          {t("addCharge")}
         </Link>
       </div>
 
       {charges.length === 0 ? (
-        <p className={styles.emptyText}>No outstanding charges.</p>
+        <p className={styles.emptyText}>{t("noOutstandingCharges")}</p>
       ) : (
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.tableHeadCell}>Charge</th>
-                <th className={styles.tableHeadCell}>Paid / Total</th>
-                <th className={styles.tableHeadCell}>Remaining</th>
-                <th className={styles.tableHeadCell}>Status</th>
-                <th className={styles.tableHeadCell}>Due date</th>
+                <th className={styles.tableHeadCell}>{t("colCharge")}</th>
+                <th className={styles.tableHeadCell}>{t("colPaidTotal")}</th>
+                <th className={styles.tableHeadCell}>{t("colRemaining")}</th>
+                <th className={styles.tableHeadCell}>{t("colStatus")}</th>
+                <th className={styles.tableHeadCell}>{t("colDueDate")}</th>
                 <th className={styles.tableHeadCell}></th>
               </tr>
             </thead>
@@ -84,7 +85,7 @@ export default async function StudentChargesSection({ charges, studentId }: Prop
                         href={`/charges/${charge.id}`}
                         className={styles.actionLink}
                       >
-                        Open charge
+                        {t("openCharge")}
                       </Link>
                     </td>
                   </tr>

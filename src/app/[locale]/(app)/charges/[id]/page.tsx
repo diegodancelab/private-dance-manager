@@ -16,6 +16,8 @@ export default async function ChargeDetailPage({ params }: Props) {
   const { id } = await params;
   const { user } = await requireAuth();
   const tLabels = await getTranslations("labels");
+  const t = await getTranslations("chargeDetail");
+  const tCommon = await getTranslations("common");
 
   const charge = await prisma.charge.findFirst({
     where: {
@@ -47,7 +49,7 @@ export default async function ChargeDetailPage({ params }: Props) {
   return (
     <div className={styles.page}>
       <Link href="/charges" className={styles.backLink}>
-        ← Back to charges
+        {t("back")}
       </Link>
 
       <div className={styles.card}>
@@ -59,10 +61,10 @@ export default async function ChargeDetailPage({ params }: Props) {
               href={`/payments/new?chargeId=${charge.id}&userId=${charge.userId}&amount=${remainingBalance.toFixed(2)}`}
               className={styles.primaryLink}
             >
-              Create payment
+              {t("createPayment")}
             </Link>
             <Link href={`/charges/${charge.id}/edit`} className={styles.secondaryLink}>
-              Edit
+              {tCommon("edit")}
             </Link>
           </div>
         </div>
@@ -70,52 +72,52 @@ export default async function ChargeDetailPage({ params }: Props) {
         <div className={styles.cardBody}>
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Student</span>
+              <span className={styles.infoLabel}>{t("labelStudent")}</span>
               <span className={styles.infoValue}>
                 {charge.user.firstName} {charge.user.lastName}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Type</span>
+              <span className={styles.infoLabel}>{t("labelType")}</span>
               <span className={styles.infoValue}>{tLabels(charge.type)}</span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Amount</span>
+              <span className={styles.infoLabel}>{t("labelAmount")}</span>
               <span className={styles.infoValue}>
                 {charge.amount.toString()} {charge.currency}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Status</span>
+              <span className={styles.infoLabel}>{t("labelStatus")}</span>
               <span className={styles.infoValue}><StatusBadge status={charge.status} label={tLabels(charge.status)} /></span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Total paid</span>
+              <span className={styles.infoLabel}>{t("labelTotalPaid")}</span>
               <span className={styles.infoValue}>
                 {totalPaid.toFixed(2)} {charge.currency}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Remaining</span>
+              <span className={styles.infoLabel}>{t("labelRemaining")}</span>
               <span className={styles.infoValue}>
                 {remainingBalance.toFixed(2)} {charge.currency}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Lesson</span>
+              <span className={styles.infoLabel}>{t("labelLesson")}</span>
               <span className={styles.infoValue}>
                 {charge.lesson ? charge.lesson.title : "—"}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Due at</span>
+              <span className={styles.infoLabel}>{t("labelDueAt")}</span>
               <span className={styles.infoValue}>
                 {charge.dueAt
                   ? charge.dueAt.toLocaleDateString("fr-CH")
@@ -125,7 +127,7 @@ export default async function ChargeDetailPage({ params }: Props) {
 
             {charge.description ? (
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Description</span>
+                <span className={styles.infoLabel}>{t("labelDescription")}</span>
                 <span className={styles.infoValue}>{charge.description}</span>
               </div>
             ) : null}
@@ -133,18 +135,18 @@ export default async function ChargeDetailPage({ params }: Props) {
         </div>
 
         <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Payment allocations</h2>
+          <h2 className={styles.sectionTitle}>{t("sectionPaymentAllocations")}</h2>
 
           {charge.allocations.length === 0 ? (
-            <p className={styles.emptyText}>No payments allocated yet.</p>
+            <p className={styles.emptyText}>{t("noPaymentsAllocated")}</p>
           ) : (
             <div className={styles.tableWrapper}>
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th className={styles.tableHeadCell}>Amount</th>
-                    <th className={styles.tableHeadCell}>Method</th>
-                    <th className={styles.tableHeadCell}>Status</th>
+                    <th className={styles.tableHeadCell}>{t("colAmount")}</th>
+                    <th className={styles.tableHeadCell}>{t("colMethod")}</th>
+                    <th className={styles.tableHeadCell}>{t("colStatus")}</th>
                   </tr>
                 </thead>
                 <tbody>

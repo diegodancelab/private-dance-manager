@@ -1,3 +1,4 @@
+import { getTranslations } from "next-intl/server";
 import type { StudentSummary } from "@/features/students/queries/getStudentDetail";
 import { formatDate, formatMinutes } from "@/lib/format";
 import styles from "./StudentSummaryCards.module.css";
@@ -6,78 +7,78 @@ type Props = {
   summary: StudentSummary;
 };
 
-const STATUS_CONFIG = {
-  healthy: {
-    label: "Healthy",
-    cardClass: "statusHealthy",
-    valueClass: "valueHealthy",
-  },
-  warning: {
-    label: "Has dues",
-    cardClass: "statusWarning",
-    valueClass: "valueWarning",
-  },
-  overdue: {
-    label: "Overdue",
-    cardClass: "statusOverdue",
-    valueClass: "valueOverdue",
-  },
-};
+export default async function StudentSummaryCards({ summary }: Props) {
+  const t = await getTranslations("studentDetail");
 
-export default function StudentSummaryCards({ summary }: Props) {
+  const STATUS_CONFIG = {
+    healthy: {
+      label: t("statusHealthy"),
+      cardClass: "statusHealthy",
+      valueClass: "valueHealthy",
+    },
+    warning: {
+      label: t("statusHasDues"),
+      cardClass: "statusWarning",
+      valueClass: "valueWarning",
+    },
+    overdue: {
+      label: t("statusOverdue"),
+      cardClass: "statusOverdue",
+      valueClass: "valueOverdue",
+    },
+  };
+
   const statusCfg = STATUS_CONFIG[summary.status];
 
   return (
     <div className={styles.grid}>
       <div className={styles.card}>
-        <p className={styles.label}>Outstanding</p>
+        <p className={styles.label}>{t("cardOutstanding")}</p>
         <p className={styles.value}>
           {summary.outstandingBalance > 0
             ? `${summary.outstandingBalance.toFixed(2)} ${summary.outstandingCurrency}`
-            : "All clear"}
+            : t("allClear")}
         </p>
       </div>
 
       <div className={styles.card}>
-        <p className={styles.label}>Package time</p>
+        <p className={styles.label}>{t("cardPackageTime")}</p>
         <p className={styles.value}>
           {summary.activePackageRemainingMinutes > 0
             ? formatMinutes(summary.activePackageRemainingMinutes)
-            : "None active"}
+            : t("noneActive")}
         </p>
       </div>
 
       <div className={styles.card}>
-        <p className={styles.label}>Next lesson</p>
+        <p className={styles.label}>{t("cardNextLesson")}</p>
         <p className={styles.value}>
           {summary.nextLessonDate
             ? formatDate(summary.nextLessonDate)
-            : "None scheduled"}
+            : t("noneScheduled")}
         </p>
       </div>
 
       <div className={styles.card}>
-        <p className={styles.label}>Upcoming lessons</p>
+        <p className={styles.label}>{t("cardUpcomingLessons")}</p>
         <p className={styles.value}>
-          {summary.upcomingLessonsCount > 0
-            ? `${summary.upcomingLessonsCount} lesson${summary.upcomingLessonsCount > 1 ? "s" : ""}`
-            : "None"}
+          {t("upcomingCount", { count: summary.upcomingLessonsCount })}
         </p>
       </div>
 
       <div className={`${styles.card} ${styles[statusCfg.cardClass]}`}>
-        <p className={styles.label}>Status</p>
+        <p className={styles.label}>{t("cardStatus")}</p>
         <p className={`${styles.value} ${styles[statusCfg.valueClass]}`}>
           {statusCfg.label}
         </p>
       </div>
 
       <div className={styles.card}>
-        <p className={styles.label}>Last payment</p>
+        <p className={styles.label}>{t("cardLastPayment")}</p>
         <p className={styles.value}>
           {summary.lastPaymentDate
             ? formatDate(summary.lastPaymentDate)
-            : "Never"}
+            : t("never")}
         </p>
       </div>
     </div>

@@ -15,29 +15,30 @@ export default async function StudentRecentPaymentsSection({
   studentId,
 }: Props) {
   const tLabels = await getTranslations("labels");
+  const t = await getTranslations("studentDetail");
   return (
     <div className={styles.section}>
       <div className={styles.sectionHeader}>
-        <h2 className={styles.sectionTitle}>Recent payments</h2>
+        <h2 className={styles.sectionTitle}>{t("sectionRecentPayments")}</h2>
         <Link
           href={`/payments/new?userId=${studentId}`}
           className={styles.sectionLink}
         >
-          Add payment
+          {t("addPayment")}
         </Link>
       </div>
 
       {payments.length === 0 ? (
-        <p className={styles.emptyText}>No payments recorded.</p>
+        <p className={styles.emptyText}>{t("noPaymentsRecorded")}</p>
       ) : (
         <div className={styles.tableWrapper}>
           <table className={styles.table}>
             <thead>
               <tr>
-                <th className={styles.tableHeadCell}>Amount</th>
-                <th className={styles.tableHeadCell}>Method</th>
-                <th className={styles.tableHeadCell}>Status</th>
-                <th className={styles.tableHeadCell}>Date</th>
+                <th className={styles.tableHeadCell}>{t("colAmount")}</th>
+                <th className={styles.tableHeadCell}>{t("colMethod")}</th>
+                <th className={styles.tableHeadCell}>{t("colStatus")}</th>
+                <th className={styles.tableHeadCell}>{t("colDate")}</th>
                 <th className={styles.tableHeadCell}></th>
               </tr>
             </thead>
@@ -61,7 +62,7 @@ export default async function StudentRecentPaymentsSection({
                       href={`/payments/${payment.id}`}
                       className={styles.actionLink}
                     >
-                      Open payment
+                      {t("openPayment")}
                     </Link>
                   </td>
                 </tr>

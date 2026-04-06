@@ -35,6 +35,8 @@ function formatDate(date: Date | null): string {
 
 export default async function PackageDetailPage({ params, searchParams }: Props) {
   const tLabels = await getTranslations("labels");
+  const t = await getTranslations("packageDetail");
+  const tCommon = await getTranslations("common");
   const { id } = await params;
   const { migrated, skipped } = await searchParams;
   const migratedResult = migrated ? Number(migrated) : null;
@@ -126,16 +128,16 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
   return (
     <div className={styles.page}>
       <Link href="/packages" className={styles.backLink}>
-        ← Back to packages
+        {t("back")}
       </Link>
 
       {migratedResult !== null && (
         <div className={styles.successBanner}>
           {migratedResult === 0
-            ? "No lessons were migrated."
-            : `${migratedResult} lesson${migratedResult > 1 ? "s" : ""} migrated successfully.`}
+            ? t("noLessonsMigrated")
+            : t("lessonsMigrated", { count: migratedResult })}
           {skippedResult !== null && skippedResult > 0 && (
-            <> {skippedResult} lesson{skippedResult > 1 ? "s" : ""} skipped — package ran out of minutes.</>
+            <> {t("lessonsSkipped", { count: skippedResult })}</>
           )}
         </div>
       )}
@@ -149,7 +151,7 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
               href={`/packages/${pkg.id}/edit`}
               className={styles.secondaryLink}
             >
-              Edit
+              {tCommon("edit")}
             </Link>
           </div>
         </div>
@@ -157,19 +159,19 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
         <div className={styles.cardBody}>
           <div className={styles.infoGrid}>
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Status</span>
+              <span className={styles.infoLabel}>{t("labelStatus")}</span>
               <span className={styles.infoValue}><StatusBadge status={pkg.status} label={tLabels(pkg.status)} /></span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Total hours</span>
+              <span className={styles.infoLabel}>{t("labelTotalHours")}</span>
               <span className={styles.infoValue}>
                 {formatMinutes(pkg.totalMinutes)}
               </span>
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Remaining</span>
+              <span className={styles.infoLabel}>{t("labelRemaining")}</span>
               <span className={styles.infoValue}>
                 {formatMinutes(pkg.remainingMinutes)}
                 <div className={styles.progressBar}>
@@ -182,7 +184,7 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
             </div>
 
             <div className={styles.infoItem}>
-              <span className={styles.infoLabel}>Expires at</span>
+              <span className={styles.infoLabel}>{t("labelExpiresAt")}</span>
               <span className={styles.infoValue}>
                 {formatDate(pkg.expiresAt)}
               </span>
@@ -190,7 +192,7 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
 
             {pkg.charge ? (
               <div className={styles.infoItem}>
-                <span className={styles.infoLabel}>Charge</span>
+                <span className={styles.infoLabel}>{t("labelCharge")}</span>
                 <span className={styles.infoValue}>
                   <Link href={`/charges/${pkg.charge.id}`}>
                     {pkg.charge.amount.toString()} {pkg.charge.currency}
@@ -204,18 +206,18 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
         {/* Participants section */}
         <div className={styles.section}>
           <h2 className={styles.sectionTitle}>
-            Participants ({pkg.participants.length})
+            {t("sectionParticipants", { count: pkg.participants.length })}
           </h2>
 
           {pkg.participants.length === 0 ? (
-            <p className={styles.emptyText}>No participants.</p>
+            <p className={styles.emptyText}>{t("noParticipants")}</p>
           ) : (
             <div className={styles.tableWrapper}>
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th className={styles.tableHeadCell}>Student</th>
-                    <th className={styles.tableHeadCell}>Actions</th>
+                    <th className={styles.tableHeadCell}>{t("colStudent")}</th>
+                    <th className={styles.tableHeadCell}>{t("colActions")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -232,7 +234,7 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
                             type="submit"
                             className={styles.removeButton}
                           >
-                            Remove
+                            {t("remove")}
                           </button>
                         </form>
                       </td>
@@ -250,7 +252,7 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
             >
               <input type="hidden" name="packageId" value={pkg.id} />
               <select name="userId" className={styles.addSelect}>
-                <option value="">Add a student…</option>
+                <option value="">{t("addStudentPlaceholder")}</option>
                 {addableStudents.map((s) => (
                   <option key={s.id} value={s.id}>
                     {s.firstName} {s.lastName}
@@ -258,7 +260,7 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
                 ))}
               </select>
               <button type="submit" className={styles.addButton}>
-                Add
+                {t("add")}
               </button>
             </form>
           )}
@@ -266,19 +268,19 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
 
         {/* Usage history section */}
         <div className={styles.section}>
-          <h2 className={styles.sectionTitle}>Usage history</h2>
+          <h2 className={styles.sectionTitle}>{t("sectionUsageHistory")}</h2>
 
           {pkg.usages.length === 0 ? (
-            <p className={styles.emptyText}>No usage recorded yet.</p>
+            <p className={styles.emptyText}>{t("noUsageRecorded")}</p>
           ) : (
             <div className={styles.tableWrapper}>
               <table className={styles.table}>
                 <thead>
                   <tr>
-                    <th className={styles.tableHeadCell}>Student</th>
-                    <th className={styles.tableHeadCell}>Lesson</th>
-                    <th className={styles.tableHeadCell}>Date</th>
-                    <th className={styles.tableHeadCell}>Consumed</th>
+                    <th className={styles.tableHeadCell}>{t("colStudent")}</th>
+                    <th className={styles.tableHeadCell}>{t("colLesson")}</th>
+                    <th className={styles.tableHeadCell}>{t("colDate")}</th>
+                    <th className={styles.tableHeadCell}>{t("colConsumed")}</th>
                   </tr>
                 </thead>
                 <tbody>
@@ -311,17 +313,17 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
         {migratableCount > 0 && (
           <div className={styles.migrationBanner}>
             <p className={styles.migrationBannerText}>
-              {migratableCount} unit-billed lesson{migratableCount > 1 ? "s" : ""} found without package coverage. Migrate to this package?
+              {t("migrationFound", { count: migratableCount })}
             </p>
             {blockedCount > 0 && (
               <p className={styles.migrationBannerNote}>
-                {blockedCount} lesson{blockedCount > 1 ? "s" : ""} with partial payments will be skipped — settle them manually first.
+                {t("migrationBlocked", { count: blockedCount })}
               </p>
             )}
             <form action={migrateUnitLessonsToPackage}>
               <input type="hidden" name="packageId" value={pkg.id} />
               <button type="submit" className={styles.migrateButton}>
-                Migrate {migratableCount} lesson{migratableCount > 1 ? "s" : ""}
+                {t("migrateButton", { count: migratableCount })}
               </button>
             </form>
           </div>

@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { utcToZurichDatetimeLocal } from "@/lib/dates";
 import { UserRole, PackageStatus } from "@/generated/prisma/client";
-import { getLabel } from "@/lib/labels";
+import { getTranslations } from "next-intl/server";
 import LessonEditForm from "./LessonEditForm";
 import type { LessonFormState } from "../../form-state";
 import {
@@ -31,6 +31,8 @@ function formatMinutes(minutes: number): string {
 export default async function EditLessonPage({ params }: Props) {
   const { id } = await params;
   const { user } = await requireAuth();
+  const t = await getTranslations("lessonDetail");
+  const tLabels = await getTranslations("labels");
 
   const lesson = await prisma.lesson.findFirst({
     where: { id, teacherId: user.id },
@@ -119,13 +121,13 @@ export default async function EditLessonPage({ params }: Props) {
       <div className={styles.card}>
         <div className={styles.cardHeader}>
           <h2 className={styles.cardTitle}>
-            Students ({lesson.participants.length})
+            {t("studentsCount", { count: lesson.participants.length })}
           </h2>
         </div>
 
         <div className={styles.cardBody}>
           {lesson.participants.length === 0 ? (
-            <p className={styles.emptyText}>No students assigned yet.</p>
+            <p className={styles.emptyText}>{t("noStudentsYet")}</p>
           ) : (
             <div className={styles.participantList}>
               {lesson.participants.map((participant) => {
@@ -140,7 +142,7 @@ export default async function EditLessonPage({ params }: Props) {
                         {participant.user.firstName} {participant.user.lastName}
                       </span>
                       <span className={styles.participantStatus}>
-                        {getLabel(participant.status)}
+                        {tLabels(participant.status)}
                       </span>
 
                       {usage ? (
@@ -156,7 +158,7 @@ export default async function EditLessonPage({ params }: Props) {
                               type="submit"
                               className={styles.unassignButton}
                             >
-                              Remove package
+                              {t("removePackage")}
                             </button>
                           </form>
                         </div>
@@ -179,7 +181,7 @@ export default async function EditLessonPage({ params }: Props) {
                             ))}
                           </select>
                           <button type="submit" className={styles.assignButton}>
-                            Assign
+                            {t("assign")}
                           </button>
                         </form>
                       ) : null}
@@ -193,7 +195,7 @@ export default async function EditLessonPage({ params }: Props) {
                       />
                       <input type="hidden" name="lessonId" value={lesson.id} />
                       <button type="submit" className={styles.removeButton}>
-                        Remove
+                        {t("remove")}
                       </button>
                     </form>
                   </div>
@@ -207,9 +209,9 @@ export default async function EditLessonPage({ params }: Props) {
               <input type="hidden" name="lessonId" value={lesson.id} />
 
               <div className={styles.addField}>
-                <label htmlFor="userId">Add a student</label>
+                <label htmlFor="userId">{t("addStudent")}</label>
                 <select id="userId" name="userId">
-                  <option value="">Select a student</option>
+                  <option value="">{t("selectStudent")}</option>
                   {availableStudents.map((student) => (
                     <option key={student.id} value={student.id}>
                       {student.firstName} {student.lastName}
@@ -219,7 +221,7 @@ export default async function EditLessonPage({ params }: Props) {
               </div>
 
               <button type="submit" className={styles.addButton}>
-                Add
+                {t("add")}
               </button>
             </form>
           )}
