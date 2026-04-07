@@ -4,6 +4,7 @@ import { Link } from "@/i18n/navigation";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { requireAuth } from "@/lib/auth/require-auth";
 import Button from "@/components/ui/Button";
+import { Eye, Pencil } from "lucide-react";
 import styles from "./ChargesPage.module.css";
 
 function formatAmount(amount: string | number, currency: string) {
@@ -98,15 +99,17 @@ export default async function ChargesPage({ params }: Props) {
                     <div className={styles.actions}>
                       <Link
                         href={`/charges/${charge.id}`}
-                        className={styles.actionLink}
+                        className={styles.actionIconLink}
+                        title={tCommon("view")}
                       >
-                        {tCommon("view")}
+                        <Eye size={16} />
                       </Link>
                       <Link
                         href={`/charges/${charge.id}/edit`}
-                        className={styles.actionLink}
+                        className={styles.actionIconLink}
+                        title={tCommon("edit")}
                       >
-                        {tCommon("edit")}
+                        <Pencil size={16} />
                       </Link>
                     </div>
                   </td>

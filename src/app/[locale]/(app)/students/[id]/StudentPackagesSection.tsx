@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { Eye } from "lucide-react";
 import StatusBadge from "@/components/ui/StatusBadge";
 import type { StudentPackageItem } from "@/features/students/queries/getStudentDetail";
 import { formatDate, formatMinutes } from "@/lib/format";
@@ -85,9 +86,10 @@ export default async function StudentPackagesSection({ packages }: Props) {
                     <td className={styles.tableCell}>
                       <Link
                         href={`/packages/${pkg.id}`}
-                        className={styles.actionLink}
+                        className={styles.actionIconLink}
+                        title={t("openPackage")}
                       >
-                        {t("openPackage")}
+                        <Eye size={16} />
                       </Link>
                     </td>
                   </tr>

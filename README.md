@@ -15,6 +15,8 @@ A fullstack SaaS-style web application built for dance teachers to handle lesson
 | Database    | PostgreSQL 16                           |
 | ORM         | Prisma 7                                |
 | Styling     | CSS Modules + Design Tokens             |
+| i18n        | next-intl (fr, en, es, lv)             |
+| Icons       | lucide-react                            |
 | Deployment  | [Vercel](https://vercel.com/)           |
 | CI/CD       | GitHub Actions                          |
 | Dev Env     | Docker Compose                          |
@@ -25,10 +27,12 @@ A fullstack SaaS-style web application built for dance teachers to handle lesson
 
 - **Calendar** — Schedule and visualize upcoming lessons
 - **Students** — Manage student profiles and progress
-- **Lessons** — Create and track private, duo, group, or online lessons
+- **Lessons** — Create, track and cancel private, duo, group, or online lessons (cancellation restores package minutes)
 - **Packages** — Sell hour bundles to students and track consumption per lesson
 - **Payments** — Record payments (cash, Twint, bank transfer, card)
 - **Charges** — Issue charges and track payment status per student
+- **Authentication** — Session-based login for teacher accounts
+- **Multi-language** — Interface available in French, English, Spanish and Latvian
 
 ---
 
@@ -277,7 +281,10 @@ docs/
 
 ## Roadmap
 
-- [ ] Multi-teacher support
+- [x] Session-based authentication
+- [x] Multi-language support (fr, en, es, lv)
+- [x] Lesson cancellation with package minute restoration
+- [ ] Multi-teacher support (multiple teacher accounts)
 - [ ] Subscription billing
 - [ ] REST API endpoints
 - [ ] CI/CD pipeline (auto-migrate on deploy)

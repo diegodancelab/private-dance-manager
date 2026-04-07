@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { Eye } from "lucide-react";
 import type { UpcomingLesson } from "@/features/students/queries/getStudentDetail";
 import { formatDateTime } from "@/lib/format";
 import styles from "./StudentDetail.module.css";
@@ -50,9 +51,10 @@ export default async function StudentLessonsSection({ lessons }: Props) {
                   <td className={styles.tableCell}>
                     <Link
                       href={`/lessons/${lesson.id}`}
-                      className={styles.actionLink}
+                      className={styles.actionIconLink}
+                      title={t("openLesson")}
                     >
-                      {t("openLesson")}
+                      <Eye size={16} />
                     </Link>
                   </td>
                 </tr>

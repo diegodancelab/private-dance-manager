@@ -38,16 +38,16 @@
     "today": "Aujourd'hui",
     "sevenDays": "7 jours",
     "week": "Semaine",
-    "addLesson": "+ Cours",
+    "addLesson": "Créer un cours",
     "noLessons": "Aucun cours",
     "viewLabel": "Vue"
   },
   "dashboard": {
     "title": "Tableau de bord",
     "greeting": "Bonjour, {name}.",
-    "createLesson": "+ Créer un cours",
-    "addStudent": "+ Ajouter un élève",
-    "addPayment": "+ Ajouter un paiement",
+    "createLesson": "Créer un cours",
+    "addStudent": "Ajouter un élève",
+    "addPayment": "Ajouter un paiement",
     "today": "Aujourd'hui",
     "noLessonsToday": "Aucun cours prévu aujourd'hui.",
     "next": "Suivant",
@@ -305,6 +305,7 @@
     "noPaymentsRecorded": "Aucun paiement enregistré.",
     "colAmount": "Montant",
     "colMethod": "Méthode",
+    "colStatus": "Statut",
     "colDate": "Date",
     "openPayment": "Voir le paiement"
   },

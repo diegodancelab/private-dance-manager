@@ -4,6 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
 import Button from "@/components/ui/Button";
+import { Eye, Pencil } from "lucide-react";
 import styles from "./StudentsPage.module.css";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -68,15 +69,17 @@ export default async function StudentsPage({ params }: Props) {
                     <div className={styles.actions}>
                       <Link
                         href={`/students/${student.id}`}
-                        className={styles.actionLink}
+                        className={styles.actionIconLink}
+                        title={tCommon("view")}
                       >
-                        {tCommon("view")}
+                        <Eye size={16} />
                       </Link>
                       <Link
                         href={`/students/${student.id}/edit`}
-                        className={styles.actionLink}
+                        className={styles.actionIconLink}
+                        title={tCommon("edit")}
                       >
-                        {tCommon("edit")}
+                        <Pencil size={16} />
                       </Link>
                     </div>
                   </td>

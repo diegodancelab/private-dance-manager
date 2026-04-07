@@ -100,14 +100,19 @@
   flex-wrap: wrap;
 }
 
-.actionLink {
-  color: #111827;
-  text-decoration: none;
-  font-weight: 500;
+.actionIconLink {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #6b7280;
+  padding: 0.25rem;
+  border-radius: 4px;
+  transition: color 0.15s, background 0.15s;
 }
 
-.actionLink:hover {
-  text-decoration: underline;
+.actionIconLink:hover {
+  color: #111827;
+  background: #f3f4f6;
 }
 
 .headerActions {

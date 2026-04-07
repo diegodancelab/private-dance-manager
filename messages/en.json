@@ -38,16 +38,16 @@
     "today": "Today",
     "sevenDays": "7 days",
     "week": "Week",
-    "addLesson": "+ Lesson",
+    "addLesson": "Create lesson",
     "noLessons": "No lessons",
     "viewLabel": "View"
   },
   "dashboard": {
     "title": "Dashboard",
     "greeting": "Good morning, {name}.",
-    "createLesson": "+ Create lesson",
-    "addStudent": "+ Add student",
-    "addPayment": "+ Add payment",
+    "createLesson": "Create lesson",
+    "addStudent": "Add student",
+    "addPayment": "Add payment",
     "today": "Today",
     "noLessonsToday": "No lessons scheduled today.",
     "next": "Next",
@@ -305,6 +305,7 @@
     "noPaymentsRecorded": "No payments recorded.",
     "colAmount": "Amount",
     "colMethod": "Method",
+    "colStatus": "Status",
     "colDate": "Date",
     "openPayment": "Open payment"
   },

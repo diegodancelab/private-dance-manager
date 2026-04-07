@@ -15,6 +15,8 @@
 | ORM         | Prisma                            |
 | Database    | PostgreSQL                        |
 | Styling     | CSS Modules + Global design tokens |
+| i18n        | next-intl (locales: fr, en, es, lv) |
+| Icons       | lucide-react                      |
 | Deployment  | Vercel                            |
 | CI/CD       | GitHub Actions                    |
 | Dev Env     | Docker Compose                    |
@@ -60,7 +62,7 @@ docs/
 Key Prisma models:
 
 - **User** — roles: `ADMIN`, `TEACHER`, `STUDENT`
-- **Lesson** — types: `PRIVATE`, `DUO`, `GROUP`, `ONLINE`
+- **Lesson** — types: `PRIVATE`, `DUO`, `GROUP`, `ONLINE` — statuses: `SCHEDULED`, `CANCELED`
 - **LessonParticipant** — booking status per participant
 - **Package** — hour bundles sold to students — statuses: `ACTIVE`, `EXHAUSTED`, `EXPIRED`, `CANCELED`
 - **PackageUsage** — records minutes consumed per `LessonParticipant`
@@ -124,6 +126,18 @@ Page refresh / UI update
 - Create/Edit pages should share common form components
 - Use `useActionState` for form state management in Client Components
 
+### i18n — `setRequestLocale` (CRITICAL)
+
+Every page component **must** call `setRequestLocale(locale)` at the top, using `locale` from route `params`. Without this, next-intl falls back to the default locale (`fr`) on client-side soft navigation even when the URL shows a different locale.
+
+```ts
+export default async function MyPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale); // ← required in every page
+  ...
+}
+```
+
 ---
 
 ## Design System
@@ -163,8 +177,7 @@ type: short description
 
 ## Planned Evolutions
 
-- Authentication system
-- Multi-user / multi-teacher support
+- Multi-teacher support (multiple teacher accounts)
 - Subscription billing
 - REST API endpoints
 - Full CI/CD pipeline
