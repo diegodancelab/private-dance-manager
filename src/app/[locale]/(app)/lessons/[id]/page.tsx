@@ -6,6 +6,7 @@ import StatusBadge from "@/components/ui/StatusBadge";
 import { formatDateTime } from "@/lib/format";
 import styles from "./LessonDetail.module.css";
 import { requireAuth } from "@/lib/auth/require-auth";
+import CancelLessonButton from "./CancelLessonButton";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -45,6 +46,12 @@ export default async function LessonDetailPage({ params }: Props) {
       </Link>
 
       <div className={styles.card}>
+        {lesson.status === "CANCELED" && (
+          <div className={styles.canceledBanner}>
+            {t("canceledBanner")}
+          </div>
+        )}
+
         <div className={styles.cardHeader}>
           <h1 className={styles.cardTitle}>{lesson.title}</h1>
           <div className={styles.cardActions}>
@@ -54,6 +61,9 @@ export default async function LessonDetailPage({ params }: Props) {
             >
               {tCommon("edit")}
             </Link>
+            {lesson.status === "SCHEDULED" && (
+              <CancelLessonButton lessonId={lesson.id} />
+            )}
           </div>
         </div>
 

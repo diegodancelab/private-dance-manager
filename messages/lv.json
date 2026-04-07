@@ -67,6 +67,7 @@
   },
   "lessons": {
     "noStudentAssigned": "Nav piešķirta skolēna",
+    "statusCanceled": "Atcelts",
     "types": {
       "PRIVATE": "Privāta",
       "DUO": "Duo",
@@ -325,7 +326,13 @@
     "remove": "Noņemt",
     "addStudent": "Pievienot skolēnu",
     "selectStudent": "Izvēlieties skolēnu",
-    "add": "Pievienot"
+    "add": "Pievienot",
+    "cancelLesson": "Atcelt nodarbību",
+    "canceledBanner": "Šī nodarbība ir atcelta",
+    "confirmCancelTitle": "Atcelt šo nodarbību?",
+    "confirmCancelWarning": "Paketes minūtes tiks atjaunotas. Gaidošie maksājumi tiks atcelti. Šo darbību nevar atsaukt.",
+    "confirmCancelConfirm": "Jā, atcelt",
+    "confirmCancelBack": "Nē"
   },
   "paymentDetail": {
     "back": "← Atpakaļ uz apmaksām",

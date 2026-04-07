@@ -63,6 +63,11 @@ enum PackageStatus {
   CANCELED
 }
 
+enum LessonStatus {
+  SCHEDULED
+  CANCELED
+}
+
 model User {
   id                 String              @id @default(cuid())
   email              String?             @unique
@@ -113,6 +118,7 @@ model Lesson {
   priceAmount   Decimal?            @db.Decimal(10, 2)
   location      String?
   teacherId     String
+  status        LessonStatus        @default(SCHEDULED)
   createdAt     DateTime            @default(now())
   updatedAt     DateTime            @updatedAt
 

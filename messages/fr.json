@@ -67,6 +67,7 @@
   },
   "lessons": {
     "noStudentAssigned": "Aucun élève assigné",
+    "statusCanceled": "Annulé",
     "types": {
       "PRIVATE": "Privé",
       "DUO": "Duo",
@@ -325,7 +326,13 @@
     "remove": "Retirer",
     "addStudent": "Ajouter un élève",
     "selectStudent": "Sélectionner un élève",
-    "add": "Ajouter"
+    "add": "Ajouter",
+    "cancelLesson": "Annuler le cours",
+    "canceledBanner": "Ce cours a été annulé",
+    "confirmCancelTitle": "Annuler ce cours ?",
+    "confirmCancelWarning": "Les minutes du forfait seront restituées. Les frais en attente seront annulés. Cette action est irréversible.",
+    "confirmCancelConfirm": "Oui, annuler",
+    "confirmCancelBack": "Non"
   },
   "paymentDetail": {
     "back": "← Retour aux paiements",

@@ -16,6 +16,7 @@ export default async function LessonsPage() {
   const t = await getTranslations("lessonsPage");
   const tLabels = await getTranslations("labels");
   const tCommon = await getTranslations("common");
+  const tLessons = await getTranslations("lessons");
   const locale = await getLocale();
   const dateLocale = LOCALE_MAP[locale] ?? "fr-CH";
 
@@ -66,8 +67,13 @@ export default async function LessonsPage() {
 
             <tbody>
               {lessons.map((lesson) => (
-                <tr key={lesson.id}>
-                  <td className={styles.tableCell} data-label={t("colTitle")}>{lesson.title}</td>
+                <tr key={lesson.id} className={lesson.status === "CANCELED" ? styles.canceledRow : ""}>
+                  <td className={styles.tableCell} data-label={t("colTitle")}>
+                    <span>{lesson.title}</span>
+                    {lesson.status === "CANCELED" && (
+                      <span className={styles.canceledBadge}>{tLessons("statusCanceled")}</span>
+                    )}
+                  </td>
 
                   <td className={styles.tableCell} data-label={t("colType")}>{tLabels(lesson.lessonType)}</td>
 

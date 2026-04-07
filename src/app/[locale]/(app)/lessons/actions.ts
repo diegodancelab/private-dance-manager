@@ -9,7 +9,9 @@ import {
 import { prisma } from "@/lib/prisma";
 import {
   BookingStatus,
+  ChargeStatus,
   ChargeType,
+  LessonStatus,
   LessonType,
   PackageStatus,
   Prisma,
@@ -177,7 +179,7 @@ export const createLesson = withFormAction(async function createLesson(
 
   const newEndTime = new Date(scheduledDate.getTime() + durationMinNumber * 60 * 1000);
   const nearbyLessons = await prisma.lesson.findMany({
-    where: { teacherId, scheduledAt: { lt: newEndTime } },
+    where: { teacherId, scheduledAt: { lt: newEndTime }, status: { not: LessonStatus.CANCELED } },
     select: { id: true, scheduledAt: true, durationMin: true },
   });
   const conflict = nearbyLessons.find((l) => {
@@ -401,7 +403,7 @@ export const updateLesson = withFormAction(async function updateLesson(
 
   const newEndTime = new Date(scheduledDate.getTime() + durationMinNumber * 60 * 1000);
   const nearbyLessons = await prisma.lesson.findMany({
-    where: { teacherId, scheduledAt: { lt: newEndTime }, id: { not: id } },
+    where: { teacherId, scheduledAt: { lt: newEndTime }, id: { not: id }, status: { not: LessonStatus.CANCELED } },
     select: { id: true, scheduledAt: true, durationMin: true },
   });
   const conflict = nearbyLessons.find((l) => {
@@ -728,4 +730,70 @@ export async function deleteLesson(formData: FormData) {
   }
 
   return redirect("/lessons");
+}
+
+export async function cancelLesson(formData: FormData) {
+  const { user } = await requireTeacherAuth();
+  const lessonId = parseRequiredString(formData.get("lessonId"));
+
+  if (!lessonId) {
+    throw new Error("Lesson id is required.");
+  }
+
+  try {
+    const lesson = await prisma.lesson.findFirst({
+      where: { id: lessonId, teacherId: user.id },
+      select: { id: true, status: true },
+    });
+
+    if (!lesson) throw new DomainError("Lesson not found.");
+    if (lesson.status === LessonStatus.CANCELED) throw new DomainError("Lesson is already canceled.");
+
+    await prisma.$transaction(async (tx) => {
+      // Restore package minutes for all participants (F-01).
+      const usages = await tx.packageUsage.findMany({
+        where: { lessonParticipant: { lessonId } },
+        select: { packageId: true, minutesConsumed: true },
+      });
+
+      for (const usage of usages) {
+        const pkg = await tx.package.findUnique({
+          where: { id: usage.packageId },
+          select: { remainingMinutes: true, totalMinutes: true, status: true },
+        });
+
+        if (!pkg) continue;
+
+        const newRemaining = Math.min(
+          pkg.remainingMinutes + usage.minutesConsumed,
+          pkg.totalMinutes
+        );
+        const newStatus =
+          pkg.status === PackageStatus.EXHAUSTED
+            ? PackageStatus.ACTIVE
+            : pkg.status;
+
+        await tx.package.update({
+          where: { id: usage.packageId },
+          data: { remainingMinutes: newRemaining, status: newStatus },
+        });
+      }
+
+      // Cancel pending charges linked to this lesson.
+      await tx.charge.updateMany({
+        where: { lessonId, status: ChargeStatus.PENDING },
+        data: { status: ChargeStatus.CANCELED },
+      });
+
+      // Mark lesson as canceled.
+      await tx.lesson.update({
+        where: { id: lessonId },
+        data: { status: LessonStatus.CANCELED },
+      });
+    });
+  } catch (err) {
+    handleNonFormActionError("cancelLesson", err);
+  }
+
+  return redirect(`/lessons/${lessonId}`);
 }

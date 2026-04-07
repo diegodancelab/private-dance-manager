@@ -68,3 +68,28 @@
   font-size: 0.85rem;
   color: #6b7280;
 }
+
+.cardCanceled {
+  background: #fef2f2;
+  border-color: #fca5a5;
+  opacity: 0.85;
+}
+
+.link:hover .cardCanceled {
+  background: #fee2e2;
+  border-color: #f87171;
+}
+
+.canceledBadge {
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #dc2626;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: 0.3rem;
+}
+
+.canceledText {
+  color: #9ca3af;
+  text-decoration: line-through;
+}

@@ -22,6 +22,7 @@ type LessonItem = {
   scheduledAt: Date;
   durationMin: number;
   location: string | null;
+  status: string;
   participants: LessonParticipantItem[];
 };
 
@@ -109,7 +110,7 @@ export default async function CalendarWeekView({
             <div className={styles.dayContent}>
               {dayLessons.length > 0 ? (
                 dayLessons.map((lesson) => (
-                  <LessonCard key={lesson.id} lesson={lesson} />
+                  <LessonCard key={lesson.id} lesson={lesson} status={lesson.status} />
                 ))
               ) : (
                 <p className={styles.empty}>{t("noLessons")}</p>
