@@ -1,4 +1,4 @@
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { UserRole } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
@@ -6,7 +6,11 @@ import { requireAuth } from "@/lib/auth/require-auth";
 import Button from "@/components/ui/Button";
 import styles from "./StudentsPage.module.css";
 
-export default async function StudentsPage() {
+type Props = { params: Promise<{ locale: string }> };
+
+export default async function StudentsPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
   const t = await getTranslations("students");
   const tCommon = await getTranslations("common");

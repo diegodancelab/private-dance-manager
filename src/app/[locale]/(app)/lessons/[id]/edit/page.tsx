@@ -2,7 +2,7 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { utcToZurichDatetimeLocal } from "@/lib/dates";
 import { UserRole, PackageStatus } from "@/generated/prisma/client";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import LessonEditForm from "./LessonEditForm";
 import type { LessonFormState } from "../../form-state";
 import {
@@ -17,6 +17,7 @@ import { requireAuth } from "@/lib/auth/require-auth";
 type Props = {
   params: Promise<{
     id: string;
+    locale: string;
   }>;
 };
 
@@ -29,7 +30,8 @@ function formatMinutes(minutes: number): string {
 }
 
 export default async function EditLessonPage({ params }: Props) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
   const t = await getTranslations("lessonDetail");
   const tLabels = await getTranslations("labels");

@@ -89,6 +89,24 @@
   text-decoration: underline;
 }
 
+.canceledRow td {
+  color: #9ca3af;
+}
+
+.canceledBadge {
+  display: inline-block;
+  margin-left: 0.5rem;
+  padding: 0.15rem 0.45rem;
+  border-radius: 0.35rem;
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: #fef2f2;
+  color: #dc2626;
+  border: 1px solid #fca5a5;
+}
+
 /* ── Mobile: table → cards ────────────────────────────────────────────────── */
 
 @media (max-width: 639px) {

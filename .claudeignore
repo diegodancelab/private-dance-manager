@@ -1,0 +1,35 @@
+# Dependencies
+node_modules/
+
+# Generated Prisma client (auto-generated, never edit manually)
+src/generated/
+
+# Prisma migration history (SQL files, not relevant to logic)
+prisma/migrations/
+
+# Next.js build output
+.next/
+out/
+
+# Lock files
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# TypeScript build info
+tsconfig.tsbuildinfo
+next-env.d.ts
+
+# Logs
+*.log
+npm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Public assets (images, fonts, icons)
+public/
+
+# Docker
+.dockerignore

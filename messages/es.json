@@ -67,6 +67,7 @@
   },
   "lessons": {
     "noStudentAssigned": "Ningún alumno asignado",
+    "statusCanceled": "Cancelado",
     "types": {
       "PRIVATE": "Privado",
       "DUO": "Dúo",
@@ -325,7 +326,13 @@
     "remove": "Eliminar",
     "addStudent": "Añadir alumno",
     "selectStudent": "Seleccionar alumno",
-    "add": "Añadir"
+    "add": "Añadir",
+    "cancelLesson": "Cancelar clase",
+    "canceledBanner": "Esta clase ha sido cancelada",
+    "confirmCancelTitle": "¿Cancelar esta clase?",
+    "confirmCancelWarning": "Los minutos del paquete serán restaurados. Los cargos pendientes serán cancelados. Esta acción no se puede deshacer.",
+    "confirmCancelConfirm": "Sí, cancelar",
+    "confirmCancelBack": "No"
   },
   "paymentDetail": {
     "back": "← Volver a pagos",

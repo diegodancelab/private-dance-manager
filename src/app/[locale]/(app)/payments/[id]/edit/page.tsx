@@ -5,16 +5,18 @@ import { requireAuth } from "@/lib/auth/require-auth";
 import type { PaymentFormState } from "../../form-state";
 import { UserRole } from "@/generated/prisma/client";
 import PaymentEditForm from "./PaymentEditForm";
+import { setRequestLocale } from "next-intl/server";
 
 type Props = {
   params: Promise<{
     id: string;
+    locale: string;
   }>;
 };
 
-
 export default async function EditPaymentPage({ params }: Props) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
 
   const payment = await prisma.payment.findFirst({

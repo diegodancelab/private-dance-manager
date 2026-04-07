@@ -22,6 +22,7 @@ type LessonCardProps = {
     location: string | null;
     participants: LessonParticipantItem[];
   };
+  status: string;
 };
 
 const LOCALE_MAP: Record<string, string> = {
@@ -30,11 +31,12 @@ const LOCALE_MAP: Record<string, string> = {
   es: "es-ES",
 };
 
-export default async function LessonCard({ lesson }: LessonCardProps) {
+export default async function LessonCard({ lesson, status }: LessonCardProps) {
   const t = await getTranslations("lessons");
   const tLabels = await getTranslations("labels");
   const locale = await getLocale();
   const dateLocale = LOCALE_MAP[locale] || "fr-CH";
+  const isCanceled = status === "CANCELED";
 
   function formatTime(date: Date) {
     return new Intl.DateTimeFormat(dateLocale, {
@@ -58,14 +60,17 @@ export default async function LessonCard({ lesson }: LessonCardProps) {
     .join(", ");
 
   return (
-    <Link href={`/lessons/${lesson.id}/edit`} className={styles.link}>
-      <article className={styles.card}>
-        <div className={styles.time}>
+    <Link href={`/lessons/${lesson.id}`} className={styles.link}>
+      <article className={`${styles.card} ${isCanceled ? styles.cardCanceled : ""}`}>
+        {isCanceled && (
+          <div className={styles.canceledBadge}>{t("statusCanceled")}</div>
+        )}
+        <div className={`${styles.time} ${isCanceled ? styles.canceledText : ""}`}>
           {formatTime(lesson.scheduledAt)} -{" "}
           {formatEndTime(lesson.scheduledAt, lesson.durationMin)}
         </div>
 
-        <div className={styles.title}>{lesson.title}</div>
+        <div className={`${styles.title} ${isCanceled ? styles.canceledText : ""}`}>{lesson.title}</div>
 
         <div className={styles.meta}>
           <span>{tLabels(lesson.lessonType)}</span>

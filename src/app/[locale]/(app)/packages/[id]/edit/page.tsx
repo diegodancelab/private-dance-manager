@@ -4,14 +4,15 @@ import { utcToZurichDate } from "@/lib/dates";
 import { requireAuth } from "@/lib/auth/require-auth";
 import type { PackageFormState } from "../../form-state";
 import PackageEditForm from "./PackageEditForm";
+import { setRequestLocale } from "next-intl/server";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 };
 
-
 export default async function EditPackagePage({ params }: Props) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
 
   const pkg = await prisma.package.findFirst({

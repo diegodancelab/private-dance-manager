@@ -1,4 +1,4 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth/require-auth";
@@ -11,12 +11,16 @@ const LOCALE_MAP: Record<string, string> = {
   es: "es-ES",
 };
 
-export default async function LessonsPage() {
+type Props = { params: Promise<{ locale: string }> };
+
+export default async function LessonsPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
   const t = await getTranslations("lessonsPage");
   const tLabels = await getTranslations("labels");
   const tCommon = await getTranslations("common");
-  const locale = await getLocale();
+  const tLessons = await getTranslations("lessons");
   const dateLocale = LOCALE_MAP[locale] ?? "fr-CH";
 
   function formatDateTime(date: Date) {
@@ -66,8 +70,13 @@ export default async function LessonsPage() {
 
             <tbody>
               {lessons.map((lesson) => (
-                <tr key={lesson.id}>
-                  <td className={styles.tableCell} data-label={t("colTitle")}>{lesson.title}</td>
+                <tr key={lesson.id} className={lesson.status === "CANCELED" ? styles.canceledRow : ""}>
+                  <td className={styles.tableCell} data-label={t("colTitle")}>
+                    <span>{lesson.title}</span>
+                    {lesson.status === "CANCELED" && (
+                      <span className={styles.canceledBadge}>{tLessons("statusCanceled")}</span>
+                    )}
+                  </td>
 
                   <td className={styles.tableCell} data-label={t("colType")}>{tLabels(lesson.lessonType)}</td>
 

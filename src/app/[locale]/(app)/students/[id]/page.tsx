@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getStudentDetail } from "@/features/students/queries/getStudentDetail";
 import { requireAuth } from "@/lib/auth/require-auth";
 import StudentSummaryCards from "./StudentSummaryCards";
@@ -13,11 +13,12 @@ import Button from "@/components/ui/Button";
 import styles from "./StudentDetail.module.css";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
 };
 
 export default async function StudentDetailPage({ params }: Props) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
   const t = await getTranslations("studentDetail");
   const tCommon = await getTranslations("common");

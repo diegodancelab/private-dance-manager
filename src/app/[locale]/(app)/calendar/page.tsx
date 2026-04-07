@@ -8,8 +8,10 @@ import {
   parseViewMode,
 } from "@/lib/calendar";
 import { requireAuth } from "@/lib/auth/require-auth";
+import { setRequestLocale } from "next-intl/server";
 
 type CalendarPageProps = {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     date?: string;
     view?: string;
@@ -17,12 +19,15 @@ type CalendarPageProps = {
 };
 
 export default async function CalendarPage({
+  params,
   searchParams,
 }: CalendarPageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
-  const params = await searchParams;
-  const currentDate = parseCalendarDate(params.date);
-  const viewMode = parseViewMode(params.view);
+  const searchParamsResolved = await searchParams;
+  const currentDate = parseCalendarDate(searchParamsResolved.date);
+  const viewMode = parseViewMode(searchParamsResolved.view);
 
   const start = getStartOfWindow(currentDate, viewMode);
   const end = getEndOfWindow(currentDate, viewMode);
