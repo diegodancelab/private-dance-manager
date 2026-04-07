@@ -5,6 +5,7 @@ import { PackageStatus } from "@/generated/prisma/client";
 import StatusBadge from "@/components/ui/StatusBadge";
 import { requireAuth } from "@/lib/auth/require-auth";
 import Button from "@/components/ui/Button";
+import { Eye, Pencil } from "lucide-react";
 import styles from "./PackagesPage.module.css";
 
 function formatMinutes(minutes: number): string {
@@ -152,15 +153,17 @@ export default async function PackagesPage({ params, searchParams }: PackagesPag
                       <div className={styles.actions}>
                         <Link
                           href={`/packages/${pkg.id}`}
-                          className={styles.actionLink}
+                          className={styles.actionIconLink}
+                          title={tCommon("view")}
                         >
-                          {tCommon("view")}
+                          <Eye size={16} />
                         </Link>
                         <Link
                           href={`/packages/${pkg.id}/edit`}
-                          className={styles.actionLink}
+                          className={styles.actionIconLink}
+                          title={tCommon("edit")}
                         >
-                          {tCommon("edit")}
+                          <Pencil size={16} />
                         </Link>
                       </div>
                     </td>

@@ -3,6 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { requireAuth } from "@/lib/auth/require-auth";
 import Button from "@/components/ui/Button";
+import { Eye } from "lucide-react";
 import styles from "./LessonsPage.module.css";
 
 const LOCALE_MAP: Record<string, string> = {
@@ -88,9 +89,10 @@ export default async function LessonsPage({ params }: Props) {
                     <div className={styles.actions}>
                       <Link
                         href={`/lessons/${lesson.id}`}
-                        className={styles.actionLink}
+                        className={styles.actionIconLink}
+                        title={tCommon("view")}
                       >
-                        {tCommon("view")}
+                        <Eye size={16} />
                       </Link>
                     </div>
                   </td>
