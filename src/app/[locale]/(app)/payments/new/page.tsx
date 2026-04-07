@@ -2,8 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { UserRole, ChargeStatus } from "@/generated/prisma/client";
 import { requireAuth } from "@/lib/auth/require-auth";
 import PaymentCreateForm from "./PaymentCreateForm";
+import { setRequestLocale } from "next-intl/server";
 
 type Props = {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     chargeId?: string;
     userId?: string;
@@ -11,7 +13,9 @@ type Props = {
   }>;
 };
 
-export default async function NewPaymentPage({ searchParams }: Props) {
+export default async function NewPaymentPage({ params, searchParams }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
   const { chargeId, userId, amount } = await searchParams;
   const students = await prisma.user.findMany({

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { utcToZurichDate } from "@/lib/dates";
 import { requireAuth } from "@/lib/auth/require-auth";
 import ChargeEditForm from "./ChargeEditForm";
+import { setRequestLocale } from "next-intl/server";
 import type { ChargeFormState } from "../../form-state";
 import { UserRole } from "@/generated/prisma/client";
 
@@ -10,12 +11,13 @@ import { UserRole } from "@/generated/prisma/client";
 type Props = {
   params: Promise<{
     id: string;
+    locale: string;
   }>;
 };
 
-
 export default async function EditChargePage({ params }: Props) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
 
   const charge = await prisma.charge.findFirst({

@@ -2,18 +2,20 @@ import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import StatusBadge from "@/components/ui/StatusBadge";
 import styles from "./PaymentDetail.module.css";
 
 type Props = {
   params: Promise<{
     id: string;
+    locale: string;
   }>;
 };
 
 export default async function PaymentDetailPage({ params }: Props) {
-  const { id } = await params;
+  const { id, locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
   const tLabels = await getTranslations("labels");
   const t = await getTranslations("paymentDetail");

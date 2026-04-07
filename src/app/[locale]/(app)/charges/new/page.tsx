@@ -2,14 +2,18 @@ import { prisma } from "@/lib/prisma";
 import { UserRole } from "@/generated/prisma/client";
 import { requireAuth } from "@/lib/auth/require-auth";
 import ChargeCreateForm from "./ChargeCreateForm";
+import { setRequestLocale } from "next-intl/server";
 
 type Props = {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     userId?: string;
   }>;
 };
 
-export default async function NewChargePage({ searchParams }: Props) {
+export default async function NewChargePage({ params, searchParams }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
   const { userId } = await searchParams;
 

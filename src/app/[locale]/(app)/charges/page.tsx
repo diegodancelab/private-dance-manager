@@ -1,4 +1,4 @@
-import { getTranslations, getLocale } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import StatusBadge from "@/components/ui/StatusBadge";
@@ -16,12 +16,15 @@ const LOCALE_MAP: Record<string, string> = {
   es: "es-ES",
 };
 
-export default async function ChargesPage() {
+type Props = { params: Promise<{ locale: string }> };
+
+export default async function ChargesPage({ params }: Props) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
   const t = await getTranslations("chargesPage");
   const tLabels = await getTranslations("labels");
   const tCommon = await getTranslations("common");
-  const locale = await getLocale();
   const dateLocale = LOCALE_MAP[locale] ?? "fr-CH";
 
   const charges = await prisma.charge.findMany({

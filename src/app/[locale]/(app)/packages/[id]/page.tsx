@@ -3,7 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { UserRole, ChargeType, ChargeStatus, PackageStatus } from "@/generated/prisma/client";
-import { getTranslations } from "next-intl/server";
+import { getTranslations, setRequestLocale } from "next-intl/server";
 import StatusBadge from "@/components/ui/StatusBadge";
 import styles from "./PackageDetail.module.css";
 import {
@@ -13,7 +13,7 @@ import {
 } from "../actions";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ id: string; locale: string }>;
   searchParams: Promise<{ migrated?: string; skipped?: string }>;
 };
 
@@ -37,7 +37,8 @@ export default async function PackageDetailPage({ params, searchParams }: Props)
   const tLabels = await getTranslations("labels");
   const t = await getTranslations("packageDetail");
   const tCommon = await getTranslations("common");
-  const { id } = await params;
+  const { id, locale } = await params;
+  setRequestLocale(locale);
   const { migrated, skipped } = await searchParams;
   const migratedResult = migrated ? Number(migrated) : null;
   const skippedResult = skipped ? Number(skipped) : null;

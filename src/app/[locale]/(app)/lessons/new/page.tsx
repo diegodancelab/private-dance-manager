@@ -2,8 +2,10 @@ import { prisma } from "@/lib/prisma";
 import { UserRole, PackageStatus } from "@/generated/prisma/client";
 import LessonCreateForm from "./LessonCreateForm";
 import { requireAuth } from "@/lib/auth/require-auth";
+import { setRequestLocale } from "next-intl/server";
 
 type NewLessonPageProps = {
+  params: Promise<{ locale: string }>;
   searchParams: Promise<{
     date?: string;
     studentId?: string;
@@ -25,10 +27,13 @@ function buildDefaultScheduledAt(dateParam?: string): string {
 }
 
 export default async function NewLessonPage({
+  params,
   searchParams,
 }: NewLessonPageProps) {
+  const { locale } = await params;
+  setRequestLocale(locale);
   const { user } = await requireAuth();
-  const params = await searchParams;
+  const searchParamsResolved = await searchParams;
 
   const students = await prisma.user.findMany({
     where: {
@@ -70,14 +75,14 @@ export default async function NewLessonPage({
     packagesByStudent[pp.userId].push(pp.package);
   }
 
-  const defaultScheduledAt = buildDefaultScheduledAt(params.date);
+  const defaultScheduledAt = buildDefaultScheduledAt(searchParamsResolved.date);
 
   return (
     <LessonCreateForm
       students={students}
       packagesByStudent={packagesByStudent}
       defaultScheduledAt={defaultScheduledAt}
-      defaultStudentId={params.studentId ?? ""}
+      defaultStudentId={searchParamsResolved.studentId ?? ""}
     />
   );
 }
