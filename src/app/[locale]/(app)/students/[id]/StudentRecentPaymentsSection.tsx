@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { Eye } from "lucide-react";
 import StatusBadge from "@/components/ui/StatusBadge";
 import type { RecentPayment } from "@/features/students/queries/getStudentDetail";
 import { formatDate } from "@/lib/format";
@@ -60,9 +61,10 @@ export default async function StudentRecentPaymentsSection({
                   <td className={styles.tableCell}>
                     <Link
                       href={`/payments/${payment.id}`}
-                      className={styles.actionLink}
+                      className={styles.actionIconLink}
+                      title={t("openPayment")}
                     >
-                      {t("openPayment")}
+                      <Eye size={16} />
                     </Link>
                   </td>
                 </tr>
