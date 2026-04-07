@@ -305,6 +305,7 @@
     "noPaymentsRecorded": "No payments recorded.",
     "colAmount": "Amount",
     "colMethod": "Method",
+    "colStatus": "Status",
     "colDate": "Date",
     "openPayment": "Open payment"
   },

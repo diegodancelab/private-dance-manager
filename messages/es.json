@@ -305,6 +305,7 @@
     "noPaymentsRecorded": "Sin pagos registrados.",
     "colAmount": "Importe",
     "colMethod": "Método",
+    "colStatus": "Estado",
     "colDate": "Fecha",
     "openPayment": "Ver pago"
   },

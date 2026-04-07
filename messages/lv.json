@@ -305,6 +305,7 @@
     "noPaymentsRecorded": "Nav reģistrētu apmaksu.",
     "colAmount": "Summa",
     "colMethod": "Metode",
+    "colStatus": "Statuss",
     "colDate": "Datums",
     "openPayment": "Atvērt apmaksu"
   },
