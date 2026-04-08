@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { logout } from "@/lib/auth/actions";
-import LanguageSwitcher from "@/components/ui/LanguageSwitcher";
+import LanguageSwitcher from "@/components/ui/LanguageSwitcher/LanguageSwitcher";
 import styles from "./SidebarNav.module.css";
 
 const navItems = [

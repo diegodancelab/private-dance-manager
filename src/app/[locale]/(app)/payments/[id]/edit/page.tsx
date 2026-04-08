@@ -2,9 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { utcToZurichDatetimeLocal } from "@/lib/dates";
 import { requireAuth } from "@/lib/auth/require-auth";
-import type { PaymentFormState } from "../../form-state";
+import type { PaymentFormState } from "@/features/payments/form-state";
 import { UserRole } from "@/generated/prisma/client";
-import PaymentEditForm from "./PaymentEditForm";
+import PaymentEditForm from "@/features/payments/components/PaymentEditForm";
 import { setRequestLocale } from "next-intl/server";
 
 type Props = {

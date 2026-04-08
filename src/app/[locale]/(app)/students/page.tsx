@@ -3,7 +3,7 @@ import { UserRole } from "@/generated/prisma/client";
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import { Eye, Pencil } from "lucide-react";
 import styles from "./StudentsPage.module.css";
 

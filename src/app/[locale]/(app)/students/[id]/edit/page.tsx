@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { UserRole } from "@/generated/prisma/client";
 import { requireAuth } from "@/lib/auth/require-auth";
-import StudentEditForm from "./StudentEditForm";
-import type { StudentFormState } from "../../form-state";
+import StudentEditForm from "@/features/students/components/StudentEditForm";
+import type { StudentFormState } from "@/features/students/form-state";
 import { setRequestLocale } from "next-intl/server";
 
 type Props = {

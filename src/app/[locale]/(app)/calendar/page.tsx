@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
-import CalendarWeekHeader from "@/components/calendar/CalendarWeekHeader";
-import CalendarWeekView from "@/components/calendar/CalendarWeekView";
+import CalendarWeekHeader from "@/features/calendar/components/CalendarWeekHeader";
+import CalendarWeekView from "@/features/calendar/components/CalendarWeekView";
 import {
   getEndOfWindow,
   getStartOfWindow,

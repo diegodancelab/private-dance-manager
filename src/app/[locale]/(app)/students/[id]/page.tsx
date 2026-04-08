@@ -3,14 +3,14 @@ import { Link } from "@/i18n/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import { getStudentDetail } from "@/features/students/queries/getStudentDetail";
 import { requireAuth } from "@/lib/auth/require-auth";
-import StudentSummaryCards from "./StudentSummaryCards";
-import StudentInfoCard from "./StudentInfoCard";
-import StudentChargesSection from "./StudentChargesSection";
-import StudentPackagesSection from "./StudentPackagesSection";
-import StudentLessonsSection from "./StudentLessonsSection";
-import StudentRecentPaymentsSection from "./StudentRecentPaymentsSection";
-import Button from "@/components/ui/Button";
-import styles from "./StudentDetail.module.css";
+import StudentSummaryCards from "@/features/students/components/StudentSummaryCards";
+import StudentInfoCard from "@/features/students/components/StudentInfoCard";
+import StudentChargesSection from "@/features/students/components/StudentChargesSection";
+import StudentPackagesSection from "@/features/students/components/StudentPackagesSection";
+import StudentLessonsSection from "@/features/students/components/StudentLessonsSection";
+import StudentRecentPaymentsSection from "@/features/students/components/StudentRecentPaymentsSection";
+import Button from "@/components/ui/Button/Button";
+import styles from "@/features/students/components/StudentDetail.module.css";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;

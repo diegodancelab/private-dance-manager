@@ -2,11 +2,11 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { Link } from "@/i18n/navigation";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import StatusBadge from "@/components/ui/StatusBadge";
+import StatusBadge from "@/components/ui/StatusBadge/StatusBadge";
 import { formatDateTime } from "@/lib/format";
 import styles from "./LessonDetail.module.css";
 import { requireAuth } from "@/lib/auth/require-auth";
-import CancelLessonButton from "./CancelLessonButton";
+import CancelLessonButton from "@/features/lessons/components/CancelLessonButton";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;

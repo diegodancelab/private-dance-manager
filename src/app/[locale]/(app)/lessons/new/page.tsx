@@ -1,6 +1,6 @@
 import { prisma } from "@/lib/prisma";
 import { UserRole, PackageStatus } from "@/generated/prisma/client";
-import LessonCreateForm from "./LessonCreateForm";
+import LessonCreateForm from "@/features/lessons/components/LessonCreateForm";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { setRequestLocale } from "next-intl/server";
 

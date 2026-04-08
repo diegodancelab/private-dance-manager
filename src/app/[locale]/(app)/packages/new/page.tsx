@@ -1,7 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { UserRole } from "@/generated/prisma/client";
 import { requireAuth } from "@/lib/auth/require-auth";
-import PackageCreateForm from "./PackageCreateForm";
+import PackageCreateForm from "@/features/packages/components/PackageCreateForm";
 import { setRequestLocale } from "next-intl/server";
 
 type Props = {

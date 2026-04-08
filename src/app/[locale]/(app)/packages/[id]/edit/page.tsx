@@ -2,8 +2,8 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { utcToZurichDate } from "@/lib/dates";
 import { requireAuth } from "@/lib/auth/require-auth";
-import type { PackageFormState } from "../../form-state";
-import PackageEditForm from "./PackageEditForm";
+import type { PackageFormState } from "@/features/packages/form-state";
+import PackageEditForm from "@/features/packages/components/PackageEditForm";
 import { setRequestLocale } from "next-intl/server";
 
 type Props = {
