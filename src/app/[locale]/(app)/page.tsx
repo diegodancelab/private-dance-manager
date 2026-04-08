@@ -1,5 +1,5 @@
 import { requireAuth } from "@/lib/auth/require-auth";
-import { getTodayLessons, getPendingCharges, getAlerts } from "@/features/dashboard/queries";
+import { getUpcomingLessons, getPendingCharges, getAlerts } from "@/features/dashboard/queries";
 import { getTranslations, setRequestLocale } from "next-intl/server";
 import QuickActions from "@/components/dashboard/QuickActions";
 import TodaySection from "@/components/dashboard/TodaySection";
@@ -18,7 +18,7 @@ export default async function DashboardPage({ params }: Props) {
   const now = new Date();
 
   const [todayLessons, { charges, totalOwed, currency }, alerts] = await Promise.all([
-    getTodayLessons(user.id),
+    getUpcomingLessons(user.id),
     getPendingCharges(user.id),
     getAlerts(user.id),
   ]);

@@ -1,9 +1,9 @@
 import { prisma } from "@/lib/prisma";
-import { ChargeStatus, PackageStatus } from "@/generated/prisma/client";
+import { ChargeStatus, LessonStatus, PackageStatus } from "@/generated/prisma/client";
 
 // --- Types ---
 
-export type TodayLesson = {
+export type UpcomingLesson = {
   id: string;
   title: string;
   lessonType: string;
@@ -38,10 +38,10 @@ export type DashboardAlert =
 
 // --- Queries ---
 
-export async function getTodayLessons(teacherId: string): Promise<TodayLesson[]> {
+export async function getUpcomingLessons(teacherId: string): Promise<UpcomingLesson[]> {
   const now = new Date();
 
-  // Build start/end of today in Europe/Zurich — safe for server context
+  // Start of today in Europe/Zurich — includes ongoing lessons
   const fmt = new Intl.DateTimeFormat("en-CA", {
     timeZone: "Europe/Zurich",
     year: "numeric",
@@ -55,14 +55,15 @@ export async function getTodayLessons(teacherId: string): Promise<TodayLesson[]>
     Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day), 0, 0, 0) -
       getZurichOffsetMs(now)
   );
-  const todayEnd = new Date(todayStart.getTime() + 24 * 60 * 60 * 1000);
 
   const lessons = await prisma.lesson.findMany({
     where: {
       teacherId,
-      scheduledAt: { gte: todayStart, lt: todayEnd },
+      scheduledAt: { gte: todayStart },
+      status: { not: LessonStatus.CANCELED },
     },
     orderBy: { scheduledAt: "asc" },
+    take: 5,
     select: {
       id: true,
       title: true,
