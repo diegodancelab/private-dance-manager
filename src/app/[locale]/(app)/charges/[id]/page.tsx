@@ -3,7 +3,7 @@ import { Link } from "@/i18n/navigation";
 import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import StatusBadge from "@/components/ui/StatusBadge";
+import StatusBadge from "@/components/ui/StatusBadge/StatusBadge";
 import styles from "./ChargeDetail.module.css";
 
 type Props = {

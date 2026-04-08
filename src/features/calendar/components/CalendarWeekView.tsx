@@ -3,7 +3,7 @@ import { formatDateKey, getWindowDays, CalendarViewMode } from "@/lib/calendar";
 import { utcToZurichDate } from "@/lib/dates";
 import LessonCard from "./LessonCard";
 import styles from "./CalendarWeekView.module.css";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 
 type LessonParticipantItem = {
   id: string;

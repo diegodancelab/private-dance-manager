@@ -3,14 +3,14 @@ import { notFound } from "next/navigation";
 import { utcToZurichDatetimeLocal } from "@/lib/dates";
 import { UserRole, PackageStatus } from "@/generated/prisma/client";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import LessonEditForm from "./LessonEditForm";
-import type { LessonFormState } from "../../form-state";
+import LessonEditForm from "@/features/lessons/components/LessonEditForm";
+import type { LessonFormState } from "@/features/lessons/form-state";
 import {
   addLessonParticipant,
   removeLessonParticipant,
   assignPackageToParticipant,
   removePackageFromParticipant,
-} from "../../actions";
+} from "@/features/lessons/actions";
 import styles from "../LessonPage.module.css";
 import { requireAuth } from "@/lib/auth/require-auth";
 

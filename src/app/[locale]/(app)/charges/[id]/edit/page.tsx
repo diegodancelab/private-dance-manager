@@ -2,9 +2,9 @@ import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { utcToZurichDate } from "@/lib/dates";
 import { requireAuth } from "@/lib/auth/require-auth";
-import ChargeEditForm from "./ChargeEditForm";
+import ChargeEditForm from "@/features/charges/components/ChargeEditForm";
 import { setRequestLocale } from "next-intl/server";
-import type { ChargeFormState } from "../../form-state";
+import type { ChargeFormState } from "@/features/charges/form-state";
 import { UserRole } from "@/generated/prisma/client";
 
 

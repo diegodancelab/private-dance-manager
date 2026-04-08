@@ -2,7 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { useTranslations } from "next-intl";
-import { cancelLesson } from "../actions";
+import { cancelLesson } from "@/features/lessons/actions";
 import styles from "./CancelLessonButton.module.css";
 
 type Props = {

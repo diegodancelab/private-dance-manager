@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
-import { createStudent } from "../actions";
-import { initialStudentFormState } from "../form-state";
+import { createStudent } from "@/features/students/actions";
+import { initialStudentFormState } from "@/features/students/form-state";
 import styles from "./StudentCreateForm.module.css";
 
 export default function StudentCreateForm() {

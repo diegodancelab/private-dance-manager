@@ -3,11 +3,11 @@
 import { useTranslations } from "next-intl";
 import { useActionState, useState } from "react";
 import { LESSON_TYPE_OPTIONS } from "@/lib/lesson-types";
-import { createLesson } from "../actions";
-import { initialLessonFormState } from "../form-state";
-import FormCard from "@/components/ui/FormCard";
-import FormField from "@/components/ui/FormField";
-import Button from "@/components/ui/Button";
+import { createLesson } from "@/features/lessons/actions";
+import { initialLessonFormState } from "@/features/lessons/form-state";
+import FormCard from "@/components/ui/FormCard/FormCard";
+import FormField from "@/components/ui/FormField/FormField";
+import Button from "@/components/ui/Button/Button";
 import styles from "./LessonCreateForm.module.css";
 
 type StudentOption = {

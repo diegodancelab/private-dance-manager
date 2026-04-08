@@ -2,15 +2,15 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState, useState, useRef } from "react";
-import { createPayment } from "../actions";
-import { initialPaymentFormState } from "../form-state";
+import { createPayment } from "@/features/payments/actions";
+import { initialPaymentFormState } from "@/features/payments/form-state";
 import {
   PAYMENT_METHOD_OPTIONS,
   PAYMENT_STATUS_OPTIONS,
 } from "@/lib/payment-options";
-import FormCard from "@/components/ui/FormCard";
-import FormField from "@/components/ui/FormField";
-import Button from "@/components/ui/Button";
+import FormCard from "@/components/ui/FormCard/FormCard";
+import FormField from "@/components/ui/FormField/FormField";
+import Button from "@/components/ui/Button/Button";
 import styles from "./PaymentCreateForm.module.css";
 
 type StudentOption = {

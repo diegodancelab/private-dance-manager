@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import type { PendingCharge } from "@/features/dashboard/queries";
-import StatusBadge from "@/components/ui/StatusBadge";
+import StatusBadge from "@/components/ui/StatusBadge/StatusBadge";
 import styles from "./MoneySection.module.css";
 
 type Props = {

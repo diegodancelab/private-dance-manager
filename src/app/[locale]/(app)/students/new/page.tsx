@@ -1,4 +1,4 @@
-import StudentCreateForm from "./StudentCreateForm";
+import StudentCreateForm from "@/features/students/components/StudentCreateForm";
 import { setRequestLocale } from "next-intl/server";
 
 type Props = { params: Promise<{ locale: string }> };

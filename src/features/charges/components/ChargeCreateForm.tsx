@@ -2,16 +2,16 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
-import { createCharge } from "../actions";
-import { initialChargeFormState } from "../form-state";
+import { createCharge } from "@/features/charges/actions";
+import { initialChargeFormState } from "@/features/charges/form-state";
 import {
   CHARGE_STATUS_OPTIONS,
   CHARGE_TYPE_OPTIONS,
 } from "@/lib/charge-options";
 import { formatDateTime } from "@/lib/format";
-import FormCard from "@/components/ui/FormCard";
-import FormField from "@/components/ui/FormField";
-import Button from "@/components/ui/Button";
+import FormCard from "@/components/ui/FormCard/FormCard";
+import FormField from "@/components/ui/FormField/FormField";
+import Button from "@/components/ui/Button/Button";
 import styles from "./ChargeCreateForm.module.css";
 
 type StudentOption = {

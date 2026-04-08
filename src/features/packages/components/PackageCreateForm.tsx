@@ -2,11 +2,11 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
-import { createPackage } from "../actions";
-import { initialPackageFormState } from "../form-state";
-import FormCard from "@/components/ui/FormCard";
-import FormField from "@/components/ui/FormField";
-import Button from "@/components/ui/Button";
+import { createPackage } from "@/features/packages/actions";
+import { initialPackageFormState } from "@/features/packages/form-state";
+import FormCard from "@/components/ui/FormCard/FormCard";
+import FormField from "@/components/ui/FormField/FormField";
+import Button from "@/components/ui/Button/Button";
 import styles from "./PackageCreateForm.module.css";
 
 type StudentOption = {

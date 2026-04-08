@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import StatusBadge from "@/components/ui/StatusBadge";
+import StatusBadge from "@/components/ui/StatusBadge/StatusBadge";
 import type { UnpaidCharge } from "@/features/students/queries/getStudentDetail";
 import { formatDate } from "@/lib/format";
 import styles from "./StudentDetail.module.css";

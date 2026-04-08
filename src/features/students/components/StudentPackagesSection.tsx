@@ -1,7 +1,7 @@
 import { getTranslations } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { Eye } from "lucide-react";
-import StatusBadge from "@/components/ui/StatusBadge";
+import StatusBadge from "@/components/ui/StatusBadge/StatusBadge";
 import type { StudentPackageItem } from "@/features/students/queries/getStudentDetail";
 import { formatDate, formatMinutes } from "@/lib/format";
 import styles from "./StudentDetail.module.css";

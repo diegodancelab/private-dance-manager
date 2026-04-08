@@ -1,5 +1,5 @@
 import { getTranslations } from "next-intl/server";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import styles from "./QuickActions.module.css";
 
 export default async function QuickActions() {

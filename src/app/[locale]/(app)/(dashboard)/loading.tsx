@@ -1,5 +1,5 @@
 import styles from "./DashboardSkeleton.module.css";
-import bone from "@/components/ui/SkeletonBone.module.css";
+import bone from "@/components/shared/skeletons/SkeletonBone.module.css";
 
 export default function DashboardLoading() {
   return (

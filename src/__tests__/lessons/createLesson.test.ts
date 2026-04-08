@@ -34,7 +34,7 @@ vi.mock("next-intl/server", () => ({
   getLocale: vi.fn().mockResolvedValue("fr"),
 }));
 
-import { createLesson } from "@/app/[locale]/(app)/lessons/actions";
+import { createLesson } from "@/features/lessons/actions";
 
 const baseState = {
   success: false,

@@ -1,10 +1,10 @@
 import { requireAuth } from "@/lib/auth/require-auth";
 import { getUpcomingLessons, getPendingCharges, getAlerts } from "@/features/dashboard/queries";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import QuickActions from "@/components/dashboard/QuickActions";
-import TodaySection from "@/components/dashboard/TodaySection";
-import MoneySection from "@/components/dashboard/MoneySection";
-import AlertsSection from "@/components/dashboard/AlertsSection";
+import QuickActions from "@/features/dashboard/components/QuickActions";
+import TodaySection from "@/features/dashboard/components/TodaySection";
+import MoneySection from "@/features/dashboard/components/MoneySection";
+import AlertsSection from "@/features/dashboard/components/AlertsSection";
 import styles from "./DashboardPage.module.css";
 
 type Props = { params: Promise<{ locale: string }> };

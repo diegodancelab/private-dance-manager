@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
-import { updateCharge } from "../../actions";
-import type { ChargeFormState } from "../../form-state";
+import { updateCharge } from "@/features/charges/actions";
+import type { ChargeFormState } from "@/features/charges/form-state";
 import {
   CHARGE_STATUS_OPTIONS,
   CHARGE_TYPE_OPTIONS,

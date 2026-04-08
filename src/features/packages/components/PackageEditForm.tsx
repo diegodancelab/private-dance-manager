@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
-import { updatePackage } from "../../actions";
-import type { PackageFormState } from "../../form-state";
+import { updatePackage } from "@/features/packages/actions";
+import type { PackageFormState } from "@/features/packages/form-state";
 import styles from "./PackageEditForm.module.css";
 
 type PackageEditFormProps = {

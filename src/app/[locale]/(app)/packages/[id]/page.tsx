@@ -4,13 +4,13 @@ import { notFound } from "next/navigation";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { UserRole, ChargeType, ChargeStatus, PackageStatus } from "@/generated/prisma/client";
 import { getTranslations, setRequestLocale } from "next-intl/server";
-import StatusBadge from "@/components/ui/StatusBadge";
+import StatusBadge from "@/components/ui/StatusBadge/StatusBadge";
 import styles from "./PackageDetail.module.css";
 import {
   addParticipantToPackage,
   removeParticipantFromPackage,
   migrateUnitLessonsToPackage,
-} from "../actions";
+} from "@/features/packages/actions";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;

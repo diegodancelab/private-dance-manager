@@ -1,6 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import styles from "./CalendarWeekHeader.module.css";
 import { addDays, formatWindowLabel, CalendarViewMode } from "@/lib/calendar";
 

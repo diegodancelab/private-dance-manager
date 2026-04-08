@@ -2,9 +2,9 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
 import { prisma } from "@/lib/prisma";
 import { PackageStatus } from "@/generated/prisma/client";
-import StatusBadge from "@/components/ui/StatusBadge";
+import StatusBadge from "@/components/ui/StatusBadge/StatusBadge";
 import { requireAuth } from "@/lib/auth/require-auth";
-import Button from "@/components/ui/Button";
+import Button from "@/components/ui/Button/Button";
 import { Eye, Pencil } from "lucide-react";
 import styles from "./PackagesPage.module.css";
 

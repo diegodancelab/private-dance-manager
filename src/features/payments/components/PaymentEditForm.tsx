@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
-import { updatePayment } from "../../actions";
-import type { PaymentFormState } from "../../form-state";
+import { updatePayment } from "@/features/payments/actions";
+import type { PaymentFormState } from "@/features/payments/form-state";
 import {
   PAYMENT_METHOD_OPTIONS,
   PAYMENT_STATUS_OPTIONS,

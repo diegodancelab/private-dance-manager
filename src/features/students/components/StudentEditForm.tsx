@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
-import { updateStudent } from "../../actions";
-import type { StudentFormState } from "../../form-state";
+import { updateStudent } from "@/features/students/actions";
+import type { StudentFormState } from "@/features/students/form-state";
 import styles from "./StudentEditForm.module.css";
 
 type StudentEditFormProps = {

@@ -2,8 +2,8 @@
 
 import { useTranslations } from "next-intl";
 import { useActionState } from "react";
-import { updateLesson } from "../../actions";
-import type { LessonFormState } from "../../form-state";
+import { updateLesson } from "@/features/lessons/actions";
+import type { LessonFormState } from "@/features/lessons/form-state";
 import { LESSON_TYPE_OPTIONS } from "@/lib/lesson-types";
 import styles from "./LessonEditForm.module.css";
 
