@@ -10,7 +10,7 @@ import StudentPackagesSection from "@/features/students/components/StudentPackag
 import StudentLessonsSection from "@/features/students/components/StudentLessonsSection";
 import StudentRecentPaymentsSection from "@/features/students/components/StudentRecentPaymentsSection";
 import Button from "@/components/ui/Button/Button";
-import styles from "./StudentDetail.module.css";
+import styles from "@/features/students/components/StudentDetail.module.css";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;
