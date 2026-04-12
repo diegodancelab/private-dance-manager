@@ -26,3 +26,16 @@ export async function requireTeacherAuth(): Promise<Session> {
   }
   return session;
 }
+
+/**
+ * Verifies the current user is authenticated AND has the STUDENT role.
+ * Use this in the student portal layout and portal server actions.
+ * Redirects to /login if not authenticated or not a student.
+ */
+export async function requireStudentAuth(): Promise<Session> {
+  const session = await requireAuth();
+  if (session.user.role !== "STUDENT") {
+    return redirect("/login");
+  }
+  return session;
+}

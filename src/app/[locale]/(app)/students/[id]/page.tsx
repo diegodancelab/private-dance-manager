@@ -9,6 +9,7 @@ import StudentChargesSection from "@/features/students/components/StudentCharges
 import StudentPackagesSection from "@/features/students/components/StudentPackagesSection";
 import StudentLessonsSection from "@/features/students/components/StudentLessonsSection";
 import StudentRecentPaymentsSection from "@/features/students/components/StudentRecentPaymentsSection";
+import StudentPortalAccessCard from "@/features/students/components/StudentPortalAccessCard";
 import Button from "@/components/ui/Button/Button";
 import styles from "@/features/students/components/StudentDetail.module.css";
 
@@ -22,11 +23,12 @@ export default async function StudentDetailPage({ params }: Props) {
   const { user } = await requireAuth();
   const t = await getTranslations("studentDetail");
   const tCommon = await getTranslations("common");
+  const tPortal = await getTranslations("portalAccess");
   const data = await getStudentDetail(id, user.id);
 
   if (!data) notFound();
 
-  const { student, summary, unpaidCharges, packages, upcomingLessons, recentPayments } = data;
+  const { student, summary, unpaidCharges, packages, upcomingLessons, recentPayments, portalAccess } = data;
 
   return (
     <div className={styles.page}>
@@ -65,6 +67,27 @@ export default async function StudentDetailPage({ params }: Props) {
 
       <div className={styles.card}>
         <StudentInfoCard student={student} />
+        <StudentPortalAccessCard
+          studentId={student.id}
+          hasEmail={!!student.email}
+          portalAccess={portalAccess}
+          t={{
+            cardTitle: tPortal("cardTitle"),
+            statusInactive: tPortal("statusInactive"),
+            statusPending: tPortal("statusPending"),
+            statusActive: tPortal("statusActive"),
+            activatedOn: portalAccess.activatedAt
+              ? tPortal("activatedOn", { date: portalAccess.activatedAt.toLocaleDateString("fr-CH") })
+              : "",
+            activate: tPortal("activate"),
+            resend: tPortal("resend"),
+            deactivate: tPortal("deactivate"),
+            emailRequired: tPortal("emailRequired"),
+            confirmDeactivate: tPortal("confirmDeactivate"),
+            confirmDeactivateConfirm: tPortal("confirmDeactivateConfirm"),
+            confirmDeactivateBack: tPortal("confirmDeactivateBack"),
+          }}
+        />
         <StudentChargesSection charges={unpaidCharges} studentId={student.id} />
         <StudentPackagesSection packages={packages} />
         <StudentLessonsSection lessons={upcomingLessons} />

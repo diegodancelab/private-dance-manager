@@ -312,6 +312,44 @@
     "colDate": "Date",
     "openPayment": "Open payment"
   },
+  "postLessonFeedback": {
+    "sectionTitle": "Post-lesson feedback",
+    "participantTitle": "Feedback for {name}",
+    "videoUrl": "Video URL (YouTube, Vimeo, Drive…)",
+    "videoUrlPlaceholder": "https://youtu.be/…",
+    "studentFeedback": "Feedback for the student",
+    "studentFeedbackPlaceholder": "Positive points, areas to improve, encouragements…",
+    "internalNotes": "Internal notes (not visible to the student)",
+    "internalNotesPlaceholder": "Personal observations, points to work on…",
+    "skillAssessment": "Skill assessment",
+    "noAxesConfigured": "No skill axes configured. Add axes in the settings.",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "defaultAxes": {
+      "technique": "Technical level",
+      "basicSteps": "Basic steps",
+      "leadFollow": "Leading / Following",
+      "musicality": "Musicality",
+      "combo": "Combo",
+      "flow": "Flow",
+      "memory": "Memory",
+      "postureConnection": "Posture / Connection"
+    }
+  },
+  "skillAxes": {
+    "title": "Progression axes",
+    "subtitle": "Customize the axes used in your students' skill assessments.",
+    "addAxis": "Add an axis",
+    "defaultAxesCreated": "Default axes created.",
+    "labelPlaceholder": "E.g.: Improvisation",
+    "add": "Add",
+    "remove": "Remove",
+    "noAxes": "No axes configured. Add your first axes or use the default ones.",
+    "createDefaults": "Create default axes",
+    "active": "Active",
+    "inactive": "Inactive"
+  },
   "lessonDetail": {
     "back": "← Back to lessons",
     "labelType": "Type",
@@ -394,6 +432,81 @@
     "migrationFound": "{count, plural, one {# unit-billed lesson found without package coverage. Migrate to this package?} other {# unit-billed lessons found without package coverage. Migrate to this package?}}",
     "migrationBlocked": "{count, plural, one {# lesson with partial payments will be skipped — settle manually first.} other {# lessons with partial payments will be skipped — settle them manually first.}}",
     "migrateButton": "{count, plural, one {Migrate # lesson} other {Migrate # lessons}}"
+  },
+  "portal": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "lessons": "My lessons",
+      "progression": "My progress",
+      "profile": "My profile",
+      "logout": "Log out"
+    },
+    "dashboard": {
+      "greeting": "Hello, {name}",
+      "nextLesson": "Next lesson",
+      "noUpcomingLesson": "No upcoming lessons",
+      "packageStatus": "Package",
+      "remainingTime": "{time} remaining",
+      "noActivePackage": "No active package",
+      "lastAssessment": "Last assessment",
+      "noAssessment": "No assessment yet"
+    },
+    "lessons": {
+      "title": "My lessons",
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "noUpcoming": "No upcoming lessons.",
+      "noPast": "No past lessons.",
+      "feedbackFromTeacher": "Feedback from your teacher",
+      "video": "Video",
+      "watchVideo": "Watch video",
+      "noFeedback": "No feedback for this lesson."
+    },
+    "progression": {
+      "title": "My progress",
+      "latestAssessment": "Latest assessment",
+      "history": "History",
+      "noAssessments": "No assessments recorded yet.",
+      "assessmentOf": "Assessment of {date}"
+    },
+    "profile": {
+      "title": "My profile",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "changePassword": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "save": "Save",
+      "passwordUpdated": "Password updated successfully."
+    },
+    "setup": {
+      "title": "Create your password",
+      "subtitle": "Welcome! Set your password to access your student space.",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Activate my account",
+      "tokenExpired": "This invitation link has expired or has already been used. Ask your teacher to send a new invitation.",
+      "success": "Your account is activated. You are now logged in."
+    }
+  },
+  "portalAccess": {
+    "cardTitle": "Student portal access",
+    "statusInactive": "Not activated",
+    "statusPending": "Invitation sent",
+    "statusActive": "Active",
+    "activatedOn": "Activated on {date}",
+    "activate": "Activate portal access",
+    "resend": "Resend invitation",
+    "deactivate": "Deactivate access",
+    "emailRequired": "An email is required to activate the student portal.",
+    "invitationSent": "Invitation sent to {email}.",
+    "deactivated": "Portal access deactivated.",
+    "confirmDeactivate": "Deactivate portal access for this student? They will no longer be able to log in.",
+    "confirmDeactivateConfirm": "Yes, deactivate",
+    "confirmDeactivateBack": "Cancel"
   },
   "validation": {
     "firstNameRequired": "First name is required.",

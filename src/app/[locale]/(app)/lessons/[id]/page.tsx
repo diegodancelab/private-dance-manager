@@ -7,6 +7,7 @@ import { formatDateTime } from "@/lib/format";
 import styles from "./LessonDetail.module.css";
 import { requireAuth } from "@/lib/auth/require-auth";
 import CancelLessonButton from "@/features/lessons/components/CancelLessonButton";
+import LessonFeedbackSection from "@/features/lessons/components/LessonFeedbackSection";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;
@@ -19,25 +20,55 @@ export default async function LessonDetailPage({ params }: Props) {
   const tLabels = await getTranslations("labels");
   const t = await getTranslations("lessonDetail");
   const tCommon = await getTranslations("common");
+  const tFeedback = await getTranslations("postLessonFeedback");
 
-  const lesson = await prisma.lesson.findFirst({
-    where: { id, teacherId: user.id },
-    include: {
-      teacher: {
-        select: { firstName: true, lastName: true },
-      },
-      participants: {
-        include: {
-          user: { select: { id: true, firstName: true, lastName: true } },
-          packageUsage: {
-            include: { package: { select: { name: true } } },
+  const now = new Date();
+
+  const [lesson, axes] = await Promise.all([
+    prisma.lesson.findFirst({
+      where: { id, teacherId: user.id },
+      include: {
+        teacher: {
+          select: { firstName: true, lastName: true },
+        },
+        participants: {
+          include: {
+            user: { select: { id: true, firstName: true, lastName: true } },
+            packageUsage: {
+              include: { package: { select: { name: true } } },
+            },
+          },
+        },
+        feedbacks: {
+          select: {
+            studentId: true,
+            videoUrl: true,
+            studentFeedback: true,
+            internalNotes: true,
+          },
+        },
+        assessments: {
+          orderBy: { createdAt: "desc" },
+          take: 20,
+          select: {
+            id: true,
+            studentId: true,
+            notes: true,
+            scores: { select: { axisId: true, score: true } },
           },
         },
       },
-    },
-  });
+    }),
+    prisma.skillAxis.findMany({
+      where: { teacherId: user.id, isActive: true },
+      orderBy: { order: "asc" },
+      select: { id: true, label: true, order: true },
+    }),
+  ]);
 
   if (!lesson) notFound();
+
+  const isPastLesson = lesson.scheduledAt < now;
 
   return (
     <div className={styles.page}>
@@ -143,6 +174,52 @@ export default async function LessonDetailPage({ params }: Props) {
             </div>
           )}
         </div>
+
+        {isPastLesson && lesson.participants.length > 0 && (
+          <LessonFeedbackSection
+            lessonId={lesson.id}
+            axes={axes}
+            participants={lesson.participants.map((p) => {
+              const existingFeedback =
+                lesson.feedbacks.find((f) => f.studentId === p.user.id) ?? null;
+              const existingAssessment =
+                lesson.assessments.find((a) => a.studentId === p.user.id) ?? null;
+              return {
+                studentId: p.user.id,
+                studentName: `${p.user.firstName} ${p.user.lastName}`,
+                existingFeedback: existingFeedback
+                  ? {
+                      videoUrl: existingFeedback.videoUrl,
+                      studentFeedback: existingFeedback.studentFeedback,
+                      internalNotes: existingFeedback.internalNotes,
+                    }
+                  : null,
+                existingAssessment: existingAssessment
+                  ? {
+                      id: existingAssessment.id,
+                      notes: existingAssessment.notes,
+                      scores: existingAssessment.scores,
+                    }
+                  : null,
+              };
+            })}
+            t={{
+              sectionTitle: tFeedback("sectionTitle"),
+              participantTitle: tFeedback("participantTitle"),
+              videoUrl: tFeedback("videoUrl"),
+              videoUrlPlaceholder: tFeedback("videoUrlPlaceholder"),
+              studentFeedback: tFeedback("studentFeedback"),
+              studentFeedbackPlaceholder: tFeedback("studentFeedbackPlaceholder"),
+              internalNotes: tFeedback("internalNotes"),
+              internalNotesPlaceholder: tFeedback("internalNotesPlaceholder"),
+              skillAssessment: tFeedback("skillAssessment"),
+              noAxesConfigured: tFeedback("noAxesConfigured"),
+              save: tFeedback("save"),
+              saving: tFeedback("saving"),
+              saved: tFeedback("saved"),
+            }}
+          />
+        )}
       </div>
     </div>
   );

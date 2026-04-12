@@ -63,12 +63,19 @@ export async function login(
 
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { id: true, passwordHash: true, isActive: true },
+    select: { id: true, passwordHash: true, isActive: true, role: true, portalActivatedAt: true },
   });
 
   if (!user || !user.passwordHash || !user.isActive) {
     await prisma.loginAttempt.create({ data: { email } });
     logger.warn("login", "Failed login attempt — invalid credentials", { email });
+    return { ...empty, errors: { form: "Invalid email or password" } };
+  }
+
+  // Students without activated portal access cannot log in.
+  if (user.role === "STUDENT" && !user.portalActivatedAt) {
+    await prisma.loginAttempt.create({ data: { email } });
+    logger.warn("login", "Failed login attempt — student portal not activated", { email });
     return { ...empty, errors: { form: "Invalid email or password" } };
   }
 
@@ -87,6 +94,11 @@ export async function login(
   });
   logger.info("login", "Successful login", { email, userId: user.id });
   await createSession(user.id);
+
+  // Role-based redirect: students go to the portal, teachers go to the app.
+  if (user.role === "STUDENT") {
+    return redirect("/portal");
+  }
   return redirect("/");
 }
 

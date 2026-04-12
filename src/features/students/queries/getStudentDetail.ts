@@ -48,6 +48,14 @@ export type RecentPayment = {
   paidAt: Date | null;
 };
 
+export type PortalAccessStatus = "inactive" | "pending" | "active";
+
+export type PortalAccessInfo = {
+  status: PortalAccessStatus;
+  activatedAt: Date | null;
+  pendingInvitationEmail: string | null;
+};
+
 export type StudentDetailViewModel = {
   student: {
     id: string;
@@ -62,6 +70,7 @@ export type StudentDetailViewModel = {
   packages: StudentPackageItem[];
   upcomingLessons: UpcomingLesson[];
   recentPayments: RecentPayment[];
+  portalAccess: PortalAccessInfo;
 };
 
 export async function getStudentDetail(
@@ -77,6 +86,7 @@ export async function getStudentDetail(
       email: true,
       phone: true,
       createdAt: true,
+      portalActivatedAt: true,
     },
   });
 
@@ -84,7 +94,7 @@ export async function getStudentDetail(
 
   const now = new Date();
 
-  const [rawCharges, rawPackages, participations, rawPayments] =
+  const [rawCharges, rawPackages, participations, rawPayments, pendingInvitation] =
     await Promise.all([
       prisma.charge.findMany({
         where: {
@@ -150,6 +160,11 @@ export async function getStudentDetail(
           status: true,
           paidAt: true,
         },
+      }),
+
+      prisma.portalInvitation.findFirst({
+        where: { userId: id, usedAt: null, expiresAt: { gt: now } },
+        select: { id: true },
       }),
     ]);
 
@@ -217,8 +232,22 @@ export async function getStudentDetail(
     status = hasOverdue ? "overdue" : "warning";
   }
 
+  let portalStatus: PortalAccessStatus = "inactive";
+  if (student.portalActivatedAt) {
+    portalStatus = "active";
+  } else if (pendingInvitation) {
+    portalStatus = "pending";
+  }
+
   return {
-    student,
+    student: {
+      id: student.id,
+      firstName: student.firstName,
+      lastName: student.lastName,
+      email: student.email,
+      phone: student.phone,
+      createdAt: student.createdAt,
+    },
     summary: {
       outstandingBalance,
       outstandingCurrency,
@@ -232,5 +261,10 @@ export async function getStudentDetail(
     packages,
     upcomingLessons,
     recentPayments,
+    portalAccess: {
+      status: portalStatus,
+      activatedAt: student.portalActivatedAt,
+      pendingInvitationEmail: portalStatus === "pending" ? student.email : null,
+    },
   };
 }

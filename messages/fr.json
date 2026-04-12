@@ -312,6 +312,44 @@
     "colDate": "Date",
     "openPayment": "Voir le paiement"
   },
+  "postLessonFeedback": {
+    "sectionTitle": "Feedback post-cours",
+    "participantTitle": "Feedback pour {name}",
+    "videoUrl": "URL vidéo (YouTube, Vimeo, Drive…)",
+    "videoUrlPlaceholder": "https://youtu.be/…",
+    "studentFeedback": "Feedback pour l'élève",
+    "studentFeedbackPlaceholder": "Points positifs, axes d'amélioration, encouragements…",
+    "internalNotes": "Notes internes (non visibles par l'élève)",
+    "internalNotesPlaceholder": "Observations personnelles, points à retravailler…",
+    "skillAssessment": "Bilan de compétences",
+    "noAxesConfigured": "Aucun axe de compétence configuré. Ajoutez des axes dans les paramètres.",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "saved": "Enregistré",
+    "defaultAxes": {
+      "technique": "Niveau technique",
+      "basicSteps": "Pas de base",
+      "leadFollow": "Leading / Following",
+      "musicality": "Musicalité",
+      "combo": "Combo",
+      "flow": "Flow",
+      "memory": "Mémoire",
+      "postureConnection": "Posture / Connexion"
+    }
+  },
+  "skillAxes": {
+    "title": "Axes de progression",
+    "subtitle": "Personnalisez les axes utilisés dans le bilan de compétences de vos élèves.",
+    "addAxis": "Ajouter un axe",
+    "defaultAxesCreated": "Axes par défaut créés.",
+    "labelPlaceholder": "Ex. : Improvisation",
+    "add": "Ajouter",
+    "remove": "Supprimer",
+    "noAxes": "Aucun axe configuré. Ajoutez vos premiers axes ou utilisez les axes par défaut.",
+    "createDefaults": "Créer les axes par défaut",
+    "active": "Actif",
+    "inactive": "Inactif"
+  },
   "lessonDetail": {
     "back": "← Retour aux cours",
     "labelType": "Type",
@@ -394,6 +432,81 @@
     "migrationFound": "{count, plural, one {# cours facturé à l'unité sans couverture forfait. Migrer vers ce forfait ?} other {# cours facturés à l'unité sans couverture forfait. Migrer vers ce forfait ?}}",
     "migrationBlocked": "{count, plural, one {# cours avec paiement partiel sera ignoré — réglez-le manuellement d'abord.} other {# cours avec paiements partiels seront ignorés — réglez-les manuellement d'abord.}}",
     "migrateButton": "{count, plural, one {Migrer # cours} other {Migrer # cours}}"
+  },
+  "portal": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "lessons": "Mes cours",
+      "progression": "Ma progression",
+      "profile": "Mon profil",
+      "logout": "Déconnexion"
+    },
+    "dashboard": {
+      "greeting": "Bonjour, {name}",
+      "nextLesson": "Prochain cours",
+      "noUpcomingLesson": "Aucun cours prévu",
+      "packageStatus": "Forfait",
+      "remainingTime": "{time} restant",
+      "noActivePackage": "Aucun forfait actif",
+      "lastAssessment": "Dernier bilan",
+      "noAssessment": "Aucun bilan pour le moment"
+    },
+    "lessons": {
+      "title": "Mes cours",
+      "upcoming": "À venir",
+      "past": "Passés",
+      "noUpcoming": "Aucun cours à venir.",
+      "noPast": "Aucun cours passé.",
+      "feedbackFromTeacher": "Retour de votre professeur",
+      "video": "Vidéo",
+      "watchVideo": "Voir la vidéo",
+      "noFeedback": "Aucun feedback pour ce cours."
+    },
+    "progression": {
+      "title": "Ma progression",
+      "latestAssessment": "Dernier bilan",
+      "history": "Historique",
+      "noAssessments": "Aucun bilan enregistré pour le moment.",
+      "assessmentOf": "Bilan du {date}"
+    },
+    "profile": {
+      "title": "Mon profil",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "changePassword": "Changer le mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "save": "Enregistrer",
+      "passwordUpdated": "Mot de passe mis à jour avec succès."
+    },
+    "setup": {
+      "title": "Créer votre mot de passe",
+      "subtitle": "Bienvenue ! Définissez votre mot de passe pour accéder à votre espace élève.",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "Activer mon compte",
+      "tokenExpired": "Ce lien d'invitation a expiré ou a déjà été utilisé. Demandez à votre professeur de vous renvoyer une invitation.",
+      "success": "Votre compte est activé. Vous êtes maintenant connecté."
+    }
+  },
+  "portalAccess": {
+    "cardTitle": "Accès portail élève",
+    "statusInactive": "Non activé",
+    "statusPending": "Invitation envoyée",
+    "statusActive": "Actif",
+    "activatedOn": "Activé le {date}",
+    "activate": "Activer l'accès portail",
+    "resend": "Renvoyer l'invitation",
+    "deactivate": "Désactiver l'accès",
+    "emailRequired": "Un email est requis pour activer le portail élève.",
+    "invitationSent": "Invitation envoyée à {email}.",
+    "deactivated": "Accès portail désactivé.",
+    "confirmDeactivate": "Désactiver l'accès portail de cet élève ? Il ne pourra plus se connecter.",
+    "confirmDeactivateConfirm": "Oui, désactiver",
+    "confirmDeactivateBack": "Annuler"
   },
   "validation": {
     "firstNameRequired": "Le prénom est requis.",

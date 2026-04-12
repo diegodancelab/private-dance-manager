@@ -312,6 +312,44 @@
     "colDate": "Datums",
     "openPayment": "Atvērt apmaksu"
   },
+  "postLessonFeedback": {
+    "sectionTitle": "Pēc nodarbības atsauksmes",
+    "participantTitle": "Atsauksmes {name}",
+    "videoUrl": "Video URL (YouTube, Vimeo, Drive…)",
+    "videoUrlPlaceholder": "https://youtu.be/…",
+    "studentFeedback": "Atsauksmes skolēnam",
+    "studentFeedbackPlaceholder": "Pozitīvie punkti, uzlabojamās jomas, uzmundrinājums…",
+    "internalNotes": "Iekšējās piezīmes (skolēnam neredzamas)",
+    "internalNotesPlaceholder": "Personīgi novērojumi, punkti, pie kuriem strādāt…",
+    "skillAssessment": "Prasmju novērtējums",
+    "noAxesConfigured": "Nav konfigurētu prasmju asu. Pievienojiet asis iestatījumos.",
+    "save": "Saglabāt",
+    "saving": "Saglabā…",
+    "saved": "Saglabāts",
+    "defaultAxes": {
+      "technique": "Tehniskais līmenis",
+      "basicSteps": "Pamatsoli",
+      "leadFollow": "Vadīšana / Sekošana",
+      "musicality": "Muzikalitāte",
+      "combo": "Kombinācija",
+      "flow": "Plūsma",
+      "memory": "Atmiņa",
+      "postureConnection": "Stāja / Savienojums"
+    }
+  },
+  "skillAxes": {
+    "title": "Progresa asis",
+    "subtitle": "Pielāgojiet asis, ko izmanto savu skolēnu prasmju novērtējumos.",
+    "addAxis": "Pievienot asi",
+    "defaultAxesCreated": "Noklusētās asis izveidotas.",
+    "labelPlaceholder": "Piem.: Improvizācija",
+    "add": "Pievienot",
+    "remove": "Noņemt",
+    "noAxes": "Nav konfigurētu asu. Pievienojiet pirmās asis vai izmantojiet noklusētās.",
+    "createDefaults": "Izveidot noklusētās asis",
+    "active": "Aktīvs",
+    "inactive": "Neaktīvs"
+  },
   "lessonDetail": {
     "back": "← Atpakaļ uz nodarbībām",
     "labelType": "Tips",
@@ -394,6 +432,81 @@
     "migrationFound": "{count, plural, one {Atrasta # nodarbība bez paketes seguma. Migrēt uz šo paketi?} other {Atrastas # nodarbības bez paketes seguma. Migrēt uz šo paketi?}}",
     "migrationBlocked": "{count, plural, one {# nodarbība ar daļēju apmaksu tiks izlaista — vispirms nokārtojiet to manuāli.} other {# nodarbības ar daļēju apmaksu tiks izlaistas — vispirms nokārtojiet tās manuāli.}}",
     "migrateButton": "{count, plural, one {Migrēt # nodarbību} other {Migrēt # nodarbības}}"
+  },
+  "portal": {
+    "nav": {
+      "dashboard": "Panelis",
+      "lessons": "Manas nodarbības",
+      "progression": "Mans progress",
+      "profile": "Mans profils",
+      "logout": "Iziet"
+    },
+    "dashboard": {
+      "greeting": "Sveiki, {name}",
+      "nextLesson": "Nākamā nodarbība",
+      "noUpcomingLesson": "Nav plānotu nodarbību",
+      "packageStatus": "Pakete",
+      "remainingTime": "{time} atlikušas",
+      "noActivePackage": "Nav aktīvas paketes",
+      "lastAssessment": "Pēdējais vērtējums",
+      "noAssessment": "Vēl nav vērtējumu"
+    },
+    "lessons": {
+      "title": "Manas nodarbības",
+      "upcoming": "Gaidāmās",
+      "past": "Pagājušās",
+      "noUpcoming": "Nav gaidāmu nodarbību.",
+      "noPast": "Nav pagājušu nodarbību.",
+      "feedbackFromTeacher": "Pasniedzēja atsauksmes",
+      "video": "Video",
+      "watchVideo": "Skatīt video",
+      "noFeedback": "Nav atsauksmju par šo nodarbību."
+    },
+    "progression": {
+      "title": "Mans progress",
+      "latestAssessment": "Pēdējais vērtējums",
+      "history": "Vēsture",
+      "noAssessments": "Vēl nav reģistrētu vērtējumu.",
+      "assessmentOf": "Vērtējums {date}"
+    },
+    "profile": {
+      "title": "Mans profils",
+      "firstName": "Vārds",
+      "lastName": "Uzvārds",
+      "email": "E-pasts",
+      "phone": "Tālrunis",
+      "changePassword": "Mainīt paroli",
+      "currentPassword": "Pašreizējā parole",
+      "newPassword": "Jaunā parole",
+      "confirmPassword": "Apstiprināt paroli",
+      "save": "Saglabāt",
+      "passwordUpdated": "Parole veiksmīgi atjaunināta."
+    },
+    "setup": {
+      "title": "Izveidojiet savu paroli",
+      "subtitle": "Laipni lūdzam! Iestatiet paroli, lai piekļūtu savam skolēna portālam.",
+      "password": "Parole",
+      "confirmPassword": "Apstiprināt paroli",
+      "submit": "Aktivizēt kontu",
+      "tokenExpired": "Šī uzaicinājuma saite ir beigusies vai jau izmantota. Lūdziet savam pasniedzējam nosūtīt jaunu uzaicinājumu.",
+      "success": "Jūsu konts ir aktivizēts. Jūs tagad esat pieteicies."
+    }
+  },
+  "portalAccess": {
+    "cardTitle": "Skolēna portāla piekļuve",
+    "statusInactive": "Nav aktivizēts",
+    "statusPending": "Uzaicinājums nosūtīts",
+    "statusActive": "Aktīvs",
+    "activatedOn": "Aktivizēts {date}",
+    "activate": "Aktivizēt portāla piekļuvi",
+    "resend": "Atkārtoti nosūtīt uzaicinājumu",
+    "deactivate": "Deaktivizēt piekļuvi",
+    "emailRequired": "E-pasts ir nepieciešams, lai aktivizētu skolēna portālu.",
+    "invitationSent": "Uzaicinājums nosūtīts uz {email}.",
+    "deactivated": "Portāla piekļuve deaktivizēta.",
+    "confirmDeactivate": "Deaktivizēt šī skolēna portāla piekļuvi? Viņš vairs nevarēs pieteikties.",
+    "confirmDeactivateConfirm": "Jā, deaktivizēt",
+    "confirmDeactivateBack": "Atcelt"
   },
   "validation": {
     "firstNameRequired": "Vārds ir obligāts.",

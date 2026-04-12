@@ -312,6 +312,44 @@
     "colDate": "Fecha",
     "openPayment": "Ver pago"
   },
+  "postLessonFeedback": {
+    "sectionTitle": "Feedback post-clase",
+    "participantTitle": "Feedback para {name}",
+    "videoUrl": "URL de vídeo (YouTube, Vimeo, Drive…)",
+    "videoUrlPlaceholder": "https://youtu.be/…",
+    "studentFeedback": "Feedback para el alumno",
+    "studentFeedbackPlaceholder": "Puntos positivos, áreas de mejora, ánimos…",
+    "internalNotes": "Notas internas (no visibles para el alumno)",
+    "internalNotesPlaceholder": "Observaciones personales, puntos a trabajar…",
+    "skillAssessment": "Evaluación de habilidades",
+    "noAxesConfigured": "Sin ejes de habilidad configurados. Añade ejes en los ajustes.",
+    "save": "Guardar",
+    "saving": "Guardando…",
+    "saved": "Guardado",
+    "defaultAxes": {
+      "technique": "Nivel técnico",
+      "basicSteps": "Pasos básicos",
+      "leadFollow": "Guiar / Seguir",
+      "musicality": "Musicalidad",
+      "combo": "Combo",
+      "flow": "Flow",
+      "memory": "Memoria",
+      "postureConnection": "Postura / Conexión"
+    }
+  },
+  "skillAxes": {
+    "title": "Ejes de progresión",
+    "subtitle": "Personaliza los ejes usados en las evaluaciones de habilidades de tus alumnos.",
+    "addAxis": "Añadir eje",
+    "defaultAxesCreated": "Ejes predeterminados creados.",
+    "labelPlaceholder": "Ej.: Improvisación",
+    "add": "Añadir",
+    "remove": "Eliminar",
+    "noAxes": "Sin ejes configurados. Añade tus primeros ejes o usa los predeterminados.",
+    "createDefaults": "Crear ejes predeterminados",
+    "active": "Activo",
+    "inactive": "Inactivo"
+  },
   "lessonDetail": {
     "back": "← Volver a clases",
     "labelType": "Tipo",
@@ -394,6 +432,81 @@
     "migrationFound": "{count, plural, one {# clase facturada por unidad sin cobertura de paquete. ¿Migrar a este paquete?} other {# clases facturadas por unidad sin cobertura de paquete. ¿Migrar a este paquete?}}",
     "migrationBlocked": "{count, plural, one {# clase con pago parcial será omitida — resuélvela manualmente primero.} other {# clases con pagos parciales serán omitidas — resuélvelas manualmente primero.}}",
     "migrateButton": "{count, plural, one {Migrar # clase} other {Migrar # clases}}"
+  },
+  "portal": {
+    "nav": {
+      "dashboard": "Panel",
+      "lessons": "Mis clases",
+      "progression": "Mi progreso",
+      "profile": "Mi perfil",
+      "logout": "Cerrar sesión"
+    },
+    "dashboard": {
+      "greeting": "Hola, {name}",
+      "nextLesson": "Próxima clase",
+      "noUpcomingLesson": "Sin clases próximas",
+      "packageStatus": "Paquete",
+      "remainingTime": "{time} restante",
+      "noActivePackage": "Sin paquete activo",
+      "lastAssessment": "Última evaluación",
+      "noAssessment": "Sin evaluación por el momento"
+    },
+    "lessons": {
+      "title": "Mis clases",
+      "upcoming": "Próximas",
+      "past": "Pasadas",
+      "noUpcoming": "Sin clases próximas.",
+      "noPast": "Sin clases pasadas.",
+      "feedbackFromTeacher": "Comentarios de tu profesor",
+      "video": "Vídeo",
+      "watchVideo": "Ver vídeo",
+      "noFeedback": "Sin comentarios para esta clase."
+    },
+    "progression": {
+      "title": "Mi progreso",
+      "latestAssessment": "Última evaluación",
+      "history": "Historial",
+      "noAssessments": "Sin evaluaciones registradas por el momento.",
+      "assessmentOf": "Evaluación del {date}"
+    },
+    "profile": {
+      "title": "Mi perfil",
+      "firstName": "Nombre",
+      "lastName": "Apellidos",
+      "email": "Email",
+      "phone": "Teléfono",
+      "changePassword": "Cambiar contraseña",
+      "currentPassword": "Contraseña actual",
+      "newPassword": "Nueva contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "save": "Guardar",
+      "passwordUpdated": "Contraseña actualizada correctamente."
+    },
+    "setup": {
+      "title": "Crea tu contraseña",
+      "subtitle": "¡Bienvenido! Define tu contraseña para acceder a tu espacio de alumno.",
+      "password": "Contraseña",
+      "confirmPassword": "Confirmar contraseña",
+      "submit": "Activar mi cuenta",
+      "tokenExpired": "Este enlace de invitación ha expirado o ya ha sido utilizado. Pide a tu profesor que te envíe una nueva invitación.",
+      "success": "Tu cuenta está activada. Ahora estás conectado."
+    }
+  },
+  "portalAccess": {
+    "cardTitle": "Acceso portal alumno",
+    "statusInactive": "No activado",
+    "statusPending": "Invitación enviada",
+    "statusActive": "Activo",
+    "activatedOn": "Activado el {date}",
+    "activate": "Activar acceso portal",
+    "resend": "Reenviar invitación",
+    "deactivate": "Desactivar acceso",
+    "emailRequired": "Se necesita un email para activar el portal del alumno.",
+    "invitationSent": "Invitación enviada a {email}.",
+    "deactivated": "Acceso al portal desactivado.",
+    "confirmDeactivate": "¿Desactivar el acceso al portal de este alumno? Ya no podrá conectarse.",
+    "confirmDeactivateConfirm": "Sí, desactivar",
+    "confirmDeactivateBack": "Cancelar"
   },
   "validation": {
     "firstNameRequired": "El nombre es obligatorio.",
