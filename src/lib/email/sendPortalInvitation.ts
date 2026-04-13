@@ -1,6 +1,4 @@
-import { Resend } from "resend";
-
-const resend = new Resend(process.env.RESEND_API_KEY);
+import { sendEmailSafe } from "./emailEnv";
 
 export async function sendPortalInvitation({
   studentEmail,
@@ -13,10 +11,7 @@ export async function sendPortalInvitation({
   teacherFirstName: string;
   invitationUrl: string;
 }): Promise<void> {
-  const fromEmail = process.env.ALERT_FROM_EMAIL ?? "onboarding@resend.dev";
-
-  await resend.emails.send({
-    from: fromEmail,
+  await sendEmailSafe({
     to: studentEmail,
     subject: `${teacherFirstName} vous invite à accéder à votre espace élève`,
     html: `
