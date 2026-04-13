@@ -16,7 +16,7 @@ export async function requireAuth(): Promise<Session> {
 
 /**
  * Verifies the current user is authenticated AND has the TEACHER role.
- * Use this in all teacher-facing server actions and layouts.
+ * Dual-role teachers who chose "STUDENT" mode are redirected to the portal.
  * Redirects to /login if not authenticated or not a teacher.
  */
 export async function requireTeacherAuth(): Promise<Session> {
@@ -24,18 +24,27 @@ export async function requireTeacherAuth(): Promise<Session> {
   if (session.user.role !== "TEACHER") {
     return redirect("/login");
   }
+  // Dual-role teacher currently in student mode → send to portal.
+  if (session.activeRole === "STUDENT") {
+    return redirect("/portal");
+  }
   return session;
 }
 
 /**
- * Verifies the current user is authenticated AND has the STUDENT role.
- * Use this in the student portal layout and portal server actions.
- * Redirects to /login if not authenticated or not a student.
+ * Verifies the current user is authenticated AND is in student mode.
+ * Accepts both regular STUDENT users and TEACHER users who chose "STUDENT" activeRole.
+ * Redirects to /login (or teacher app) if not in student context.
  */
 export async function requireStudentAuth(): Promise<Session> {
   const session = await requireAuth();
-  if (session.user.role !== "STUDENT") {
-    return redirect("/login");
+  if (session.user.role === "STUDENT") return session;
+  if (session.user.role === "TEACHER" && session.activeRole === "STUDENT") {
+    return session;
   }
-  return session;
+  // Teacher in teacher mode trying to access portal → redirect to their app.
+  if (session.user.role === "TEACHER" && session.activeRole === "TEACHER") {
+    return redirect("/");
+  }
+  return redirect("/login");
 }

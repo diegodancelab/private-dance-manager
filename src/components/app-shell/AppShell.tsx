@@ -8,9 +8,10 @@ import styles from "./AppShell.module.css";
 
 type AppShellProps = {
   children: React.ReactNode;
+  isDualRole?: boolean;
 };
 
-export default function AppShell({ children }: AppShellProps) {
+export default function AppShell({ children, isDualRole = false }: AppShellProps) {
   const [isOpen, setIsOpen] = useState(false);
   const t = useTranslations("navigation");
   const pathname = usePathname();
@@ -35,7 +36,7 @@ export default function AppShell({ children }: AppShellProps) {
   return (
     <div className={styles.container}>
       <aside className={styles.desktopSidebar}>
-        <SidebarNav />
+        <SidebarNav isDualRole={isDualRole} />
       </aside>
 
       <div className={styles.mainArea}>
@@ -92,7 +93,7 @@ export default function AppShell({ children }: AppShellProps) {
           </button>
         </div>
 
-        <SidebarNav />
+        <SidebarNav isDualRole={isDualRole} />
       </aside>
     </div>
   );

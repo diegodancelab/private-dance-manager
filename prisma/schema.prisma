@@ -68,6 +68,12 @@ enum LessonStatus {
   CANCELED
 }
 
+enum TeacherStudentInvitationStatus {
+  PENDING
+  ACCEPTED
+  CANCELED
+}
+
 model User {
   id                  String              @id @default(cuid())
   email               String?             @unique
@@ -101,18 +107,22 @@ model User {
   skillAssessments      SkillAssessment[]   @relation("AssessmentStudent")
   givenAssessments      SkillAssessment[]   @relation("AssessmentTeacher")
   skillAxes             SkillAxis[]         @relation("AxisTeacher")
+  sentInvitations       TeacherStudentInvitation[] @relation("InvitationTeacher")
+  relationsAsTeacher    TeacherStudentRelation[]   @relation("RelationTeacher")
+  relationsAsStudent    TeacherStudentRelation[]   @relation("RelationStudent")
 
   // Covers: student list (createdByTeacherId + role), student ownership checks
   @@index([createdByTeacherId, role])
 }
 
 model Session {
-  id        String   @id @default(cuid())
-  userId    String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  activeRole String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Lesson {
@@ -364,4 +374,40 @@ model SkillAxisScore {
   axis       SkillAxis       @relation(fields: [axisId], references: [id], onDelete: Cascade)
 
   @@unique([assessmentId, axisId])
+}
+
+/// Invitation envoyée par un prof pour qu'un autre utilisateur devienne son élève.
+/// Un seul enregistrement par couple (teacherId, email) — upsert pour le renvoi.
+/// token : UUID aléatoire, single-use, expire après 48h.
+model TeacherStudentInvitation {
+  id        String                         @id @default(cuid())
+  teacherId String
+  email     String
+  token     String                         @unique
+  status    TeacherStudentInvitationStatus @default(PENDING)
+  expiresAt DateTime
+  createdAt DateTime                       @default(now())
+  updatedAt DateTime                       @updatedAt
+
+  teacher   User @relation("InvitationTeacher", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, email])
+  @@index([token])
+  @@index([email])
+}
+
+/// Relation active entre un prof (teacherId) et un élève (studentId).
+/// studentId peut être un User de rôle TEACHER ou STUDENT.
+/// Créée uniquement après acceptation de l'invitation.
+model TeacherStudentRelation {
+  id        String   @id @default(cuid())
+  teacherId String
+  studentId String
+  createdAt DateTime @default(now())
+
+  teacher   User @relation("RelationTeacher", fields: [teacherId], references: [id], onDelete: Cascade)
+  student   User @relation("RelationStudent", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, studentId])
+  @@index([studentId])
 }

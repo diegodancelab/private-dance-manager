@@ -14,15 +14,19 @@ export type SessionUser = {
 
 export type Session = {
   id: string;
+  activeRole: string | null;
   user: SessionUser;
 };
 
-export async function createSession(userId: string): Promise<void> {
+export async function createSession(
+  userId: string,
+  activeRole: string | null = null
+): Promise<void> {
   const expiresAt = new Date();
   expiresAt.setDate(expiresAt.getDate() + SESSION_DAYS);
 
   const session = await prisma.session.create({
-    data: { userId, expiresAt },
+    data: { userId, activeRole, expiresAt },
   });
 
   const cookieStore = await cookies();
@@ -67,6 +71,7 @@ export async function getSession(): Promise<Session | null> {
 
   return {
     id: session.id,
+    activeRole: session.activeRole,
     user: {
       id: session.user.id,
       email: session.user.email ?? "",
@@ -86,4 +91,18 @@ export async function deleteSession(): Promise<void> {
     await prisma.session.deleteMany({ where: { id: sessionId } });
     cookieStore.delete(SESSION_COOKIE);
   }
+}
+
+// Must only be called from a Server Action or Route Handler.
+export async function updateSessionRole(
+  role: "TEACHER" | "STUDENT"
+): Promise<void> {
+  const cookieStore = await cookies();
+  const sessionId = cookieStore.get(SESSION_COOKIE)?.value;
+  if (!sessionId) return;
+
+  await prisma.session.update({
+    where: { id: sessionId },
+    data: { activeRole: role },
+  });
 }

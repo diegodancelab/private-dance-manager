@@ -3,14 +3,16 @@
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { logout } from "@/lib/auth/actions";
+import { switchActiveRole } from "@/lib/auth/choose-role-actions";
 import styles from "./PortalShell.module.css";
 
 type PortalShellProps = {
   children: React.ReactNode;
   studentName: string;
+  isDualRole?: boolean;
 };
 
-export default function PortalShell({ children, studentName }: PortalShellProps) {
+export default function PortalShell({ children, studentName, isDualRole = false }: PortalShellProps) {
   const t = useTranslations("portal.nav");
   const pathname = usePathname();
 
@@ -50,6 +52,14 @@ export default function PortalShell({ children, studentName }: PortalShellProps)
       <main className={styles.main}>{children}</main>
 
       <footer className={styles.footer}>
+        {isDualRole && (
+          <form action={switchActiveRole} className={styles.switchForm}>
+            <input type="hidden" name="targetRole" value="TEACHER" />
+            <button type="submit" className={styles.switchBtn}>
+              Espace professeur
+            </button>
+          </form>
+        )}
         <form action={logout}>
           <button type="submit" className={styles.logoutBtn}>
             {t("logout")}

@@ -93,12 +93,25 @@ export async function login(
     where: { OR: [{ email }, { attemptedAt: { lt: expired } }] },
   });
   logger.info("login", "Successful login", { email, userId: user.id });
-  await createSession(user.id);
 
-  // Role-based redirect: students go to the portal, teachers go to the app.
+  // Students go directly to the portal (single-role).
   if (user.role === "STUDENT") {
+    await createSession(user.id);
     return redirect("/portal");
   }
+
+  // Teachers: check if they are also enrolled as a student by another teacher.
+  const crossEnrollmentCount = await prisma.teacherStudentRelation.count({
+    where: { studentId: user.id },
+  });
+
+  if (crossEnrollmentCount > 0) {
+    // Dual-role: no active role set yet — redirect to role selection.
+    await createSession(user.id, null);
+    return redirect("/choose-role");
+  }
+
+  await createSession(user.id, "TEACHER");
   return redirect("/");
 }
 

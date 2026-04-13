@@ -3,6 +3,7 @@
 import { useTranslations } from "next-intl";
 import { Link, usePathname } from "@/i18n/navigation";
 import { logout } from "@/lib/auth/actions";
+import { switchActiveRole } from "@/lib/auth/choose-role-actions";
 import LanguageSwitcher from "@/components/ui/LanguageSwitcher/LanguageSwitcher";
 import styles from "./SidebarNav.module.css";
 
@@ -16,7 +17,7 @@ const navItems = [
   { href: "/payments", labelKey: "payments" },
 ] as const;
 
-export default function SidebarNav() {
+export default function SidebarNav({ isDualRole = false }: { isDualRole?: boolean }) {
   const pathname = usePathname();
   const t = useTranslations("navigation");
 
@@ -48,6 +49,14 @@ export default function SidebarNav() {
       </nav>
 
       <div className={styles.bottomSection}>
+        {isDualRole && (
+          <form action={switchActiveRole} className={styles.switchForm}>
+            <input type="hidden" name="targetRole" value="STUDENT" />
+            <button type="submit" className={styles.switchButton}>
+              {t("switchToStudent")}
+            </button>
+          </form>
+        )}
         <LanguageSwitcher />
         <form action={logout} className={styles.logoutForm}>
           <button type="submit" className={styles.logoutButton}>
