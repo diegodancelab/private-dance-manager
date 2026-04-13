@@ -14,9 +14,6 @@ export type SetupFormState = {
   };
 };
 
-const initialState: SetupFormState = { success: false, errors: {} };
-export { initialState };
-
 export async function setupPortalPassword(
   _prevState: SetupFormState,
   formData: FormData
