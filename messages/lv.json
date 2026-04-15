@@ -16,7 +16,8 @@
     "logout": "Izrakstīties",
     "menu": "Izvēlne",
     "openMenu": "Atvērt navigācijas izvēlni",
-    "closeMenu": "Aizvērt navigācijas izvēlni"
+    "closeMenu": "Aizvērt navigācijas izvēlni",
+    "switchToStudent": "Pārslēgties uz skolēna portālu"
   },
   "common": {
     "add": "Pievienot",

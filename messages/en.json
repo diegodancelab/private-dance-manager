@@ -16,7 +16,8 @@
     "logout": "Log out",
     "menu": "Menu",
     "openMenu": "Open navigation menu",
-    "closeMenu": "Close navigation menu"
+    "closeMenu": "Close navigation menu",
+    "switchToStudent": "Switch to student portal"
   },
   "common": {
     "add": "Add",
