@@ -44,7 +44,7 @@ export async function getCrossEnrolledStudents(
   teacherId: string
 ): Promise<CrossEnrolledStudent[]> {
   const relations = await prisma.teacherStudentRelation.findMany({
-    where: { teacherId },
+    where: { teacherId, student: { role: "TEACHER" } },
     orderBy: { createdAt: "desc" },
     select: {
       id: true,

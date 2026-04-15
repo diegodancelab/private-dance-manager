@@ -200,6 +200,7 @@ export async function createAccountAndAccept(
         role: "STUDENT",
         passwordHash,
         portalActivatedAt: new Date(),
+        createdByTeacherId: invitation.teacherId,
       },
     });
 
