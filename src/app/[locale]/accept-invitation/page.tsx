@@ -5,6 +5,7 @@ import { acceptInvitationAsLoggedInUser } from "@/features/cross-enrollment/acce
 import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import AcceptInvitationCreateForm from "./AcceptInvitationCreateForm";
+import AcceptInvitationSetPasswordForm from "./AcceptInvitationSetPasswordForm";
 import styles from "@/app/[locale]/login/LoginForm.module.css";
 import cardStyles from "./AcceptInvitationPage.module.css";
 
@@ -95,7 +96,7 @@ export default async function AcceptInvitationPage({ params, searchParams }: Pro
   const session = await getSession();
   const existingAccount = await prisma.user.findUnique({
     where: { email: invitation.email },
-    select: { id: true },
+    select: { id: true, firstName: true, passwordHash: true },
   });
 
   // Case 1: Logged in — email matches → show accept button
@@ -143,7 +144,20 @@ export default async function AcceptInvitationPage({ params, searchParams }: Pro
     );
   }
 
-  // Case 3: Not logged in, account exists → prompt login
+  // Case 3: Not logged in, account exists but no password → set password form
+  if (!session && existingAccount && !existingAccount.passwordHash) {
+    return (
+      <div className={styles.loginPage}>
+        <AcceptInvitationSetPasswordForm
+          token={token}
+          teacherFirstName={invitation.teacherFirstName}
+          firstName={existingAccount.firstName}
+        />
+      </div>
+    );
+  }
+
+  // Case 4: Not logged in, account exists with password → prompt login
   if (!session && existingAccount) {
     return (
       <div className={styles.loginPage}>
@@ -168,7 +182,7 @@ export default async function AcceptInvitationPage({ params, searchParams }: Pro
     );
   }
 
-  // Case 4: Not logged in, no account → show registration form
+  // Case 5: Not logged in, no account → show registration form
   return (
     <div className={styles.loginPage}>
       <AcceptInvitationCreateForm

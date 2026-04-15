@@ -130,6 +130,81 @@ export async function acceptInvitationAsLoggedInUser(
 }
 
 /**
+ * Sets a password on an existing account and accepts the invitation.
+ * For users who were created by a teacher but never activated their portal access.
+ */
+export async function setPasswordAndAccept(
+  _prevState: AcceptFormState,
+  formData: FormData
+): Promise<AcceptFormState> {
+  const token = String(formData.get("token") || "").trim();
+  const password = String(formData.get("password") || "");
+  const confirmPassword = String(formData.get("confirmPassword") || "");
+
+  const empty: AcceptFormState = { success: false, errors: {} };
+
+  if (!password) return { ...empty, errors: { password: "Le mot de passe est requis." } };
+  if (password.length < 8) {
+    return { ...empty, errors: { password: "Le mot de passe doit contenir au moins 8 caractères." } };
+  }
+  if (password !== confirmPassword) {
+    return { ...empty, errors: { confirmPassword: "Les mots de passe ne correspondent pas." } };
+  }
+
+  const invitation = await prisma.teacherStudentInvitation.findUnique({
+    where: { token },
+    select: { id: true, teacherId: true, email: true, status: true, expiresAt: true },
+  });
+
+  if (
+    !invitation ||
+    invitation.status !== TeacherStudentInvitationStatus.PENDING ||
+    invitation.expiresAt < new Date()
+  ) {
+    return { ...empty, errors: { form: "Ce lien d'invitation a expiré ou a déjà été utilisé." } };
+  }
+
+  const existingUser = await prisma.user.findUnique({
+    where: { email: invitation.email },
+    select: { id: true, passwordHash: true },
+  });
+
+  if (!existingUser) {
+    return { ...empty, errors: { form: "Compte introuvable. Utilisez le formulaire de création de compte." } };
+  }
+  if (existingUser.passwordHash) {
+    return { ...empty, errors: { form: "Ce compte a déjà un mot de passe. Connectez-vous pour accepter l'invitation." } };
+  }
+
+  const passwordHash = await bcrypt.hash(
+    password,
+    process.env.NODE_ENV === "production" ? 12 : 4
+  );
+
+  await prisma.$transaction([
+    prisma.user.update({
+      where: { id: existingUser.id },
+      data: {
+        passwordHash,
+        portalActivatedAt: new Date(),
+      },
+    }),
+    prisma.teacherStudentInvitation.update({
+      where: { id: invitation.id },
+      data: { status: TeacherStudentInvitationStatus.ACCEPTED },
+    }),
+  ]);
+
+  logger.info("cross-enrollment", "Password set and invitation accepted", {
+    teacherId: invitation.teacherId,
+    userId: existingUser.id,
+  });
+
+  await createSession(existingUser.id);
+  return redirect("/portal");
+}
+
+/**
  * Creates a new account and accepts the invitation in one step.
  * For users who don't have an account yet.
  */
