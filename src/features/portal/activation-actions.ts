@@ -5,7 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getLocale } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { sendPortalInvitation } from "@/lib/email/sendPortalInvitation";
-import { DomainError } from "@/lib/errors";
+import { DomainError, isDomainError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
 function getAppUrl(): string {
@@ -43,6 +43,59 @@ async function createAndSendInvitation(
     teacherFirstName,
     invitationUrl,
   });
+}
+
+export type AddEmailFormState = { error: string | null };
+
+export async function addEmailAndActivatePortal(
+  _prevState: AddEmailFormState,
+  formData: FormData
+): Promise<AddEmailFormState> {
+  try {
+    const { user } = await requireTeacherAuth();
+    const studentId = String(formData.get("studentId") || "").trim();
+    const email = String(formData.get("email") || "").trim().toLowerCase();
+
+    if (!studentId) throw new Error("studentId is required");
+    if (!email) throw new DomainError("L'email est requis.");
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      throw new DomainError("Adresse email invalide.");
+    }
+
+    const student = await prisma.user.findFirst({
+      where: { id: studentId, createdByTeacherId: user.id },
+      select: { id: true, email: true, portalActivatedAt: true },
+    });
+
+    if (!student) throw new Error("Student not found");
+    if (student.email) throw new DomainError("Cet élève a déjà un email enregistré.");
+    if (student.portalActivatedAt) throw new DomainError("Le portail est déjà activé pour cet élève.");
+
+    const existingUser = await prisma.user.findUnique({
+      where: { email },
+      select: { id: true },
+    });
+    if (existingUser) throw new DomainError("Cette adresse email est déjà utilisée par un autre compte.");
+
+    await prisma.user.update({
+      where: { id: studentId },
+      data: { email },
+    });
+
+    const locale = await getLocale();
+    await createAndSendInvitation(studentId, user.firstName, locale);
+
+    logger.info("portal", "Email added and portal invitation sent", {
+      studentId,
+      teacherId: user.id,
+    });
+
+    revalidatePath(`/students/${studentId}`);
+    return { error: null };
+  } catch (err) {
+    if (isDomainError(err)) return { error: err.message };
+    throw err;
+  }
 }
 
 export async function activateStudentPortal(formData: FormData): Promise<void> {

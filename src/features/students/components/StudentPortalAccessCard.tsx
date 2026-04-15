@@ -1,11 +1,13 @@
 "use client";
 
-import { useTransition } from "react";
+import { useTransition, useActionState, useState } from "react";
 import {
   activateStudentPortal,
   resendPortalInvitation,
   deactivateStudentPortal,
+  addEmailAndActivatePortal,
 } from "@/features/portal/activation-actions";
+import type { AddEmailFormState } from "@/features/portal/activation-actions";
 import type { PortalAccessInfo } from "@/features/students/queries/getStudentDetail";
 import styles from "./StudentDetail.module.css";
 import portalStyles from "./StudentPortalAccessCard.module.css";
@@ -24,11 +26,18 @@ type Props = {
     resend: string;
     deactivate: string;
     emailRequired: string;
+    addEmailAndActivate: string;
+    emailLabel: string;
+    emailPlaceholder: string;
+    sendInvitation: string;
+    cancel: string;
     confirmDeactivate: string;
     confirmDeactivateConfirm: string;
     confirmDeactivateBack: string;
   };
 };
+
+const initialEmailState: AddEmailFormState = { error: null };
 
 export default function StudentPortalAccessCard({
   studentId,
@@ -37,6 +46,11 @@ export default function StudentPortalAccessCard({
   t,
 }: Props) {
   const [isPending, startTransition] = useTransition();
+  const [showEmailForm, setShowEmailForm] = useState(false);
+  const [emailState, emailAction, isEmailPending] = useActionState(
+    addEmailAndActivatePortal,
+    initialEmailState
+  );
 
   function submitWithStudentId(
     action: (formData: FormData) => Promise<void>
@@ -77,11 +91,59 @@ export default function StudentPortalAccessCard({
         <p className={portalStyles.hint}>{t.activatedOn}</p>
       )}
 
-      {status === "inactive" && !hasEmail && (
+      {status === "inactive" && !hasEmail && !showEmailForm && (
         <p className={portalStyles.hint}>{t.emailRequired}</p>
       )}
 
+      {status === "inactive" && !hasEmail && showEmailForm && (
+        <form action={emailAction} className={portalStyles.emailForm}>
+          <input type="hidden" name="studentId" value={studentId} />
+          <label className={portalStyles.emailLabel} htmlFor="portal-email">
+            {t.emailLabel}
+          </label>
+          <div className={portalStyles.emailRow}>
+            <input
+              id="portal-email"
+              name="email"
+              type="email"
+              placeholder={t.emailPlaceholder}
+              className={portalStyles.emailInput}
+              autoComplete="email"
+              disabled={isEmailPending}
+            />
+            <button
+              type="submit"
+              className={portalStyles.actionBtn}
+              disabled={isEmailPending}
+            >
+              {isEmailPending ? "…" : t.sendInvitation}
+            </button>
+            <button
+              type="button"
+              className={portalStyles.cancelBtn}
+              onClick={() => setShowEmailForm(false)}
+              disabled={isEmailPending}
+            >
+              {t.cancel}
+            </button>
+          </div>
+          {emailState.error && (
+            <p className={portalStyles.emailError}>{emailState.error}</p>
+          )}
+        </form>
+      )}
+
       <div className={portalStyles.actions}>
+        {status === "inactive" && !hasEmail && !showEmailForm && (
+          <button
+            type="button"
+            className={portalStyles.actionBtn}
+            onClick={() => setShowEmailForm(true)}
+          >
+            {t.addEmailAndActivate}
+          </button>
+        )}
+
         {status === "inactive" && hasEmail && (
           <button
             type="button"
