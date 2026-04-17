@@ -2,6 +2,7 @@
 
 import { useActionState, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { Link } from "@/i18n/navigation";
 import { createProgressionAssessment, AssessmentFormState } from "@/features/progression/actions";
 import type { TeacherAxis } from "@/features/progression/queries";
 import styles from "./AssessmentForm.module.css";
@@ -41,9 +42,9 @@ export default function AssessmentForm({ studentId, axes, onClose, t }: Props) {
     return (
       <div className={styles.form}>
         <p className={styles.noAxes}>{t.noAxes}</p>
-        <a href="/settings/skill-axes" className={styles.configLink}>
+        <Link href="/settings/skill-axes" className={styles.configLink}>
           {t.configureAxes}
-        </a>
+        </Link>
       </div>
     );
   }
