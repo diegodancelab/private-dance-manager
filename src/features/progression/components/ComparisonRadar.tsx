@@ -18,7 +18,8 @@ export default function ComparisonRadar({ current, reference, size = 280 }: Prop
   const cx = size / 2;
   const cy = size / 2;
   const radius = size * 0.36;
-  const labelRadius = size * 0.44;
+  const labelRadius = size * 0.46;
+  const pad = 32;
   const levels = 5;
   const maxScore = 10;
 
@@ -50,7 +51,12 @@ export default function ComparisonRadar({ current, reference, size = 280 }: Prop
   const currentPoints = buildPolygon(current);
 
   return (
-    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} aria-label="Radar de progression">
+    <svg
+      width={size}
+      height={size}
+      viewBox={`${-pad} ${-pad} ${size + pad * 2} ${size + pad * 2}`}
+      aria-label="Radar de progression"
+    >
       {/* Grid */}
       {Array.from({ length: levels }, (_, lvl) => (
         <polygon
