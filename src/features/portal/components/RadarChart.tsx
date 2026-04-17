@@ -18,7 +18,8 @@ export default function RadarChart({ data, size = 260, maxScore = 10 }: Props) {
   const cx = size / 2;
   const cy = size / 2;
   const radius = size * 0.36;
-  const labelRadius = size * 0.48;
+  const labelRadius = size * 0.46;
+  const pad = 32;
   const levels = 5;
 
   // Angle for axis i: start at top (−90°)
@@ -51,7 +52,7 @@ export default function RadarChart({ data, size = 260, maxScore = 10 }: Props) {
     <svg
       width={size}
       height={size}
-      viewBox={`0 0 ${size} ${size}`}
+      viewBox={`${-pad} ${-pad} ${size + pad * 2} ${size + pad * 2}`}
       aria-label="Radar chart"
     >
       {/* Grid levels */}
@@ -119,6 +120,7 @@ export default function RadarChart({ data, size = 260, maxScore = 10 }: Props) {
             ? "hanging"
             : "auto";
 
+        const abbr = d.label.slice(0, 4).toUpperCase();
         return (
           <text
             key={i}
@@ -130,10 +132,11 @@ export default function RadarChart({ data, size = 260, maxScore = 10 }: Props) {
             fill="#6b7280"
             fontFamily="inherit"
           >
-            {d.label}
+            <title>{d.label}</title>
+            {abbr}
             <tspan
               x={x}
-              dy="1.1em"
+              dy="1.2em"
               textAnchor={anchor}
               fontSize={11}
               fontWeight="600"
