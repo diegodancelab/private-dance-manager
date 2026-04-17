@@ -311,7 +311,29 @@
     "colMethod": "Method",
     "colStatus": "Status",
     "colDate": "Date",
-    "openPayment": "Open payment"
+    "openPayment": "Open payment",
+    "progressionLink": "Progression →"
+  },
+  "studentProgression": {
+    "title": "Progression",
+    "back": "← Back to student",
+    "progressionLink": "Progression →",
+    "newAssessment": "New assessment",
+    "newAssessmentTitle": "Create assessment",
+    "noAssessments": "No assessments recorded yet.",
+    "assessmentOf": "Assessment of {date}",
+    "avgScore": "Average score",
+    "referenceLabel": "Reference",
+    "currentLabel": "Current",
+    "delete": "Delete",
+    "confirmDelete": "Delete this assessment?",
+    "notes": "Internal notes",
+    "formNotes": "Internal notes",
+    "formNotesPlaceholder": "Observations, areas to work on...",
+    "formSave": "Save assessment",
+    "formCancel": "Cancel",
+    "noAxes": "No progression axes configured.",
+    "configureAxes": "Configure axes →"
   },
   "postLessonFeedback": {
     "sectionTitle": "Post-lesson feedback",

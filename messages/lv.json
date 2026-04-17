@@ -311,7 +311,29 @@
     "colMethod": "Metode",
     "colStatus": "Statuss",
     "colDate": "Datums",
-    "openPayment": "Atvērt apmaksu"
+    "openPayment": "Atvērt apmaksu",
+    "progressionLink": "Progresija →"
+  },
+  "studentProgression": {
+    "title": "Progresija",
+    "back": "← Skolēna profils",
+    "progressionLink": "Progresija →",
+    "newAssessment": "Jauns novērtējums",
+    "newAssessmentTitle": "Izveidot novērtējumu",
+    "noAssessments": "Pagaidām nav reģistrētu novērtējumu.",
+    "assessmentOf": "Novērtējums {date}",
+    "avgScore": "Vidējais rezultāts",
+    "referenceLabel": "Atsauce",
+    "currentLabel": "Pašreizējais",
+    "delete": "Dzēst",
+    "confirmDelete": "Dzēst šo novērtējumu?",
+    "notes": "Iekšējās piezīmes",
+    "formNotes": "Iekšējās piezīmes",
+    "formNotesPlaceholder": "Novērojumi, jomas, pie kurām strādāt...",
+    "formSave": "Saglabāt novērtējumu",
+    "formCancel": "Atcelt",
+    "noAxes": "Nav konfigurētu progresijas asu.",
+    "configureAxes": "Konfigurēt asis →"
   },
   "postLessonFeedback": {
     "sectionTitle": "Pēc nodarbības atsauksmes",

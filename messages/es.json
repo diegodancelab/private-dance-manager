@@ -311,7 +311,29 @@
     "colMethod": "Método",
     "colStatus": "Estado",
     "colDate": "Fecha",
-    "openPayment": "Ver pago"
+    "openPayment": "Ver pago",
+    "progressionLink": "Progresión →"
+  },
+  "studentProgression": {
+    "title": "Progresión",
+    "back": "← Ficha del alumno",
+    "progressionLink": "Progresión →",
+    "newAssessment": "Nueva evaluación",
+    "newAssessmentTitle": "Crear evaluación",
+    "noAssessments": "Ninguna evaluación registrada todavía.",
+    "assessmentOf": "Evaluación del {date}",
+    "avgScore": "Puntuación media",
+    "referenceLabel": "Referencia",
+    "currentLabel": "Actual",
+    "delete": "Eliminar",
+    "confirmDelete": "¿Eliminar esta evaluación?",
+    "notes": "Notas internas",
+    "formNotes": "Notas internas",
+    "formNotesPlaceholder": "Observaciones, puntos a trabajar...",
+    "formSave": "Guardar evaluación",
+    "formCancel": "Cancelar",
+    "noAxes": "No hay ejes de progresión configurados.",
+    "configureAxes": "Configurar ejes →"
   },
   "postLessonFeedback": {
     "sectionTitle": "Feedback post-clase",

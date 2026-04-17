@@ -311,7 +311,29 @@
     "colMethod": "Méthode",
     "colStatus": "Statut",
     "colDate": "Date",
-    "openPayment": "Voir le paiement"
+    "openPayment": "Voir le paiement",
+    "progressionLink": "Progression →"
+  },
+  "studentProgression": {
+    "title": "Progression",
+    "back": "← Fiche élève",
+    "progressionLink": "Progression →",
+    "newAssessment": "Nouveau bilan",
+    "newAssessmentTitle": "Créer un bilan",
+    "noAssessments": "Aucun bilan enregistré pour le moment.",
+    "assessmentOf": "Bilan du {date}",
+    "avgScore": "Score moyen",
+    "referenceLabel": "Référence",
+    "currentLabel": "Courant",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer ce bilan ?",
+    "notes": "Notes internes",
+    "formNotes": "Notes internes",
+    "formNotesPlaceholder": "Observations, points à travailler...",
+    "formSave": "Enregistrer le bilan",
+    "formCancel": "Annuler",
+    "noAxes": "Aucun axe de progression configuré.",
+    "configureAxes": "Configurer les axes →"
   },
   "postLessonFeedback": {
     "sectionTitle": "Feedback post-cours",

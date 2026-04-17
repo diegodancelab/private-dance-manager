@@ -54,6 +54,13 @@ export default async function StudentDetailPage({ params }: Props) {
             {t("addPackage")}
           </Button>
           <Button
+            href={`/students/${student.id}/progression`}
+            variant="secondary"
+            size="sm"
+          >
+            {t("progressionLink")}
+          </Button>
+          <Button
             href={`/students/${student.id}/edit`}
             variant="secondary"
             size="sm"
