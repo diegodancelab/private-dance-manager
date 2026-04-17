@@ -34,6 +34,9 @@ export default async function StudentProgressionPage({ params }: Props) {
         <h1 className={styles.pageTitle}>
           {t("title")} — {student.firstName} {student.lastName}
         </h1>
+        <Link href="/settings/skill-axes" className={styles.manageAxesLink}>
+          {t("manageAxes")}
+        </Link>
       </div>
 
       <ProgressionView

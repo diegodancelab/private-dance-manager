@@ -17,7 +17,8 @@
     "menu": "Menu",
     "openMenu": "Ouvrir le menu de navigation",
     "closeMenu": "Fermer le menu de navigation",
-    "switchToStudent": "Passer en espace élève"
+    "switchToStudent": "Passer en espace élève",
+    "settings": "Paramètres"
   },
   "common": {
     "add": "Ajouter",
@@ -333,7 +334,8 @@
     "formSave": "Enregistrer le bilan",
     "formCancel": "Annuler",
     "noAxes": "Aucun axe de progression configuré.",
-    "configureAxes": "Configurer les axes →"
+    "configureAxes": "Configurer les axes →",
+    "manageAxes": "Gérer les axes →"
   },
   "postLessonFeedback": {
     "sectionTitle": "Feedback post-cours",

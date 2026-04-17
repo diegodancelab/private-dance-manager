@@ -18,7 +18,7 @@ export default function ComparisonRadar({ current, reference, size = 280 }: Prop
   const cx = size / 2;
   const cy = size / 2;
   const radius = size * 0.36;
-  const labelRadius = size * 0.48;
+  const labelRadius = size * 0.44;
   const levels = 5;
   const maxScore = 10;
 
@@ -102,6 +102,7 @@ export default function ComparisonRadar({ current, reference, size = 280 }: Prop
         const dominantBaseline =
           Math.abs(Math.sin(angle)) < 0.1 ? "middle" : Math.sin(angle) > 0 ? "hanging" : "auto";
 
+        const abbr = d.label.slice(0, 4).toUpperCase();
         return (
           <text
             key={i}
@@ -113,8 +114,9 @@ export default function ComparisonRadar({ current, reference, size = 280 }: Prop
             fill="#6b7280"
             fontFamily="inherit"
           >
-            {d.label}
-            <tspan x={x} dy="1.1em" textAnchor={anchor} fontSize={11} fontWeight="600" fill="#111827">
+            <title>{d.label}</title>
+            {abbr}
+            <tspan x={x} dy="1.2em" textAnchor={anchor} fontSize={11} fontWeight="600" fill="#111827">
               {d.score}
             </tspan>
           </text>

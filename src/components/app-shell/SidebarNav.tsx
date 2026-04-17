@@ -15,6 +15,7 @@ const navItems = [
   { href: "/packages", labelKey: "packages" },
   { href: "/charges", labelKey: "charges" },
   { href: "/payments", labelKey: "payments" },
+  { href: "/settings/skill-axes", labelKey: "settings" },
 ] as const;
 
 export default function SidebarNav({ isDualRole = false }: { isDualRole?: boolean }) {

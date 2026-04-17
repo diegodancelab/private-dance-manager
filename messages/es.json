@@ -17,7 +17,8 @@
     "menu": "Menú",
     "openMenu": "Abrir menú de navegación",
     "closeMenu": "Cerrar menú de navegación",
-    "switchToStudent": "Cambiar al portal de alumno"
+    "switchToStudent": "Cambiar al portal de alumno",
+    "settings": "Configuración"
   },
   "common": {
     "add": "Añadir",
@@ -333,7 +334,8 @@
     "formSave": "Guardar evaluación",
     "formCancel": "Cancelar",
     "noAxes": "No hay ejes de progresión configurados.",
-    "configureAxes": "Configurar ejes →"
+    "configureAxes": "Configurar ejes →",
+    "manageAxes": "Gestionar ejes →"
   },
   "postLessonFeedback": {
     "sectionTitle": "Feedback post-clase",

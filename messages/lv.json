@@ -17,7 +17,8 @@
     "menu": "Izvēlne",
     "openMenu": "Atvērt navigācijas izvēlni",
     "closeMenu": "Aizvērt navigācijas izvēlni",
-    "switchToStudent": "Pārslēgties uz skolēna portālu"
+    "switchToStudent": "Pārslēgties uz skolēna portālu",
+    "settings": "Iestatījumi"
   },
   "common": {
     "add": "Pievienot",
@@ -333,7 +334,8 @@
     "formSave": "Saglabāt novērtējumu",
     "formCancel": "Atcelt",
     "noAxes": "Nav konfigurētu progresijas asu.",
-    "configureAxes": "Konfigurēt asis →"
+    "configureAxes": "Konfigurēt asis →",
+    "manageAxes": "Pārvaldīt asis →"
   },
   "postLessonFeedback": {
     "sectionTitle": "Pēc nodarbības atsauksmes",

@@ -17,7 +17,8 @@
     "menu": "Menu",
     "openMenu": "Open navigation menu",
     "closeMenu": "Close navigation menu",
-    "switchToStudent": "Switch to student portal"
+    "switchToStudent": "Switch to student portal",
+    "settings": "Settings"
   },
   "common": {
     "add": "Add",
@@ -333,7 +334,8 @@
     "formSave": "Save assessment",
     "formCancel": "Cancel",
     "noAxes": "No progression axes configured.",
-    "configureAxes": "Configure axes →"
+    "configureAxes": "Configure axes →",
+    "manageAxes": "Manage axes →"
   },
   "postLessonFeedback": {
     "sectionTitle": "Post-lesson feedback",
