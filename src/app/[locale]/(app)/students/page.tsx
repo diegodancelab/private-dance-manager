@@ -4,12 +4,7 @@ import { prisma } from "@/lib/prisma";
 import { Link } from "@/i18n/navigation";
 import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { Eye, Pencil } from "lucide-react";
-import {
-  getPendingInvitations,
-  getCrossEnrolledStudents,
-} from "@/features/cross-enrollment/queries";
-import InviteStudentForm from "@/features/cross-enrollment/components/InviteStudentForm";
-import PendingInvitationsSection from "@/features/cross-enrollment/components/PendingInvitationsSection";
+import { getCrossEnrolledStudents } from "@/features/cross-enrollment/queries";
 import styles from "./StudentsPage.module.css";
 
 type Props = { params: Promise<{ locale: string }> };
@@ -21,12 +16,11 @@ export default async function StudentsPage({ params }: Props) {
   const t = await getTranslations("students");
   const tCommon = await getTranslations("common");
 
-  const [students, pendingInvitations, crossEnrolled] = await Promise.all([
+  const [students, crossEnrolled] = await Promise.all([
     prisma.user.findMany({
       where: { role: UserRole.STUDENT, createdByTeacherId: user.id },
       orderBy: { createdAt: "desc" },
     }),
-    getPendingInvitations(user.id),
     getCrossEnrolledStudents(user.id),
   ]);
 
@@ -39,7 +33,6 @@ export default async function StudentsPage({ params }: Props) {
         </div>
 
         <div className={styles.headerActions}>
-          <InviteStudentForm />
           <Link href="/students/new" className={styles.btnAdd}>
             {t("addStudent")}
           </Link>
@@ -142,8 +135,6 @@ export default async function StudentsPage({ params }: Props) {
         </>
       )}
 
-      {/* ── Pending invitations ──────────────────────────────────────────────── */}
-      <PendingInvitationsSection invitations={pendingInvitations} />
     </div>
   );
 }
