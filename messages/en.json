@@ -510,9 +510,14 @@
     "progression": {
       "title": "My progress",
       "latestAssessment": "Latest assessment",
-      "history": "History",
+      "history": "Assessment history",
       "noAssessments": "No assessments recorded yet.",
-      "assessmentOf": "Assessment of {date}"
+      "assessmentOf": "Assessment of {date}",
+      "subtitle": "Track your skills and assessments made by your teacher.",
+      "averageLabel": "Average {score}/10",
+      "countBilans": "{count, plural, =1 {# assessment} other {# assessments}}",
+      "export": "Export",
+      "coachLabel": "Coach"
     },
     "profile": {
       "title": "My profile",

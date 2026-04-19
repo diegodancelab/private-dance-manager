@@ -510,9 +510,14 @@
     "progression": {
       "title": "Mans progress",
       "latestAssessment": "Pēdējais vērtējums",
-      "history": "Vēsture",
-      "noAssessments": "Vēl nav reģistrētu vērtējumu.",
-      "assessmentOf": "Vērtējums {date}"
+      "history": "Novērtējumu vēsture",
+      "noAssessments": "Nav reģistrētu novērtējumu.",
+      "assessmentOf": "Vērtējums {date}",
+      "subtitle": "Izseko savām prasmēm un skolotāja veiktajiem novērtējumiem.",
+      "averageLabel": "Vidējais {score}/10",
+      "countBilans": "{count, plural, =1 {# novērtējums} other {# novērtējumi}}",
+      "export": "Eksportēt",
+      "coachLabel": "Skolotājs"
     },
     "profile": {
       "title": "Mans profils",

@@ -510,9 +510,14 @@
     "progression": {
       "title": "Ma progression",
       "latestAssessment": "Dernier bilan",
-      "history": "Historique",
+      "history": "Historique des bilans",
       "noAssessments": "Aucun bilan enregistré pour le moment.",
-      "assessmentOf": "Bilan du {date}"
+      "assessmentOf": "Bilan du {date}",
+      "subtitle": "Suivi de tes compétences et bilans réalisés par ton professeur.",
+      "averageLabel": "Moyenne {score}/10",
+      "countBilans": "{count, plural, =1 {# bilan} other {# bilans}}",
+      "export": "Exporter",
+      "coachLabel": "Coach"
     },
     "profile": {
       "title": "Mon profil",
