@@ -499,7 +499,13 @@
       "feedbackFromTeacher": "Pasniedzēja atsauksmes",
       "video": "Video",
       "watchVideo": "Skatīt video",
-      "noFeedback": "Nav atsauksmju par šo nodarbību."
+      "noFeedback": "Nav atsauksmju par šo nodarbību.",
+      "subtitle": "Apskatiet savas gaidāmās nodarbības un vēsturi.",
+      "bookLesson": "Rezervēt nodarbību",
+      "canceled": "Atceltas",
+      "noCanceled": "Nav atceltu nodarbību.",
+      "reschedule": "Pārplānot",
+      "seeAssessment": "Skatīt novērtējumu"
     },
     "progression": {
       "title": "Mans progress",

@@ -499,7 +499,13 @@
       "feedbackFromTeacher": "Feedback from your teacher",
       "video": "Video",
       "watchVideo": "Watch video",
-      "noFeedback": "No feedback for this lesson."
+      "noFeedback": "No feedback for this lesson.",
+      "subtitle": "View your upcoming lessons and history.",
+      "bookLesson": "Book a lesson",
+      "canceled": "Canceled",
+      "noCanceled": "No canceled lessons.",
+      "reschedule": "Reschedule",
+      "seeAssessment": "See assessment"
     },
     "progression": {
       "title": "My progress",

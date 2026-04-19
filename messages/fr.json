@@ -499,7 +499,13 @@
       "feedbackFromTeacher": "Retour de votre professeur",
       "video": "Vidéo",
       "watchVideo": "Voir la vidéo",
-      "noFeedback": "Aucun feedback pour ce cours."
+      "noFeedback": "Aucun feedback pour ce cours.",
+      "subtitle": "Consulte tes cours à venir et ton historique.",
+      "bookLesson": "Réserver un cours",
+      "canceled": "Annulés",
+      "noCanceled": "Aucun cours annulé.",
+      "reschedule": "Replanifier",
+      "seeAssessment": "Voir le bilan"
     },
     "progression": {
       "title": "Ma progression",
