@@ -72,20 +72,21 @@ export default function SkillAxesManager({ axes, t }: Props) {
             <li key={axis.id} className={`${styles.axisItem} ${!axis.isActive ? styles.axisItemInactive : ""}`}>
               <span className={styles.axisLabel}>{axis.label}</span>
               <div className={styles.axisActions}>
-                <span className={styles.statusTag}>
-                  {axis.isActive ? t.active : t.inactive}
-                </span>
-                <form
-                  action={(fd) => {
+                <button
+                  type="button"
+                  role="switch"
+                  aria-checked={axis.isActive}
+                  aria-label={axis.isActive ? t.active : t.inactive}
+                  className={`${styles.toggle} ${axis.isActive ? styles.toggleOn : ""}`}
+                  disabled={isPending}
+                  onClick={() => {
+                    const fd = new FormData();
                     fd.append("axisId", axis.id);
                     submit(toggleSkillAxis, fd);
                   }}
-                  style={{ display: "inline" }}
                 >
-                  <button type="submit" className={styles.actionBtn} disabled={isPending}>
-                    {axis.isActive ? t.inactive : t.active}
-                  </button>
-                </form>
+                  <span className={styles.toggleThumb} />
+                </button>
                 <form
                   action={(fd) => {
                     fd.append("axisId", axis.id);
