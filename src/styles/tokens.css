@@ -1,0 +1,51 @@
+:root {
+  /* ─── Couleurs neutres (slate warm) ─── */
+  --c-bg: #f7f8fb;
+  --c-surface: #ffffff;
+  --c-surface-muted: #fafbfc;
+  --c-border: #e6e8ef;
+  --c-border-strong: #d4d8e2;
+  --c-text: #0f172a;
+  --c-text-secondary: #475569;
+  --c-text-muted: #94a3b8;
+
+  /* ─── Marque (indigo) ─── */
+  --c-primary: #5b5bd6;
+  --c-primary-hover: #4b4bc4;
+  --c-primary-soft: #eef0ff;
+  --c-primary-border: #dbdefc;
+
+  /* ─── Accents sémantiques ─── */
+  --c-success: #10b981;
+  --c-success-soft: #ecfdf5;
+  --c-warning: #f59e0b;
+  --c-warning-soft: #fffbeb;
+  --c-danger: #ef4444;
+  --c-danger-soft: #fef2f2;
+  --c-info: #0ea5e9;
+  --c-info-soft: #f0f9ff;
+
+  /* ─── Typographie ─── */
+  --font-sans: var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* ─── Rayons ─── */
+  --r-sm: 6px;
+  --r-md: 10px;
+  --r-lg: 14px;
+  --r-xl: 18px;
+  --r-full: 999px;
+
+  /* ─── Ombres ─── */
+  --shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --shadow-md: 0 4px 12px rgba(15, 23, 42, 0.06), 0 2px 4px rgba(15, 23, 42, 0.04);
+  --shadow-lg: 0 12px 28px rgba(15, 23, 42, 0.08), 0 4px 8px rgba(15, 23, 42, 0.04);
+
+  /* ─── Layout ─── */
+  --sidebar-w: 248px;
+  --content-max: 1100px;
+
+  /* ─── Transitions ─── */
+  --t-fast: 120ms ease;
+  --t-base: 180ms ease;
+}

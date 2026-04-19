@@ -1,6 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { getLocale } from "next-intl/server";
+import { Inter } from "next/font/google";
 import "./globals.css";
+
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
   title: "Private Dance Manager",
@@ -22,7 +25,7 @@ export default async function RootLayout({
 
   return (
     <html lang={locale}>
-      <body>{children}</body>
+      <body className={inter.variable}>{children}</body>
     </html>
   );
 }
