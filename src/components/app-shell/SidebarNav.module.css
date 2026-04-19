@@ -53,8 +53,12 @@
 }
 
 .active {
-  background: #111827;
-  color: #ffffff;
+  background: #ede9fe;
+  color: #4338ca;
+}
+
+.active:hover {
+  background: #ede9fe;
 }
 
 .bottomSection {
