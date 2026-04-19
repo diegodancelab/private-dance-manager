@@ -68,7 +68,13 @@
     "expiringTomorrow": "rīt",
     "expiringInDays": "pēc {days} dienām",
     "lessonWithoutStudent": "Nodarbība bez skolēna",
-    "noPackageAssigned": "Nav piešķirta pakete"
+    "noPackageAssigned": "Nav piešķirta pakete",
+    "kpi": {
+      "activeStudents": "Aktīvie studenti",
+      "lessonsThisMonth": "Nodarbības šomēnes",
+      "revenueThisMonth": "Ieņēmumi šomēnes",
+      "hoursThisMonth": "Nostrādātās stundas"
+    }
   },
   "lessons": {
     "noStudentAssigned": "Nav piešķirta skolēna",

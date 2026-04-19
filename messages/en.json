@@ -68,7 +68,13 @@
     "expiringTomorrow": "tomorrow",
     "expiringInDays": "in {days} days",
     "lessonWithoutStudent": "Lesson without student",
-    "noPackageAssigned": "No package assigned"
+    "noPackageAssigned": "No package assigned",
+    "kpi": {
+      "activeStudents": "Active students",
+      "lessonsThisMonth": "Lessons this month",
+      "revenueThisMonth": "Monthly revenue",
+      "hoursThisMonth": "Hours given"
+    }
   },
   "lessons": {
     "noStudentAssigned": "No student assigned",

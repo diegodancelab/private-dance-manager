@@ -68,7 +68,13 @@
     "expiringTomorrow": "demain",
     "expiringInDays": "dans {days} jours",
     "lessonWithoutStudent": "Cours sans élève",
-    "noPackageAssigned": "Aucun forfait assigné"
+    "noPackageAssigned": "Aucun forfait assigné",
+    "kpi": {
+      "activeStudents": "Élèves actifs",
+      "lessonsThisMonth": "Cours ce mois",
+      "revenueThisMonth": "Revenus du mois",
+      "hoursThisMonth": "Heures dispensées"
+    }
   },
   "lessons": {
     "noStudentAssigned": "Aucun élève assigné",
