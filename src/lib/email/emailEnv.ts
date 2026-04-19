@@ -46,13 +46,11 @@ export function resolveRecipient(realEmail: string): string {
     return realEmail;
   }
 
-  if (env !== "production") {
-    console.log("[EMAIL DEBUG]", {
-      env,
-      originalRecipient: realEmail,
-      finalRecipient: override,
-    });
-  }
+  console.log("[EMAIL DEBUG]", {
+    env,
+    originalRecipient: realEmail,
+    finalRecipient: override,
+  });
 
   return override;
 }
