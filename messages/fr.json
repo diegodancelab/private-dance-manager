@@ -537,7 +537,10 @@
       "averageLabel": "Moyenne {score}/10",
       "countBilans": "{count, plural, =1 {# bilan} other {# bilans}}",
       "export": "Exporter",
-      "coachLabel": "Coach"
+      "coachLabel": "Coach",
+      "compareWith": "Comparer avec",
+      "compareNone": "Aucune comparaison",
+      "referenceTag": "Réf."
     },
     "profile": {
       "title": "Mon profil",
@@ -638,5 +641,6 @@
     "selectedStudentNotFound": "L'élève sélectionné est introuvable.",
     "selectedChargeNotFound": "La charge sélectionnée est introuvable.",
     "chargeNotBelongToStudent": "Cette charge n'appartient pas à l'élève sélectionné."
-  }
+  },
+  "portal.progression": {}
 }

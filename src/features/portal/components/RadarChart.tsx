@@ -7,11 +7,12 @@ export type RadarDataPoint = {
 
 type Props = {
   data: RadarDataPoint[];
+  referenceData?: RadarDataPoint[];
   size?: number;
   maxScore?: number;
 };
 
-export default function RadarChart({ data, size = 260, maxScore = 10 }: Props) {
+export default function RadarChart({ data, referenceData, size = 260, maxScore = 10 }: Props) {
   const n = data.length;
   if (n < 3) return null;
 
@@ -38,6 +39,18 @@ export default function RadarChart({ data, size = 260, maxScore = 10 }: Props) {
       return `${x},${y}`;
     }).join(" ");
   }
+
+  // Build reference polygon points (aligned with data axes)
+  const refPoints = referenceData
+    ? data
+        .map((d, i) => {
+          const ref = referenceData.find((r) => r.label === d.label);
+          const fraction = (ref?.score ?? 0) / maxScore;
+          const { x, y } = polarToXY(radius * fraction, angleFor(i));
+          return `${x},${y}`;
+        })
+        .join(" ")
+    : null;
 
   // Build data polygon points
   const dataPoints = data
@@ -84,6 +97,17 @@ export default function RadarChart({ data, size = 260, maxScore = 10 }: Props) {
           />
         );
       })}
+
+      {/* Reference polygon (rendered first, behind main) */}
+      {refPoints && (
+        <polygon
+          points={refPoints}
+          fill="rgba(245, 158, 11, 0.12)"
+          stroke="#f59e0b"
+          strokeWidth={1.5}
+          strokeDasharray="5,3"
+        />
+      )}
 
       {/* Data polygon */}
       <polygon

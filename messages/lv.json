@@ -537,7 +537,10 @@
       "averageLabel": "Vidējais {score}/10",
       "countBilans": "{count, plural, =1 {# novērtējums} other {# novērtējumi}}",
       "export": "Eksportēt",
-      "coachLabel": "Skolotājs"
+      "coachLabel": "Skolotājs",
+      "compareWith": "Salīdzināt ar",
+      "compareNone": "Nav salīdzinājuma",
+      "referenceTag": "Ats."
     },
     "profile": {
       "title": "Mans profils",
@@ -638,5 +641,6 @@
     "selectedStudentNotFound": "Izvēlētais skolēns nav atrasts.",
     "selectedChargeNotFound": "Izvēlētais maksājums nav atrasts.",
     "chargeNotBelongToStudent": "Šis maksājums nepieder izvēlētajam skolēnam."
-  }
+  },
+  "portal.progression": {}
 }

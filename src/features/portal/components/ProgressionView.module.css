@@ -1,0 +1,112 @@
+/* ── Comparison selector ── */
+.compareRow {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.compareLabel {
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--c-text-secondary);
+  white-space: nowrap;
+}
+
+.compareSelect {
+  flex: 1;
+  min-width: 0;
+  padding: 6px 10px;
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  background: var(--c-surface);
+  font-size: 13px;
+  color: var(--c-text);
+  font-family: inherit;
+  cursor: pointer;
+  transition: border-color var(--t-fast);
+}
+
+.compareSelect:focus {
+  outline: none;
+  border-color: var(--c-primary);
+  box-shadow: 0 0 0 3px var(--c-primary-soft);
+}
+
+/* ── Radar legend ── */
+.legend {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--c-text-secondary);
+}
+
+.legendCurrent {
+  display: inline-block;
+  width: 16px;
+  height: 3px;
+  background: #4f46e5;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.legendRef {
+  display: inline-block;
+  width: 16px;
+  height: 0;
+  border-top: 2px dashed #f59e0b;
+  flex-shrink: 0;
+}
+
+.legendText {
+  color: var(--c-text-secondary);
+}
+
+/* ── Skill bar reference mark ── */
+.progressRefMark {
+  position: absolute;
+  top: -2px;
+  width: 2px;
+  height: calc(100% + 4px);
+  background: #f59e0b;
+  border-radius: 1px;
+  transform: translateX(-50%);
+  z-index: 1;
+}
+
+/* ── Reference score indicator ── */
+.refScore {
+  margin-left: 8px;
+  font-size: 11.5px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.refUp   { color: #16a34a; }
+.refDown { color: #dc2626; }
+.refEqual { color: var(--c-text-muted); }
+
+/* ── Timeline active item (= reference selected) ── */
+.timelineItemActive {
+  background: #fffbeb;
+  border-radius: var(--r-md);
+  margin: 0 -8px;
+  padding: 0 8px !important;
+}
+
+.refTag {
+  display: inline-flex;
+  align-items: center;
+  margin-left: 6px;
+  padding: 1px 6px;
+  background: #fef3c7;
+  color: #d97706;
+  border-radius: var(--r-full);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}

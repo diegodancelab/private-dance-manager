@@ -134,10 +134,11 @@
 }
 
 .progressBar {
+  position: relative;
   height: 6px;
   background: var(--c-surface-muted);
   border-radius: var(--r-full);
-  overflow: hidden;
+  overflow: visible;
 }
 
 .progressFill {
