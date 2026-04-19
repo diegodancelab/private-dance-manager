@@ -62,6 +62,10 @@ function ParticipantFeedbackForm({
     return initial;
   });
 
+  function handleSlider(axisId: string, value: number) {
+    setScores((prev) => ({ ...prev, [axisId]: value }));
+  }
+
   return (
     <div className={styles.participantBlock}>
       <h3 className={styles.participantTitle}>
@@ -159,19 +163,21 @@ function ParticipantFeedbackForm({
                     name={`score_${axis.id}`}
                     value={scores[axis.id] ?? ""}
                   />
-                  <div className={styles.scoreButtons}>
-                    {[1, 2, 3, 4, 5, 6, 7, 8, 9, 10].map((n) => (
-                      <button
-                        key={n}
-                        type="button"
-                        className={`${styles.scoreBtn} ${scores[axis.id] === n ? styles.scoreBtnActive : ""}`}
-                        onClick={() =>
-                          setScores((prev) => ({ ...prev, [axis.id]: n }))
-                        }
-                      >
-                        {n}
-                      </button>
-                    ))}
+                  <div className={styles.sliderRow}>
+                    <span className={styles.sliderMin}>1</span>
+                    <input
+                      type="range"
+                      min={1}
+                      max={10}
+                      step={1}
+                      value={scores[axis.id] ?? 5}
+                      onChange={(e) => handleSlider(axis.id, Number(e.target.value))}
+                      className={styles.slider}
+                    />
+                    <span className={styles.sliderMax}>10</span>
+                    <span className={styles.sliderValue}>
+                      {scores[axis.id] ?? "—"}
+                    </span>
                   </div>
                 </div>
               ))}
