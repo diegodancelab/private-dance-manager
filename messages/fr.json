@@ -74,7 +74,11 @@
       "lessonsThisMonth": "Cours ce mois",
       "revenueThisMonth": "Revenus du mois",
       "hoursThisMonth": "Heures planifiées"
-    }
+    },
+    "noUpcomingLessonsTitle": "Aucun cours planifié",
+    "noUpcomingLessonsDesc": "Votre agenda est vide. Créez un cours pour démarrer.",
+    "noAlertsTitle": "Tout est en ordre",
+    "noAlertsDesc": "Aucune alerte. Forfaits et cours sont à jour."
   },
   "lessons": {
     "noStudentAssigned": "Aucun élève assigné",

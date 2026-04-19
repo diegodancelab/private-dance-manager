@@ -74,7 +74,11 @@
       "lessonsThisMonth": "Nodarbības šomēnes",
       "revenueThisMonth": "Ieņēmumi šomēnes",
       "hoursThisMonth": "Plānotās stundas"
-    }
+    },
+    "noUpcomingLessonsTitle": "Nav plānotu nodarbību",
+    "noUpcomingLessonsDesc": "Jūsu kalendārs ir tukšs. Izveidojiet nodarbību, lai sāktu.",
+    "noAlertsTitle": "Viss kārtībā",
+    "noAlertsDesc": "Nav brīdinājumu. Abonementi un nodarbības ir aktuāli."
   },
   "lessons": {
     "noStudentAssigned": "Nav piešķirta skolēna",

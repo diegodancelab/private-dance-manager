@@ -47,7 +47,7 @@
   "dashboard": {
     "title": "Panel",
     "greeting": "Buenos días, {name}.",
-    "createLesson": "Crear clase",
+    "createLesson": "Crear una clase",
     "addStudent": "Añadir alumno",
     "addPayment": "Añadir pago",
     "today": "Hoy",
@@ -74,7 +74,11 @@
       "lessonsThisMonth": "Clases este mes",
       "revenueThisMonth": "Ingresos del mes",
       "hoursThisMonth": "Horas planificadas"
-    }
+    },
+    "noUpcomingLessonsTitle": "Sin clases programadas",
+    "noUpcomingLessonsDesc": "Tu agenda está vacía. Crea una clase para empezar.",
+    "noAlertsTitle": "Todo en orden",
+    "noAlertsDesc": "Sin alertas. Paquetes y clases están al día."
   },
   "lessons": {
     "noStudentAssigned": "Ningún alumno asignado",

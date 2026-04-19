@@ -47,7 +47,7 @@
   "dashboard": {
     "title": "Dashboard",
     "greeting": "Good morning, {name}.",
-    "createLesson": "Create lesson",
+    "createLesson": "Create a lesson",
     "addStudent": "Add student",
     "addPayment": "Add payment",
     "today": "Today",
@@ -74,7 +74,11 @@
       "lessonsThisMonth": "Lessons this month",
       "revenueThisMonth": "Monthly revenue",
       "hoursThisMonth": "Planned hours"
-    }
+    },
+    "noUpcomingLessonsTitle": "No lessons scheduled",
+    "noUpcomingLessonsDesc": "Your calendar is empty. Create a lesson to get started.",
+    "noAlertsTitle": "All good",
+    "noAlertsDesc": "No alerts. Packages and lessons are up to date."
   },
   "lessons": {
     "noStudentAssigned": "No student assigned",
