@@ -205,7 +205,7 @@ export default async function LessonDetailPage({ params }: Props) {
             })}
             t={{
               sectionTitle: tFeedback("sectionTitle"),
-              participantTitle: tFeedback("participantTitle"),
+              participantTitle: tFeedback.raw("participantTitle") as string,
               videoUrl: tFeedback("videoUrl"),
               videoUrlPlaceholder: tFeedback("videoUrlPlaceholder"),
               studentFeedback: tFeedback("studentFeedback"),
