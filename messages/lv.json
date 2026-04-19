@@ -474,7 +474,21 @@
       "remainingTime": "{time} atlikušas",
       "noActivePackage": "Nav aktīvas paketes",
       "lastAssessment": "Pēdējais vērtējums",
-      "noAssessment": "Vēl nav vērtējumu"
+      "noAssessment": "Vēl nav vērtējumu",
+      "subtitle": "Šeit ir tava progresa kopsavilkums šonedēļ.",
+      "bookLesson": "Rezervēt nodarbību",
+      "stats": {
+        "totalTime": "Kopējais nodarbību laiks",
+        "completedLessons": "Pabeigtas nodarbības",
+        "averageScore": "Pēdējā novērtējuma vidējais"
+      },
+      "packageActive": "Aktīvs",
+      "packageRemaining": "Atlikuši {time} no {total}",
+      "packageExpiresOn": "Beidzas {date}",
+      "seeDetails": "Detaļas",
+      "seeMore": "Skatīt",
+      "noNextLessonTitle": "Nav gaidāmo nodarbību",
+      "noNextLessonDesc": "Sazinieties ar savu skolotāju, lai plānotu nākamo nodarbību."
     },
     "lessons": {
       "title": "Manas nodarbības",

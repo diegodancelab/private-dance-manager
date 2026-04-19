@@ -474,7 +474,21 @@
       "remainingTime": "{time} restant",
       "noActivePackage": "Aucun forfait actif",
       "lastAssessment": "Dernier bilan",
-      "noAssessment": "Aucun bilan pour le moment"
+      "noAssessment": "Aucun bilan pour le moment",
+      "subtitle": "Voici un résumé de ton parcours cette semaine.",
+      "bookLesson": "Réserver un cours",
+      "stats": {
+        "totalTime": "Temps total de cours",
+        "completedLessons": "Cours effectués",
+        "averageScore": "Moyenne du dernier bilan"
+      },
+      "packageActive": "Actif",
+      "packageRemaining": "{time} restantes sur {total}",
+      "packageExpiresOn": "Expire le {date}",
+      "seeDetails": "Détails",
+      "seeMore": "Voir",
+      "noNextLessonTitle": "Pas de cours à venir",
+      "noNextLessonDesc": "Contacte ton professeur pour planifier ta prochaine séance."
     },
     "lessons": {
       "title": "Mes cours",

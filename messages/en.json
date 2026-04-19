@@ -474,7 +474,21 @@
       "remainingTime": "{time} remaining",
       "noActivePackage": "No active package",
       "lastAssessment": "Last assessment",
-      "noAssessment": "No assessment yet"
+      "noAssessment": "No assessment yet",
+      "subtitle": "Here is a summary of your progress this week.",
+      "bookLesson": "Book a lesson",
+      "stats": {
+        "totalTime": "Total lesson time",
+        "completedLessons": "Lessons completed",
+        "averageScore": "Last assessment average"
+      },
+      "packageActive": "Active",
+      "packageRemaining": "{time} remaining of {total}",
+      "packageExpiresOn": "Expires on {date}",
+      "seeDetails": "Details",
+      "seeMore": "View",
+      "noNextLessonTitle": "No upcoming lesson",
+      "noNextLessonDesc": "Contact your teacher to schedule your next session."
     },
     "lessons": {
       "title": "My lessons",

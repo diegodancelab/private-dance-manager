@@ -474,7 +474,21 @@
       "remainingTime": "{time} restante",
       "noActivePackage": "Sin paquete activo",
       "lastAssessment": "Última evaluación",
-      "noAssessment": "Sin evaluación por el momento"
+      "noAssessment": "Sin evaluación por el momento",
+      "subtitle": "Aquí tienes un resumen de tu progreso esta semana.",
+      "bookLesson": "Reservar una clase",
+      "stats": {
+        "totalTime": "Tiempo total de clases",
+        "completedLessons": "Clases completadas",
+        "averageScore": "Promedio del último informe"
+      },
+      "packageActive": "Activo",
+      "packageRemaining": "{time} restantes de {total}",
+      "packageExpiresOn": "Vence el {date}",
+      "seeDetails": "Detalles",
+      "seeMore": "Ver",
+      "noNextLessonTitle": "No hay clases próximas",
+      "noNextLessonDesc": "Contacta a tu profesor para planificar tu próxima sesión."
     },
     "lessons": {
       "title": "Mis clases",
