@@ -160,35 +160,44 @@
   font-weight: 500;
 }
 
-.sliderRow {
+.scoreButtons {
   display: flex;
   align-items: center;
-  gap: 10px;
+  gap: 0.25rem;
+  flex-wrap: wrap;
 }
 
-.sliderMin,
-.sliderMax {
-  font-size: 0.75rem;
+.scoreEmpty {
+  font-size: 0.85rem;
+  font-weight: 600;
   color: #9ca3af;
-  flex-shrink: 0;
-  width: 14px;
+  width: 1.5rem;
   text-align: center;
 }
 
-.slider {
-  flex: 1;
-  height: 4px;
-  accent-color: #4f46e5;
+.scoreBtn {
+  width: 2rem;
+  height: 2rem;
+  border-radius: 5px;
+  border: 1px solid #e5e7eb;
+  background: #f9fafb;
+  color: #6b7280;
+  font-size: 0.8rem;
+  font-weight: 600;
   cursor: pointer;
+  transition: background 0.12s, color 0.12s, border-color 0.12s;
 }
 
-.sliderValue {
-  flex-shrink: 0;
-  width: 28px;
-  text-align: center;
-  font-size: 0.95rem;
-  font-weight: 700;
+.scoreBtn:hover {
+  background: #ede9fe;
+  border-color: #c4b5fd;
   color: #4f46e5;
+}
+
+.scoreBtnActive {
+  background: #4f46e5;
+  border-color: #4f46e5;
+  color: #ffffff;
 }
 
 .emptyText {
