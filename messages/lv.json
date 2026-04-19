@@ -641,6 +641,5 @@
     "selectedStudentNotFound": "Izvēlētais skolēns nav atrasts.",
     "selectedChargeNotFound": "Izvēlētais maksājums nav atrasts.",
     "chargeNotBelongToStudent": "Šis maksājums nepieder izvēlētajam skolēnam."
-  },
-  "portal.progression": {}
+  }
 }

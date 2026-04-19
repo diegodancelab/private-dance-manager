@@ -641,6 +641,5 @@
     "selectedStudentNotFound": "L'élève sélectionné est introuvable.",
     "selectedChargeNotFound": "La charge sélectionnée est introuvable.",
     "chargeNotBelongToStudent": "Cette charge n'appartient pas à l'élève sélectionné."
-  },
-  "portal.progression": {}
+  }
 }

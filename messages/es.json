@@ -641,6 +641,5 @@
     "selectedStudentNotFound": "El alumno seleccionado no fue encontrado.",
     "selectedChargeNotFound": "El cargo seleccionado no fue encontrado.",
     "chargeNotBelongToStudent": "Este cargo no pertenece al alumno seleccionado."
-  },
-  "portal.progression": {}
+  }
 }
