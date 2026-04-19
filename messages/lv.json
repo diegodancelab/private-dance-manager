@@ -515,6 +515,12 @@
       "submit": "Aktivizēt kontu",
       "tokenExpired": "Šī uzaicinājuma saite ir beigusies vai jau izmantota. Lūdziet savam pasniedzējam nosūtīt jaunu uzaicinājumu.",
       "success": "Jūsu konts ir aktivizēts. Jūs tagad esat pieteicies."
+    },
+    "topbar": {
+      "area": "Skolēna zona",
+      "search": "Meklēt",
+      "notifications": "Paziņojumi",
+      "help": "Palīdzība"
     }
   },
   "portalAccess": {

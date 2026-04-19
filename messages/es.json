@@ -515,6 +515,12 @@
       "submit": "Activar mi cuenta",
       "tokenExpired": "Este enlace de invitación ha expirado o ya ha sido utilizado. Pide a tu profesor que te envíe una nueva invitación.",
       "success": "Tu cuenta está activada. Ahora estás conectado."
+    },
+    "topbar": {
+      "area": "Espacio alumno",
+      "search": "Buscar",
+      "notifications": "Notificaciones",
+      "help": "Ayuda"
     }
   },
   "portalAccess": {

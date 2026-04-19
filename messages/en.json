@@ -515,6 +515,12 @@
       "submit": "Activate my account",
       "tokenExpired": "This invitation link has expired or has already been used. Ask your teacher to send a new invitation.",
       "success": "Your account is activated. You are now logged in."
+    },
+    "topbar": {
+      "area": "Student area",
+      "search": "Search",
+      "notifications": "Notifications",
+      "help": "Help"
     }
   },
   "portalAccess": {

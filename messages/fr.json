@@ -515,6 +515,12 @@
       "submit": "Activer mon compte",
       "tokenExpired": "Ce lien d'invitation a expiré ou a déjà été utilisé. Demandez à votre professeur de vous renvoyer une invitation.",
       "success": "Votre compte est activé. Vous êtes maintenant connecté."
+    },
+    "topbar": {
+      "area": "Espace élève",
+      "search": "Rechercher",
+      "notifications": "Notifications",
+      "help": "Aide"
     }
   },
   "portalAccess": {
