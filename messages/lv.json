@@ -38,8 +38,8 @@
   "calendar": {
     "title": "Kalendārs",
     "today": "Šodien",
-    "sevenDays": "7 dienas",
-    "week": "Nedēļa",
+    "sevenDays": "Šod. → +7d",
+    "week": "P → Sv",
     "addLesson": "Izveidot nodarbību",
     "noLessons": "Nav nodarbību",
     "viewLabel": "Skats"

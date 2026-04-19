@@ -38,8 +38,8 @@
   "calendar": {
     "title": "Calendar",
     "today": "Today",
-    "sevenDays": "7 days",
-    "week": "Week",
+    "sevenDays": "Today → +7d",
+    "week": "Mon → Sun",
     "addLesson": "Create lesson",
     "noLessons": "No lessons",
     "viewLabel": "View"
