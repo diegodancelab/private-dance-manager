@@ -180,7 +180,13 @@
     "locationPlaceholder": "Geneva",
     "packageLeft": "{time} left",
     "create": "Create lesson",
-    "update": "Update lesson"
+    "update": "Update lesson",
+    "colStudents": "Student(s)",
+    "colDuration": "Duration",
+    "colStatus": "Status",
+    "statusScheduled": "Scheduled",
+    "statusCanceled": "Canceled",
+    "durationMin": "{n} min"
   },
   "paymentsPage": {
     "eyebrow": "Payments",

@@ -180,7 +180,13 @@
     "locationPlaceholder": "Ginebra",
     "packageLeft": "{time} restante",
     "create": "Crear clase",
-    "update": "Actualizar clase"
+    "update": "Actualizar clase",
+    "colStudents": "Alumno(s)",
+    "colDuration": "Duración",
+    "colStatus": "Estado",
+    "statusScheduled": "Planificado",
+    "statusCanceled": "Cancelado",
+    "durationMin": "{n} min"
   },
   "paymentsPage": {
     "eyebrow": "Pagos",

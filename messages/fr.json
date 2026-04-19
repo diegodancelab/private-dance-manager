@@ -180,7 +180,13 @@
     "locationPlaceholder": "Genève",
     "packageLeft": "{time} restant",
     "create": "Créer le cours",
-    "update": "Mettre à jour le cours"
+    "update": "Mettre à jour le cours",
+    "colStudents": "Élève(s)",
+    "colDuration": "Durée",
+    "colStatus": "Statut",
+    "statusScheduled": "Planifié",
+    "statusCanceled": "Annulé",
+    "durationMin": "{n} min"
   },
   "paymentsPage": {
     "eyebrow": "Paiements",

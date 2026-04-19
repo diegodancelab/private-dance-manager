@@ -180,7 +180,13 @@
     "locationPlaceholder": "Rīga",
     "packageLeft": "{time} atlicis",
     "create": "Izveidot nodarbību",
-    "update": "Atjaunināt nodarbību"
+    "update": "Atjaunināt nodarbību",
+    "colStudents": "Skolēns(-i)",
+    "colDuration": "Ilgums",
+    "colStatus": "Statuss",
+    "statusScheduled": "Plānots",
+    "statusCanceled": "Atcelts",
+    "durationMin": "{n} min"
   },
   "paymentsPage": {
     "eyebrow": "Apmaksas",
