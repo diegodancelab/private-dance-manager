@@ -71,9 +71,14 @@ export default async function LessonsPage({ params }: Props) {
 
             <tbody>
               {lessons.map((lesson) => (
-                <tr key={lesson.id} className={lesson.status === "CANCELED" ? styles.canceledRow : ""}>
+                <tr
+                  key={lesson.id}
+                  className={`${styles.clickableRow} ${lesson.status === "CANCELED" ? styles.canceledRow : ""}`}
+                >
                   <td className={styles.tableCell} data-label={t("colTitle")}>
-                    <span>{lesson.title}</span>
+                    <Link href={`/lessons/${lesson.id}`} className={styles.rowLink}>
+                      {lesson.title}
+                    </Link>
                     {lesson.status === "CANCELED" && (
                       <span className={styles.canceledBadge}>{tLessons("statusCanceled")}</span>
                     )}
