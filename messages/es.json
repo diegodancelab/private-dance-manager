@@ -474,7 +474,21 @@
       "remainingTime": "{time} restante",
       "noActivePackage": "Sin paquete activo",
       "lastAssessment": "Última evaluación",
-      "noAssessment": "Sin evaluación por el momento"
+      "noAssessment": "Sin evaluación por el momento",
+      "subtitle": "Aquí tienes un resumen de tu progreso esta semana.",
+      "bookLesson": "Reservar una clase",
+      "stats": {
+        "totalTime": "Tiempo total de clases",
+        "completedLessons": "Clases completadas",
+        "averageScore": "Promedio del último informe"
+      },
+      "packageActive": "Activo",
+      "packageRemaining": "{time} restantes de {total}",
+      "packageExpiresOn": "Vence el {date}",
+      "seeDetails": "Detalles",
+      "seeMore": "Ver",
+      "noNextLessonTitle": "No hay clases próximas",
+      "noNextLessonDesc": "Contacta a tu profesor para planificar tu próxima sesión."
     },
     "lessons": {
       "title": "Mis clases",
@@ -485,14 +499,25 @@
       "feedbackFromTeacher": "Comentarios de tu profesor",
       "video": "Vídeo",
       "watchVideo": "Ver vídeo",
-      "noFeedback": "Sin comentarios para esta clase."
+      "noFeedback": "Sin comentarios para esta clase.",
+      "subtitle": "Consulta tus próximas clases e historial.",
+      "bookLesson": "Reservar una clase",
+      "canceled": "Cancelados",
+      "noCanceled": "No hay clases canceladas.",
+      "reschedule": "Replanificar",
+      "seeAssessment": "Ver informe"
     },
     "progression": {
       "title": "Mi progreso",
       "latestAssessment": "Última evaluación",
-      "history": "Historial",
-      "noAssessments": "Sin evaluaciones registradas por el momento.",
-      "assessmentOf": "Evaluación del {date}"
+      "history": "Historial de informes",
+      "noAssessments": "Aún no hay informes registrados.",
+      "assessmentOf": "Evaluación del {date}",
+      "subtitle": "Seguimiento de tus habilidades e informes realizados por tu profesor.",
+      "averageLabel": "Promedio {score}/10",
+      "countBilans": "{count, plural, =1 {# informe} other {# informes}}",
+      "export": "Exportar",
+      "coachLabel": "Coach"
     },
     "profile": {
       "title": "Mi perfil",
@@ -505,7 +530,25 @@
       "newPassword": "Nueva contraseña",
       "confirmPassword": "Confirmar contraseña",
       "save": "Guardar",
-      "passwordUpdated": "Contraseña actualizada correctamente."
+      "passwordUpdated": "Contraseña actualizada correctamente.",
+      "subtitle": "Gestiona tu información personal y preferencias.",
+      "memberSince": "Miembro desde",
+      "changePhoto": "Cambiar foto",
+      "personalInfo": "Información personal",
+      "personalInfoDesc": "Esta información se comparte con tu profesor.",
+      "preferences": "Preferencias",
+      "preferencesDesc": "Personaliza tu experiencia del portal.",
+      "prefEmailReminders": "Recordatorios de clases por email",
+      "prefEmailRemindersDesc": "24 h antes de cada sesión.",
+      "prefAssessmentNotif": "Notificaciones de informes",
+      "prefAssessmentNotifDesc": "Ser notificado cuando se publique un informe.",
+      "prefNewsletter": "Newsletter del estudio",
+      "prefNewsletterDesc": "Eventos, talleres, novedades.",
+      "security": "Seguridad",
+      "securityDesc": "Cambia tu contraseña regularmente.",
+      "saving": "Guardando…",
+      "saved": "Guardado ✓",
+      "cancel": "Cancelar"
     },
     "setup": {
       "title": "Crea tu contraseña",
@@ -515,6 +558,12 @@
       "submit": "Activar mi cuenta",
       "tokenExpired": "Este enlace de invitación ha expirado o ya ha sido utilizado. Pide a tu profesor que te envíe una nueva invitación.",
       "success": "Tu cuenta está activada. Ahora estás conectado."
+    },
+    "topbar": {
+      "area": "Espacio alumno",
+      "search": "Buscar",
+      "notifications": "Notificaciones",
+      "help": "Ayuda"
     }
   },
   "portalAccess": {

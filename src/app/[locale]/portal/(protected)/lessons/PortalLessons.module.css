@@ -1,109 +1,248 @@
 .page {
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.5rem;
+}
+
+/* ── Page header ── */
+.pageHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 16px;
 }
 
 .pageTitle {
+  margin: 0 0 4px;
+  font-size: 1.625rem;
+  font-weight: 600;
+  letter-spacing: -0.015em;
+  color: var(--c-text);
+}
+
+.pageSubtitle {
   margin: 0;
-  font-size: 1.375rem;
-  font-weight: 700;
-  color: #111827;
+  font-size: 14px;
+  color: var(--c-text-secondary);
 }
 
-.section {
-  display: flex;
-  flex-direction: column;
-  gap: 0.75rem;
+.btnBook {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--r-md);
+  font-size: 14px;
+  font-weight: 500;
+  background: var(--c-primary);
+  color: white;
+  border: none;
+  cursor: not-allowed;
+  opacity: 0.5;
+  font-family: inherit;
 }
 
-.sectionTitle {
-  margin: 0;
-  font-size: 0.85rem;
-  font-weight: 700;
-  color: #6b7280;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+/* ── Segmented control ── */
+.segmented {
+  display: inline-flex;
+  padding: 3px;
+  background: var(--c-surface-muted);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  gap: 2px;
 }
 
+.seg {
+  padding: 6px 14px;
+  font-size: 13.5px;
+  font-weight: 500;
+  color: var(--c-text-secondary);
+  border-radius: var(--r-sm);
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  transition: all var(--t-fast);
+  font-family: inherit;
+}
+
+.seg:hover:not(.segActive) {
+  color: var(--c-text);
+}
+
+.segActive {
+  background: var(--c-surface);
+  color: var(--c-text);
+  box-shadow: var(--shadow-xs);
+}
+
+/* ── Empty state ── */
 .emptyText {
   margin: 0;
-  color: #9ca3af;
+  color: var(--c-text-muted);
   font-size: 0.9rem;
   font-style: italic;
 }
 
+/* ── Lesson list ── */
 .lessonList {
-  list-style: none;
-  margin: 0;
-  padding: 0;
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: 10px;
 }
 
+/* ── Lesson card ── */
 .lessonCard {
-  background: #ffffff;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
-  padding: 1rem 1.25rem;
   display: flex;
-  flex-direction: column;
-  gap: 0.5rem;
+  align-items: flex-start;
+  gap: 16px;
+  padding: 16px 18px;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-lg);
+  box-shadow: var(--shadow-xs);
+  transition: box-shadow var(--t-base), border-color var(--t-base);
 }
 
-.lessonHeader {
+.lessonCard:hover {
+  box-shadow: var(--shadow-sm);
+  border-color: var(--c-border-strong);
+}
+
+.lessonCardCanceled {
+  opacity: 0.6;
+}
+
+/* Date column */
+.lessonDate {
+  width: 52px;
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  gap: 0.5rem;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  padding-right: 16px;
+  border-right: 1px solid var(--c-border);
+}
+
+.lessonMonth {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  color: var(--c-primary);
+  letter-spacing: 0.06em;
+}
+
+.lessonDay {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--c-text);
+  line-height: 1;
+  margin-top: 2px;
+}
+
+.lessonTime {
+  font-size: 11px;
+  color: var(--c-text-muted);
+  margin-top: 4px;
+}
+
+/* Body */
+.lessonBody {
+  flex: 1;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .lessonTitle {
-  font-size: 0.95rem;
+  font-size: 15px;
   font-weight: 600;
-  color: #111827;
-}
-
-.lessonType {
-  font-size: 0.75rem;
-  font-weight: 600;
-  color: #6b7280;
-  background: #f3f4f6;
-  padding: 0.15rem 0.5rem;
-  border-radius: 4px;
-  white-space: nowrap;
+  color: var(--c-text);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
 }
 
 .lessonMeta {
-  font-size: 0.85rem;
-  color: #6b7280;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  font-size: 13px;
+  color: var(--c-text-secondary);
+  flex-wrap: wrap;
+}
+
+.lessonMeta > span {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+/* Actions column */
+.lessonActions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.btnReschedule {
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  color: var(--c-text-secondary);
+  cursor: not-allowed;
+  opacity: 0.6;
+  font-family: inherit;
+}
+
+.btnAssessment {
+  padding: 5px 10px;
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--c-surface);
+  border: 1px solid var(--c-border);
+  border-radius: var(--r-md);
+  color: var(--c-text);
+  text-decoration: none;
+  transition: background var(--t-fast), border-color var(--t-fast);
+  white-space: nowrap;
+}
+
+.btnAssessment:hover {
+  background: var(--c-surface-muted);
+  border-color: var(--c-border-strong);
 }
 
 /* Feedback */
 .feedbackBlock {
-  margin-top: 0.25rem;
-  padding: 0.75rem;
-  background: #f0fdf4;
-  border-radius: 8px;
-  border-left: 3px solid #22c55e;
+  margin-top: 4px;
+  padding: 10px 12px;
+  background: var(--c-success-soft);
+  border-radius: var(--r-md);
+  border-left: 3px solid var(--c-success);
   display: flex;
   flex-direction: column;
-  gap: 0.35rem;
+  gap: 4px;
 }
 
 .feedbackLabel {
-  font-size: 0.75rem;
+  font-size: 11px;
   font-weight: 700;
-  color: #166534;
+  color: #047857;
   text-transform: uppercase;
   letter-spacing: 0.04em;
 }
 
 .feedbackText {
   margin: 0;
-  font-size: 0.875rem;
-  color: #111827;
+  font-size: 13.5px;
+  color: var(--c-text);
   line-height: 1.5;
   white-space: pre-wrap;
 }
@@ -111,28 +250,39 @@
 /* Video */
 .videoWrapper {
   position: relative;
-  padding-top: 56.25%; /* 16:9 */
-  border-radius: 8px;
+  padding-top: 56.25%;
+  border-radius: var(--r-md);
   overflow: hidden;
   background: #000;
+  margin-top: 4px;
 }
 
 .videoEmbed {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0;
+  width: 100%; height: 100%;
   border: none;
 }
 
 .videoLink {
-  font-size: 0.875rem;
+  font-size: 13.5px;
   font-weight: 500;
-  color: #4f46e5;
+  color: var(--c-primary);
   text-decoration: none;
 }
 
 .videoLink:hover {
   text-decoration: underline;
+}
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .lessonCard {
+    flex-wrap: wrap;
+  }
+
+  .lessonActions {
+    width: 100%;
+    justify-content: flex-end;
+  }
 }

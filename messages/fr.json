@@ -474,7 +474,21 @@
       "remainingTime": "{time} restant",
       "noActivePackage": "Aucun forfait actif",
       "lastAssessment": "Dernier bilan",
-      "noAssessment": "Aucun bilan pour le moment"
+      "noAssessment": "Aucun bilan pour le moment",
+      "subtitle": "Voici un résumé de ton parcours cette semaine.",
+      "bookLesson": "Réserver un cours",
+      "stats": {
+        "totalTime": "Temps total de cours",
+        "completedLessons": "Cours effectués",
+        "averageScore": "Moyenne du dernier bilan"
+      },
+      "packageActive": "Actif",
+      "packageRemaining": "{time} restantes sur {total}",
+      "packageExpiresOn": "Expire le {date}",
+      "seeDetails": "Détails",
+      "seeMore": "Voir",
+      "noNextLessonTitle": "Pas de cours à venir",
+      "noNextLessonDesc": "Contacte ton professeur pour planifier ta prochaine séance."
     },
     "lessons": {
       "title": "Mes cours",
@@ -485,14 +499,25 @@
       "feedbackFromTeacher": "Retour de votre professeur",
       "video": "Vidéo",
       "watchVideo": "Voir la vidéo",
-      "noFeedback": "Aucun feedback pour ce cours."
+      "noFeedback": "Aucun feedback pour ce cours.",
+      "subtitle": "Consulte tes cours à venir et ton historique.",
+      "bookLesson": "Réserver un cours",
+      "canceled": "Annulés",
+      "noCanceled": "Aucun cours annulé.",
+      "reschedule": "Replanifier",
+      "seeAssessment": "Voir le bilan"
     },
     "progression": {
       "title": "Ma progression",
       "latestAssessment": "Dernier bilan",
-      "history": "Historique",
+      "history": "Historique des bilans",
       "noAssessments": "Aucun bilan enregistré pour le moment.",
-      "assessmentOf": "Bilan du {date}"
+      "assessmentOf": "Bilan du {date}",
+      "subtitle": "Suivi de tes compétences et bilans réalisés par ton professeur.",
+      "averageLabel": "Moyenne {score}/10",
+      "countBilans": "{count, plural, =1 {# bilan} other {# bilans}}",
+      "export": "Exporter",
+      "coachLabel": "Coach"
     },
     "profile": {
       "title": "Mon profil",
@@ -505,7 +530,25 @@
       "newPassword": "Nouveau mot de passe",
       "confirmPassword": "Confirmer le mot de passe",
       "save": "Enregistrer",
-      "passwordUpdated": "Mot de passe mis à jour avec succès."
+      "passwordUpdated": "Mot de passe mis à jour avec succès.",
+      "subtitle": "Gère tes informations personnelles et tes préférences.",
+      "memberSince": "Membre depuis",
+      "changePhoto": "Changer la photo",
+      "personalInfo": "Informations personnelles",
+      "personalInfoDesc": "Ces informations sont partagées avec ton professeur.",
+      "preferences": "Préférences",
+      "preferencesDesc": "Personnalise l'expérience de ton portail.",
+      "prefEmailReminders": "Rappels de cours par email",
+      "prefEmailRemindersDesc": "24 h avant chaque séance.",
+      "prefAssessmentNotif": "Notifications de bilans",
+      "prefAssessmentNotifDesc": "Être notifié dès qu'un bilan est publié.",
+      "prefNewsletter": "Newsletter du studio",
+      "prefNewsletterDesc": "Événements, workshops, nouveautés.",
+      "security": "Sécurité",
+      "securityDesc": "Change ton mot de passe régulièrement.",
+      "saving": "Enregistrement…",
+      "saved": "Enregistré ✓",
+      "cancel": "Annuler"
     },
     "setup": {
       "title": "Créer votre mot de passe",
@@ -515,6 +558,12 @@
       "submit": "Activer mon compte",
       "tokenExpired": "Ce lien d'invitation a expiré ou a déjà été utilisé. Demandez à votre professeur de vous renvoyer une invitation.",
       "success": "Votre compte est activé. Vous êtes maintenant connecté."
+    },
+    "topbar": {
+      "area": "Espace élève",
+      "search": "Rechercher",
+      "notifications": "Notifications",
+      "help": "Aide"
     }
   },
   "portalAccess": {

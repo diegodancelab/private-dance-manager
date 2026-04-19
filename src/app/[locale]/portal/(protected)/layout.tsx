@@ -14,6 +14,7 @@ export default async function PortalProtectedLayout({
   return (
     <PortalShell
       studentName={`${user.firstName} ${user.lastName}`}
+      studentEmail={user.email ?? ""}
       isDualRole={dualRole}
     >
       {children}

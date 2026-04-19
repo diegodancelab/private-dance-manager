@@ -41,33 +41,44 @@
 
 /* Variants */
 .primary {
-  background: #0b132b;
+  background: var(--c-primary);
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(11, 19, 43, 0.15);
+  box-shadow: 0 4px 12px rgba(91, 91, 214, 0.2);
 }
 
 .primary:hover {
-  background: #1a2540;
+  background: var(--c-primary-hover);
 }
 
 .secondary {
-  background: #ffffff;
-  color: #111827;
-  border: 1px solid #d1d5db !important;
+  background: var(--c-surface);
+  color: var(--c-text);
+  border: 1px solid var(--c-border) !important;
   box-shadow: none;
 }
 
 .secondary:hover {
-  background: #f9fafb;
-  border-color: #9ca3af !important;
+  background: var(--c-surface-muted);
+  border-color: var(--c-border-strong) !important;
+}
+
+.ghost {
+  background: transparent;
+  color: var(--c-text-secondary);
+  border: 1px solid transparent !important;
+}
+
+.ghost:hover {
+  background: var(--c-surface);
+  color: var(--c-text);
 }
 
 .danger {
-  background: #dc2626;
+  background: var(--c-danger);
   color: #ffffff;
-  box-shadow: 0 4px 12px rgba(220, 38, 38, 0.18);
+  box-shadow: 0 4px 12px rgba(239, 68, 68, 0.18);
 }
 
 .danger:hover {
-  background: #b91c1c;
+  background: #dc2626;
 }

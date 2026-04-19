@@ -474,7 +474,21 @@
       "remainingTime": "{time} remaining",
       "noActivePackage": "No active package",
       "lastAssessment": "Last assessment",
-      "noAssessment": "No assessment yet"
+      "noAssessment": "No assessment yet",
+      "subtitle": "Here is a summary of your progress this week.",
+      "bookLesson": "Book a lesson",
+      "stats": {
+        "totalTime": "Total lesson time",
+        "completedLessons": "Lessons completed",
+        "averageScore": "Last assessment average"
+      },
+      "packageActive": "Active",
+      "packageRemaining": "{time} remaining of {total}",
+      "packageExpiresOn": "Expires on {date}",
+      "seeDetails": "Details",
+      "seeMore": "View",
+      "noNextLessonTitle": "No upcoming lesson",
+      "noNextLessonDesc": "Contact your teacher to schedule your next session."
     },
     "lessons": {
       "title": "My lessons",
@@ -485,14 +499,25 @@
       "feedbackFromTeacher": "Feedback from your teacher",
       "video": "Video",
       "watchVideo": "Watch video",
-      "noFeedback": "No feedback for this lesson."
+      "noFeedback": "No feedback for this lesson.",
+      "subtitle": "View your upcoming lessons and history.",
+      "bookLesson": "Book a lesson",
+      "canceled": "Canceled",
+      "noCanceled": "No canceled lessons.",
+      "reschedule": "Reschedule",
+      "seeAssessment": "See assessment"
     },
     "progression": {
       "title": "My progress",
       "latestAssessment": "Latest assessment",
-      "history": "History",
+      "history": "Assessment history",
       "noAssessments": "No assessments recorded yet.",
-      "assessmentOf": "Assessment of {date}"
+      "assessmentOf": "Assessment of {date}",
+      "subtitle": "Track your skills and assessments made by your teacher.",
+      "averageLabel": "Average {score}/10",
+      "countBilans": "{count, plural, =1 {# assessment} other {# assessments}}",
+      "export": "Export",
+      "coachLabel": "Coach"
     },
     "profile": {
       "title": "My profile",
@@ -505,7 +530,25 @@
       "newPassword": "New password",
       "confirmPassword": "Confirm password",
       "save": "Save",
-      "passwordUpdated": "Password updated successfully."
+      "passwordUpdated": "Password updated successfully.",
+      "subtitle": "Manage your personal information and preferences.",
+      "memberSince": "Member since",
+      "changePhoto": "Change photo",
+      "personalInfo": "Personal information",
+      "personalInfoDesc": "This information is shared with your teacher.",
+      "preferences": "Preferences",
+      "preferencesDesc": "Customize your portal experience.",
+      "prefEmailReminders": "Lesson reminders by email",
+      "prefEmailRemindersDesc": "24 hours before each session.",
+      "prefAssessmentNotif": "Assessment notifications",
+      "prefAssessmentNotifDesc": "Be notified when an assessment is published.",
+      "prefNewsletter": "Studio newsletter",
+      "prefNewsletterDesc": "Events, workshops, news.",
+      "security": "Security",
+      "securityDesc": "Change your password regularly.",
+      "saving": "Saving…",
+      "saved": "Saved ✓",
+      "cancel": "Cancel"
     },
     "setup": {
       "title": "Create your password",
@@ -515,6 +558,12 @@
       "submit": "Activate my account",
       "tokenExpired": "This invitation link has expired or has already been used. Ask your teacher to send a new invitation.",
       "success": "Your account is activated. You are now logged in."
+    },
+    "topbar": {
+      "area": "Student area",
+      "search": "Search",
+      "notifications": "Notifications",
+      "help": "Help"
     }
   },
   "portalAccess": {

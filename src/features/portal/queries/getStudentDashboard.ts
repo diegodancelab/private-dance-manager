@@ -1,5 +1,5 @@
 import { prisma } from "@/lib/prisma";
-import { LessonStatus, PackageStatus } from "@/generated/prisma/client";
+import { LessonStatus, PackageStatus, BookingStatus } from "@/generated/prisma/client";
 
 export type StudentDashboardData = {
   nextLesson: {
@@ -15,8 +15,15 @@ export type StudentDashboardData = {
     name: string;
     remainingMinutes: number;
     totalMinutes: number;
+    expiresAt: Date | null;
   } | null;
   lastAssessmentDate: Date | null;
+  stats: {
+    totalMinutes: number;
+    lessonsCompletedCount: number;
+    lastAssessmentAverage: number | null;
+  };
+  lastAssessmentTopSkills: { label: string; score: number }[];
 };
 
 export async function getStudentDashboard(
@@ -24,7 +31,12 @@ export async function getStudentDashboard(
 ): Promise<StudentDashboardData> {
   const now = new Date();
 
-  const [nextParticipation, activePackages, lastAssessment] = await Promise.all([
+  const [
+    nextParticipation,
+    activePackages,
+    lastAssessment,
+    completedParticipations,
+  ] = await Promise.all([
     prisma.lessonParticipant.findFirst({
       where: {
         userId: studentId,
@@ -60,19 +72,61 @@ export async function getStudentDashboard(
         name: true,
         remainingMinutes: true,
         totalMinutes: true,
+        expiresAt: true,
       },
     }),
 
     prisma.skillAssessment.findFirst({
       where: { studentId },
       orderBy: { createdAt: "desc" },
-      select: { createdAt: true },
+      select: {
+        createdAt: true,
+        scores: {
+          select: {
+            score: true,
+            axis: { select: { label: true } },
+          },
+          orderBy: { score: "desc" },
+        },
+      },
+    }),
+
+    prisma.lessonParticipant.findMany({
+      where: {
+        userId: studentId,
+        status: BookingStatus.CONFIRMED,
+        lesson: { scheduledAt: { lt: now } },
+      },
+      select: { lesson: { select: { durationMin: true } } },
     }),
   ]);
+
+  const totalMinutes = completedParticipations.reduce(
+    (sum, p) => sum + p.lesson.durationMin,
+    0
+  );
+  const lessonsCompletedCount = completedParticipations.length;
+
+  let lastAssessmentAverage: number | null = null;
+  let lastAssessmentTopSkills: { label: string; score: number }[] = [];
+
+  if (lastAssessment && lastAssessment.scores.length > 0) {
+    const scores = lastAssessment.scores;
+    lastAssessmentAverage =
+      Math.round(
+        (scores.reduce((s, sc) => s + sc.score, 0) / scores.length) * 10
+      ) / 10;
+    lastAssessmentTopSkills = scores.slice(0, 2).map((sc) => ({
+      label: sc.axis.label,
+      score: sc.score,
+    }));
+  }
 
   return {
     nextLesson: nextParticipation?.lesson ?? null,
     activePackage: activePackages[0] ?? null,
     lastAssessmentDate: lastAssessment?.createdAt ?? null,
+    stats: { totalMinutes, lessonsCompletedCount, lastAssessmentAverage },
+    lastAssessmentTopSkills,
   };
 }
