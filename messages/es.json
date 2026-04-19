@@ -415,7 +415,10 @@
     "confirmCancelTitle": "¿Cancelar esta clase?",
     "confirmCancelWarning": "Los minutos del paquete serán restaurados. Los cargos pendientes serán cancelados. Esta acción no se puede deshacer.",
     "confirmCancelConfirm": "Sí, cancelar",
-    "confirmCancelBack": "No"
+    "confirmCancelBack": "No",
+    "confirmCancelLesson": "Clase",
+    "confirmCancelDate": "Fecha",
+    "confirmCancelStudent": "Alumno"
   },
   "paymentDetail": {
     "back": "← Volver a pagos",

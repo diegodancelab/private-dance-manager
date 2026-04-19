@@ -7,11 +7,14 @@ import styles from "./CancelLessonButton.module.css";
 
 type Props = {
   lessonId: string;
+  lessonTitle: string;
+  lessonDate: string;
+  studentNames: string[];
 };
 
-export default function CancelLessonButton({ lessonId }: Props) {
+export default function CancelLessonButton({ lessonId, lessonTitle, lessonDate, studentNames }: Props) {
   const t = useTranslations("lessonDetail");
-  const [confirming, setConfirming] = useState(false);
+  const [open, setOpen] = useState(false);
   const [isPending, startTransition] = useTransition();
 
   function handleConfirm() {
@@ -22,40 +25,57 @@ export default function CancelLessonButton({ lessonId }: Props) {
     });
   }
 
-  if (!confirming) {
-    return (
-      <button
-        type="button"
-        className={styles.cancelButton}
-        onClick={() => setConfirming(true)}
-      >
+  return (
+    <>
+      <button type="button" className={styles.cancelButton} onClick={() => setOpen(true)}>
         {t("cancelLesson")}
       </button>
-    );
-  }
 
-  return (
-    <div className={styles.confirmBox}>
-      <p className={styles.confirmTitle}>{t("confirmCancelTitle")}</p>
-      <p className={styles.confirmWarning}>{t("confirmCancelWarning")}</p>
-      <div className={styles.confirmActions}>
-        <button
-          type="button"
-          className={styles.confirmButton}
-          onClick={handleConfirm}
-          disabled={isPending}
-        >
-          {isPending ? "…" : t("confirmCancelConfirm")}
-        </button>
-        <button
-          type="button"
-          className={styles.backButton}
-          onClick={() => setConfirming(false)}
-          disabled={isPending}
-        >
-          {t("confirmCancelBack")}
-        </button>
-      </div>
-    </div>
+      {open && (
+        <div className={styles.backdrop} onClick={() => !isPending && setOpen(false)}>
+          <div className={styles.modal} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+            <h2 className={styles.modalTitle}>{t("confirmCancelTitle")}</h2>
+
+            <div className={styles.details}>
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>{t("confirmCancelLesson")}</span>
+                <span className={styles.detailValue}>{lessonTitle}</span>
+              </div>
+              <div className={styles.detailRow}>
+                <span className={styles.detailLabel}>{t("confirmCancelDate")}</span>
+                <span className={styles.detailValue}>{lessonDate}</span>
+              </div>
+              {studentNames.length > 0 && (
+                <div className={styles.detailRow}>
+                  <span className={styles.detailLabel}>{t("confirmCancelStudent")}</span>
+                  <span className={styles.detailValue}>{studentNames.join(", ")}</span>
+                </div>
+              )}
+            </div>
+
+            <p className={styles.warning}>{t("confirmCancelWarning")}</p>
+
+            <div className={styles.actions}>
+              <button
+                type="button"
+                className={styles.backButton}
+                onClick={() => setOpen(false)}
+                disabled={isPending}
+              >
+                {t("confirmCancelBack")}
+              </button>
+              <button
+                type="button"
+                className={styles.confirmButton}
+                onClick={handleConfirm}
+                disabled={isPending}
+              >
+                {isPending ? "…" : t("confirmCancelConfirm")}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
   );
 }

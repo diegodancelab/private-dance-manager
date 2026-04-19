@@ -415,7 +415,10 @@
     "confirmCancelTitle": "Cancel this lesson?",
     "confirmCancelWarning": "Package minutes will be restored. Pending charges will be canceled. This action cannot be undone.",
     "confirmCancelConfirm": "Yes, cancel",
-    "confirmCancelBack": "No"
+    "confirmCancelBack": "No",
+    "confirmCancelLesson": "Lesson",
+    "confirmCancelDate": "Date",
+    "confirmCancelStudent": "Student"
   },
   "paymentDetail": {
     "back": "← Back to payments",

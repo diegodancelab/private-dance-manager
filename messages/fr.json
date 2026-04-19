@@ -415,7 +415,10 @@
     "confirmCancelTitle": "Annuler ce cours ?",
     "confirmCancelWarning": "Les minutes du forfait seront restituées. Les frais en attente seront annulés. Cette action est irréversible.",
     "confirmCancelConfirm": "Oui, annuler",
-    "confirmCancelBack": "Non"
+    "confirmCancelBack": "Non",
+    "confirmCancelLesson": "Cours",
+    "confirmCancelDate": "Date",
+    "confirmCancelStudent": "Élève"
   },
   "paymentDetail": {
     "back": "← Retour aux paiements",

@@ -93,7 +93,17 @@ export default async function LessonDetailPage({ params }: Props) {
               {tCommon("edit")}
             </Link>
             {lesson.status === "SCHEDULED" && (
-              <CancelLessonButton lessonId={lesson.id} />
+              <CancelLessonButton
+                lessonId={lesson.id}
+                lessonTitle={lesson.title}
+                lessonDate={new Intl.DateTimeFormat(
+                  locale === "fr" ? "fr-CH" : locale === "es" ? "es-ES" : "en-GB",
+                  { day: "2-digit", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Europe/Zurich" }
+                ).format(lesson.scheduledAt)}
+                studentNames={lesson.participants.map(
+                  (p) => `${p.user.firstName} ${p.user.lastName}`
+                )}
+              />
             )}
           </div>
         </div>

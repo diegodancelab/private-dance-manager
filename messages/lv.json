@@ -415,7 +415,10 @@
     "confirmCancelTitle": "Atcelt šo nodarbību?",
     "confirmCancelWarning": "Paketes minūtes tiks atjaunotas. Gaidošie maksājumi tiks atcelti. Šo darbību nevar atsaukt.",
     "confirmCancelConfirm": "Jā, atcelt",
-    "confirmCancelBack": "Nē"
+    "confirmCancelBack": "Nē",
+    "confirmCancelLesson": "Nodarbība",
+    "confirmCancelDate": "Datums",
+    "confirmCancelStudent": "Skolēns"
   },
   "paymentDetail": {
     "back": "← Atpakaļ uz apmaksām",
