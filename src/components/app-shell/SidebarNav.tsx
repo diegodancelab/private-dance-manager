@@ -29,16 +29,41 @@ const navItems: { href: string; labelKey: string; Icon: LucideIcon }[] = [
   { href: "/settings/skill-axes", labelKey: "settings", Icon: Settings },
 ];
 
-export default function SidebarNav({ isDualRole = false }: { isDualRole?: boolean }) {
+type SidebarNavProps = {
+  isDualRole?: boolean;
+  userName?: string;
+  userEmail?: string;
+};
+
+function getInitials(name: string): string {
+  return name
+    .split(" ")
+    .filter(Boolean)
+    .slice(0, 2)
+    .map((w) => w[0].toUpperCase())
+    .join("");
+}
+
+export default function SidebarNav({ isDualRole = false, userName, userEmail }: SidebarNavProps) {
   const pathname = usePathname();
   const t = useTranslations("navigation");
+  const initials = userName ? getInitials(userName) : "?";
 
   return (
     <div className={styles.sidebar}>
       <div className={styles.brand}>
         <h1 className={styles.logo}>{t("brand")}</h1>
-        <p className={styles.subtitle}>{t("subtitle")}</p>
       </div>
+
+      {userName && (
+        <div className={styles.userBlock}>
+          <div className={styles.userAvatar}>{initials}</div>
+          <div className={styles.userInfo}>
+            <span className={styles.userName}>{userName}</span>
+            {userEmail && <span className={styles.userEmail}>{userEmail}</span>}
+          </div>
+        </div>
+      )}
 
       <nav className={styles.nav} aria-label="Main navigation">
         {navItems.map(({ href, labelKey, Icon }) => {

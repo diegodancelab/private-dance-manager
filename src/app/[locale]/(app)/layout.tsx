@@ -10,5 +10,13 @@ export default async function AppLayout({
   const { user } = await proxyAuth();
   const dualRole = await isDualRoleUser(user.id);
 
-  return <AppShell isDualRole={dualRole}>{children}</AppShell>;
+  return (
+    <AppShell
+      isDualRole={dualRole}
+      userName={`${user.firstName} ${user.lastName}`}
+      userEmail={user.email}
+    >
+      {children}
+    </AppShell>
+  );
 }
