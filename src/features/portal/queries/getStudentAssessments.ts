@@ -9,6 +9,9 @@ export type AssessmentScore = {
 export type PortalAssessment = {
   id: string;
   createdAt: Date;
+  notes: string | null;
+  averageScore: number;
+  teacher: { firstName: string; lastName: string };
   scores: AssessmentScore[];
 };
 
@@ -23,6 +26,8 @@ export async function getStudentAssessments(
     select: {
       id: true,
       createdAt: true,
+      notes: true,
+      teacher: { select: { firstName: true, lastName: true } },
       scores: {
         select: {
           axisId: true,
@@ -34,13 +39,25 @@ export async function getStudentAssessments(
     },
   });
 
-  return assessments.map((a) => ({
-    id: a.id,
-    createdAt: a.createdAt,
-    scores: a.scores.map((s) => ({
+  return assessments.map((a) => {
+    const scores = a.scores.map((s) => ({
       axisId: s.axisId,
       axisLabel: s.axis.label,
       score: s.score,
-    })),
-  }));
+    }));
+    const averageScore =
+      scores.length > 0
+        ? Math.round(
+            (scores.reduce((sum, s) => sum + s.score, 0) / scores.length) * 10
+          ) / 10
+        : 0;
+    return {
+      id: a.id,
+      createdAt: a.createdAt,
+      notes: a.notes,
+      averageScore,
+      teacher: a.teacher,
+      scores,
+    };
+  });
 }
