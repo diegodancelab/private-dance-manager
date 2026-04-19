@@ -123,3 +123,85 @@
   font-size: 0.8125rem;
   color: #dc2626;
 }
+
+/* ── Deactivate modal ── */
+.backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.45);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 200;
+  padding: 1rem;
+}
+
+.modal {
+  background: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  width: 100%;
+  max-width: 380px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.18);
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.modalTitle {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #111827;
+  line-height: 1.5;
+}
+
+.modalActions {
+  display: flex;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.modalBack {
+  padding: 0.45rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: 1px solid #e5e7eb;
+  background: #ffffff;
+  color: #374151;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.modalBack:hover:not(:disabled) {
+  background: #f9fafb;
+}
+
+.modalBack:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.modalConfirm {
+  padding: 0.45rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+  cursor: pointer;
+  border: none;
+  background: #dc2626;
+  color: #ffffff;
+  font-family: inherit;
+  transition: background 0.15s;
+}
+
+.modalConfirm:hover:not(:disabled) {
+  background: #b91c1c;
+}
+
+.modalConfirm:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}

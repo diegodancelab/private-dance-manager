@@ -329,7 +329,8 @@
     "colStatus": "Estado",
     "colDate": "Fecha",
     "openPayment": "Ver pago",
-    "progressionLink": "Progresión →"
+    "progressionLink": "Progresión →",
+    "actions": "Acciones"
   },
   "studentProgression": {
     "title": "Progresión",

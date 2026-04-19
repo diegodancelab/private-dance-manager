@@ -10,6 +10,7 @@ import StudentPackagesSection from "@/features/students/components/StudentPackag
 import StudentLessonsSection from "@/features/students/components/StudentLessonsSection";
 import StudentRecentPaymentsSection from "@/features/students/components/StudentRecentPaymentsSection";
 import StudentPortalAccessCard from "@/features/students/components/StudentPortalAccessCard";
+import StudentActionsDropdown from "@/features/students/components/StudentActionsDropdown";
 import Button from "@/components/ui/Button/Button";
 import styles from "@/features/students/components/StudentDetail.module.css";
 
@@ -41,18 +42,16 @@ export default async function StudentDetailPage({ params }: Props) {
           {student.firstName} {student.lastName}
         </h1>
         <div className={styles.quickActions}>
-          <Button href={`/lessons/new?studentId=${student.id}`} size="sm">
-            {t("addLesson")}
-          </Button>
-          <Button href={`/payments/new?userId=${student.id}`} size="sm">
-            {t("addPayment")}
-          </Button>
-          <Button href={`/charges/new?userId=${student.id}`} size="sm">
-            {t("addCharge")}
-          </Button>
-          <Button href={`/packages/new?userId=${student.id}`} size="sm">
-            {t("addPackage")}
-          </Button>
+          <StudentActionsDropdown
+            studentId={student.id}
+            labels={{
+              trigger: t("actions"),
+              addLesson: t("addLesson"),
+              addPayment: t("addPayment"),
+              addCharge: t("addCharge"),
+              addPackage: t("addPackage"),
+            }}
+          />
           <Button
             href={`/students/${student.id}/progression`}
             variant="secondary"

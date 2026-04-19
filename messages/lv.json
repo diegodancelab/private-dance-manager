@@ -329,7 +329,8 @@
     "colStatus": "Statuss",
     "colDate": "Datums",
     "openPayment": "Atvērt apmaksu",
-    "progressionLink": "Progresija →"
+    "progressionLink": "Progresija →",
+    "actions": "Darbības"
   },
   "studentProgression": {
     "title": "Progresija",

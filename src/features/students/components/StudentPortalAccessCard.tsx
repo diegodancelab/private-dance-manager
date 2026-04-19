@@ -47,6 +47,7 @@ export default function StudentPortalAccessCard({
 }: Props) {
   const [isPending, startTransition] = useTransition();
   const [showEmailForm, setShowEmailForm] = useState(false);
+  const [showDeactivateModal, setShowDeactivateModal] = useState(false);
   const [emailState, emailAction, isEmailPending] = useActionState(
     addEmailAndActivatePortal,
     initialEmailState
@@ -64,8 +65,8 @@ export default function StudentPortalAccessCard({
     };
   }
 
-  function handleDeactivate() {
-    if (!confirm(t.confirmDeactivate)) return;
+  function handleDeactivateConfirm() {
+    setShowDeactivateModal(false);
     submitWithStudentId(deactivateStudentPortal)();
   }
 
@@ -170,13 +171,39 @@ export default function StudentPortalAccessCard({
           <button
             type="button"
             className={portalStyles.actionBtnDanger}
-            onClick={handleDeactivate}
+            onClick={() => setShowDeactivateModal(true)}
             disabled={isPending}
           >
             {isPending ? "…" : t.deactivate}
           </button>
         )}
       </div>
+
+      {showDeactivateModal && (
+        <div className={portalStyles.backdrop} onClick={() => !isPending && setShowDeactivateModal(false)}>
+          <div className={portalStyles.modal} onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true">
+            <p className={portalStyles.modalTitle}>{t.confirmDeactivate}</p>
+            <div className={portalStyles.modalActions}>
+              <button
+                type="button"
+                className={portalStyles.modalBack}
+                onClick={() => setShowDeactivateModal(false)}
+                disabled={isPending}
+              >
+                {t.confirmDeactivateBack}
+              </button>
+              <button
+                type="button"
+                className={portalStyles.modalConfirm}
+                onClick={handleDeactivateConfirm}
+                disabled={isPending}
+              >
+                {isPending ? "…" : t.confirmDeactivateConfirm}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

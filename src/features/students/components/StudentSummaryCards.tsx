@@ -32,7 +32,7 @@ export default async function StudentSummaryCards({ summary }: Props) {
 
   return (
     <div className={styles.grid}>
-      <div className={styles.card}>
+      <div className={`${styles.card} ${summary.outstandingBalance > 0 ? styles.borderRed : styles.borderGreen}`}>
         <p className={styles.label}>{t("cardOutstanding")}</p>
         <p className={styles.value}>
           {summary.outstandingBalance > 0
@@ -41,7 +41,7 @@ export default async function StudentSummaryCards({ summary }: Props) {
         </p>
       </div>
 
-      <div className={styles.card}>
+      <div className={`${styles.card} ${summary.activePackageRemainingMinutes > 0 ? styles.borderViolet : styles.borderGray}`}>
         <p className={styles.label}>{t("cardPackageTime")}</p>
         <p className={styles.value}>
           {summary.activePackageRemainingMinutes > 0
@@ -50,7 +50,7 @@ export default async function StudentSummaryCards({ summary }: Props) {
         </p>
       </div>
 
-      <div className={styles.card}>
+      <div className={`${styles.card} ${summary.nextLessonDate ? styles.borderBlue : styles.borderGray}`}>
         <p className={styles.label}>{t("cardNextLesson")}</p>
         <p className={styles.value}>
           {summary.nextLessonDate
@@ -59,7 +59,7 @@ export default async function StudentSummaryCards({ summary }: Props) {
         </p>
       </div>
 
-      <div className={styles.card}>
+      <div className={`${styles.card} ${summary.upcomingLessonsCount > 0 ? styles.borderBlue : styles.borderGray}`}>
         <p className={styles.label}>{t("cardUpcomingLessons")}</p>
         <p className={styles.value}>
           {t("upcomingCount", { count: summary.upcomingLessonsCount })}
@@ -73,7 +73,7 @@ export default async function StudentSummaryCards({ summary }: Props) {
         </p>
       </div>
 
-      <div className={styles.card}>
+      <div className={`${styles.card} ${summary.lastPaymentDate ? styles.borderBlue : styles.borderGray}`}>
         <p className={styles.label}>{t("cardLastPayment")}</p>
         <p className={styles.value}>
           {summary.lastPaymentDate
