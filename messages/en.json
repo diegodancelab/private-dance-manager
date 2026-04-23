@@ -16,7 +16,9 @@
     "logout": "Log out",
     "menu": "Menu",
     "openMenu": "Open navigation menu",
-    "closeMenu": "Close navigation menu"
+    "closeMenu": "Close navigation menu",
+    "switchToStudent": "Switch to student portal",
+    "settings": "Settings"
   },
   "common": {
     "add": "Add",
@@ -36,8 +38,8 @@
   "calendar": {
     "title": "Calendar",
     "today": "Today",
-    "sevenDays": "7 days",
-    "week": "Week",
+    "sevenDays": "Today → +7d",
+    "week": "Mon → Sun",
     "addLesson": "Create lesson",
     "noLessons": "No lessons",
     "viewLabel": "View"
@@ -45,7 +47,7 @@
   "dashboard": {
     "title": "Dashboard",
     "greeting": "Good morning, {name}.",
-    "createLesson": "Create lesson",
+    "createLesson": "Create a lesson",
     "addStudent": "Add student",
     "addPayment": "Add payment",
     "today": "Today",
@@ -66,7 +68,17 @@
     "expiringTomorrow": "tomorrow",
     "expiringInDays": "in {days} days",
     "lessonWithoutStudent": "Lesson without student",
-    "noPackageAssigned": "No package assigned"
+    "noPackageAssigned": "No package assigned",
+    "kpi": {
+      "activeStudents": "Active students",
+      "lessonsThisMonth": "Lessons this month",
+      "revenueThisMonth": "Monthly revenue",
+      "hoursThisMonth": "Planned hours"
+    },
+    "noUpcomingLessonsTitle": "No lessons scheduled",
+    "noUpcomingLessonsDesc": "Your calendar is empty. Create a lesson to get started.",
+    "noAlertsTitle": "All good",
+    "noAlertsDesc": "No alerts. Packages and lessons are up to date."
   },
   "lessons": {
     "noStudentAssigned": "No student assigned",
@@ -168,7 +180,13 @@
     "locationPlaceholder": "Geneva",
     "packageLeft": "{time} left",
     "create": "Create lesson",
-    "update": "Update lesson"
+    "update": "Update lesson",
+    "colStudents": "Student(s)",
+    "colDuration": "Duration",
+    "colStatus": "Status",
+    "statusScheduled": "Scheduled",
+    "statusCanceled": "Canceled",
+    "durationMin": "{n} min"
   },
   "paymentsPage": {
     "eyebrow": "Payments",
@@ -310,7 +328,69 @@
     "colMethod": "Method",
     "colStatus": "Status",
     "colDate": "Date",
-    "openPayment": "Open payment"
+    "openPayment": "Open payment",
+    "progressionLink": "Progression →",
+    "actions": "Actions"
+  },
+  "studentProgression": {
+    "title": "Progression",
+    "back": "← Back to student",
+    "progressionLink": "Progression →",
+    "newAssessment": "New assessment",
+    "newAssessmentTitle": "Create assessment",
+    "noAssessments": "No assessments recorded yet.",
+    "assessmentOf": "Assessment of {date}",
+    "avgScore": "Average score",
+    "referenceLabel": "Reference",
+    "currentLabel": "Current",
+    "delete": "Delete",
+    "confirmDelete": "Delete this assessment?",
+    "notes": "Internal notes",
+    "formNotes": "Internal notes",
+    "formNotesPlaceholder": "Observations, areas to work on...",
+    "formSave": "Save assessment",
+    "formCancel": "Cancel",
+    "noAxes": "No progression axes configured.",
+    "configureAxes": "Configure axes →",
+    "manageAxes": "Manage axes →"
+  },
+  "postLessonFeedback": {
+    "sectionTitle": "Post-lesson feedback",
+    "participantTitle": "Feedback for {name}",
+    "videoUrl": "Video URL (YouTube, Vimeo, Drive…)",
+    "videoUrlPlaceholder": "https://youtu.be/…",
+    "studentFeedback": "Feedback for the student",
+    "studentFeedbackPlaceholder": "Positive points, areas to improve, encouragements…",
+    "internalNotes": "Internal notes (not visible to the student)",
+    "internalNotesPlaceholder": "Personal observations, points to work on…",
+    "skillAssessment": "Skill assessment",
+    "noAxesConfigured": "No skill axes configured. Add axes in the settings.",
+    "save": "Save",
+    "saving": "Saving…",
+    "saved": "Saved",
+    "defaultAxes": {
+      "technique": "Technical level",
+      "basicSteps": "Basic steps",
+      "leadFollow": "Leading / Following",
+      "musicality": "Musicality",
+      "combo": "Combo",
+      "flow": "Flow",
+      "memory": "Memory",
+      "postureConnection": "Posture / Connection"
+    }
+  },
+  "skillAxes": {
+    "title": "Progression axes",
+    "subtitle": "Customize the axes used in your students' skill assessments.",
+    "addAxis": "Add an axis",
+    "defaultAxesCreated": "Default axes created.",
+    "labelPlaceholder": "E.g.: Improvisation",
+    "add": "Add",
+    "remove": "Remove",
+    "noAxes": "No axes configured. Add your first axes or use the default ones.",
+    "createDefaults": "Create default axes",
+    "active": "Active",
+    "inactive": "Inactive"
   },
   "lessonDetail": {
     "back": "← Back to lessons",
@@ -336,7 +416,10 @@
     "confirmCancelTitle": "Cancel this lesson?",
     "confirmCancelWarning": "Package minutes will be restored. Pending charges will be canceled. This action cannot be undone.",
     "confirmCancelConfirm": "Yes, cancel",
-    "confirmCancelBack": "No"
+    "confirmCancelBack": "No",
+    "confirmCancelLesson": "Lesson",
+    "confirmCancelDate": "Date",
+    "confirmCancelStudent": "Student"
   },
   "paymentDetail": {
     "back": "← Back to payments",
@@ -394,6 +477,138 @@
     "migrationFound": "{count, plural, one {# unit-billed lesson found without package coverage. Migrate to this package?} other {# unit-billed lessons found without package coverage. Migrate to this package?}}",
     "migrationBlocked": "{count, plural, one {# lesson with partial payments will be skipped — settle manually first.} other {# lessons with partial payments will be skipped — settle them manually first.}}",
     "migrateButton": "{count, plural, one {Migrate # lesson} other {Migrate # lessons}}"
+  },
+  "portal": {
+    "nav": {
+      "dashboard": "Dashboard",
+      "lessons": "My lessons",
+      "progression": "My progress",
+      "profile": "My profile",
+      "logout": "Log out"
+    },
+    "dashboard": {
+      "greeting": "Hello, {name}",
+      "nextLesson": "Next lesson",
+      "noUpcomingLesson": "No upcoming lessons",
+      "packageStatus": "Package",
+      "remainingTime": "{time} remaining",
+      "noActivePackage": "No active package",
+      "lastAssessment": "Last assessment",
+      "noAssessment": "No assessment yet",
+      "subtitle": "Here is a summary of your progress this week.",
+      "bookLesson": "Book a lesson",
+      "stats": {
+        "totalTime": "Total lesson time",
+        "completedLessons": "Lessons completed",
+        "averageScore": "Last assessment average"
+      },
+      "packageActive": "Active",
+      "packageRemaining": "{time} remaining of {total}",
+      "packageExpiresOn": "Expires on {date}",
+      "seeDetails": "Details",
+      "seeMore": "View",
+      "noNextLessonTitle": "No upcoming lesson",
+      "noNextLessonDesc": "Contact your teacher to schedule your next session."
+    },
+    "lessons": {
+      "title": "My lessons",
+      "upcoming": "Upcoming",
+      "past": "Past",
+      "noUpcoming": "No upcoming lessons.",
+      "noPast": "No past lessons.",
+      "feedbackFromTeacher": "Feedback from your teacher",
+      "video": "Video",
+      "watchVideo": "Watch video",
+      "noFeedback": "No feedback for this lesson.",
+      "subtitle": "View your upcoming lessons and history.",
+      "bookLesson": "Book a lesson",
+      "canceled": "Canceled",
+      "noCanceled": "No canceled lessons.",
+      "reschedule": "Reschedule",
+      "seeAssessment": "See assessment"
+    },
+    "progression": {
+      "title": "My progress",
+      "latestAssessment": "Latest assessment",
+      "history": "Assessment history",
+      "noAssessments": "No assessments recorded yet.",
+      "assessmentOf": "Assessment of {date}",
+      "subtitle": "Track your skills and assessments made by your teacher.",
+      "averageLabel": "Average {score}/10",
+      "countBilans": "{count, plural, =1 {# assessment} other {# assessments}}",
+      "export": "Export",
+      "coachLabel": "Coach",
+      "compareWith": "Compare with",
+      "compareNone": "No comparison",
+      "referenceTag": "Ref."
+    },
+    "profile": {
+      "title": "My profile",
+      "firstName": "First name",
+      "lastName": "Last name",
+      "email": "Email",
+      "phone": "Phone",
+      "changePassword": "Change password",
+      "currentPassword": "Current password",
+      "newPassword": "New password",
+      "confirmPassword": "Confirm password",
+      "save": "Save",
+      "passwordUpdated": "Password updated successfully.",
+      "subtitle": "Manage your personal information and preferences.",
+      "memberSince": "Member since",
+      "changePhoto": "Change photo",
+      "personalInfo": "Personal information",
+      "personalInfoDesc": "This information is shared with your teacher.",
+      "preferences": "Preferences",
+      "preferencesDesc": "Customize your portal experience.",
+      "prefEmailReminders": "Lesson reminders by email",
+      "prefEmailRemindersDesc": "24 hours before each session.",
+      "prefAssessmentNotif": "Assessment notifications",
+      "prefAssessmentNotifDesc": "Be notified when an assessment is published.",
+      "prefNewsletter": "Studio newsletter",
+      "prefNewsletterDesc": "Events, workshops, news.",
+      "security": "Security",
+      "securityDesc": "Change your password regularly.",
+      "saving": "Saving…",
+      "saved": "Saved ✓",
+      "cancel": "Cancel"
+    },
+    "setup": {
+      "title": "Create your password",
+      "subtitle": "Welcome! Set your password to access your student space.",
+      "password": "Password",
+      "confirmPassword": "Confirm password",
+      "submit": "Activate my account",
+      "tokenExpired": "This invitation link has expired or has already been used. Ask your teacher to send a new invitation.",
+      "success": "Your account is activated. You are now logged in."
+    },
+    "topbar": {
+      "area": "Student area",
+      "search": "Search",
+      "notifications": "Notifications",
+      "help": "Help"
+    }
+  },
+  "portalAccess": {
+    "cardTitle": "Student portal access",
+    "statusInactive": "Not activated",
+    "statusPending": "Invitation sent",
+    "statusActive": "Active",
+    "activatedOn": "Activated on {date}",
+    "activate": "Activate portal access",
+    "resend": "Resend invitation",
+    "deactivate": "Deactivate access",
+    "emailRequired": "No email on file. Add one to activate portal access.",
+    "addEmailAndActivate": "Activate portal access",
+    "emailLabel": "Student email",
+    "emailPlaceholder": "email@example.com",
+    "sendInvitation": "Send invitation",
+    "cancel": "Cancel",
+    "invitationSent": "Invitation sent to {email}.",
+    "deactivated": "Portal access deactivated.",
+    "confirmDeactivate": "Deactivate portal access for this student? They will no longer be able to log in.",
+    "confirmDeactivateConfirm": "Yes, deactivate",
+    "confirmDeactivateBack": "Cancel"
   },
   "validation": {
     "firstNameRequired": "First name is required.",

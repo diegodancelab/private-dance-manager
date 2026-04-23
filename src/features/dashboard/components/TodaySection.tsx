@@ -1,6 +1,7 @@
 "use server";
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { CalendarDays } from "lucide-react";
 import type { UpcomingLesson } from "@/features/dashboard/queries";
 import { getLabel } from "@/lib/labels";
 import styles from "./TodaySection.module.css";
@@ -78,7 +79,16 @@ export default async function TodaySection({ lessons, now }: Props) {
       </div>
 
       {lessons.length === 0 ? (
-        <p className={styles.empty}>{t("noUpcomingLessons")}</p>
+        <div className={styles.emptyState}>
+          <div className={styles.emptyIcon}>
+            <CalendarDays size={28} strokeWidth={1.5} />
+          </div>
+          <p className={styles.emptyTitle}>{t("noUpcomingLessonsTitle")}</p>
+          <p className={styles.emptyDesc}>{t("noUpcomingLessonsDesc")}</p>
+          <Link href="/lessons/new" className={styles.emptyAction}>
+            {t("createLesson")}
+          </Link>
+        </div>
       ) : (
         <div className={styles.list}>
           {groups.map((group) => (

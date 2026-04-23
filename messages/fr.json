@@ -16,7 +16,9 @@
     "logout": "Déconnexion",
     "menu": "Menu",
     "openMenu": "Ouvrir le menu de navigation",
-    "closeMenu": "Fermer le menu de navigation"
+    "closeMenu": "Fermer le menu de navigation",
+    "switchToStudent": "Passer en espace élève",
+    "settings": "Paramètres"
   },
   "common": {
     "add": "Ajouter",
@@ -36,8 +38,8 @@
   "calendar": {
     "title": "Calendrier",
     "today": "Aujourd'hui",
-    "sevenDays": "7 jours",
-    "week": "Semaine",
+    "sevenDays": "Auj. → J+7",
+    "week": "Lun → Dim",
     "addLesson": "Créer un cours",
     "noLessons": "Aucun cours",
     "viewLabel": "Vue"
@@ -66,7 +68,17 @@
     "expiringTomorrow": "demain",
     "expiringInDays": "dans {days} jours",
     "lessonWithoutStudent": "Cours sans élève",
-    "noPackageAssigned": "Aucun forfait assigné"
+    "noPackageAssigned": "Aucun forfait assigné",
+    "kpi": {
+      "activeStudents": "Élèves actifs",
+      "lessonsThisMonth": "Cours ce mois",
+      "revenueThisMonth": "Revenus du mois",
+      "hoursThisMonth": "Heures planifiées"
+    },
+    "noUpcomingLessonsTitle": "Aucun cours planifié",
+    "noUpcomingLessonsDesc": "Votre agenda est vide. Créez un cours pour démarrer.",
+    "noAlertsTitle": "Tout est en ordre",
+    "noAlertsDesc": "Aucune alerte. Forfaits et cours sont à jour."
   },
   "lessons": {
     "noStudentAssigned": "Aucun élève assigné",
@@ -168,7 +180,13 @@
     "locationPlaceholder": "Genève",
     "packageLeft": "{time} restant",
     "create": "Créer le cours",
-    "update": "Mettre à jour le cours"
+    "update": "Mettre à jour le cours",
+    "colStudents": "Élève(s)",
+    "colDuration": "Durée",
+    "colStatus": "Statut",
+    "statusScheduled": "Planifié",
+    "statusCanceled": "Annulé",
+    "durationMin": "{n} min"
   },
   "paymentsPage": {
     "eyebrow": "Paiements",
@@ -310,7 +328,69 @@
     "colMethod": "Méthode",
     "colStatus": "Statut",
     "colDate": "Date",
-    "openPayment": "Voir le paiement"
+    "openPayment": "Voir le paiement",
+    "progressionLink": "Progression →",
+    "actions": "Actions"
+  },
+  "studentProgression": {
+    "title": "Progression",
+    "back": "← Fiche élève",
+    "progressionLink": "Progression →",
+    "newAssessment": "Nouveau bilan",
+    "newAssessmentTitle": "Créer un bilan",
+    "noAssessments": "Aucun bilan enregistré pour le moment.",
+    "assessmentOf": "Bilan du {date}",
+    "avgScore": "Score moyen",
+    "referenceLabel": "Référence",
+    "currentLabel": "Courant",
+    "delete": "Supprimer",
+    "confirmDelete": "Supprimer ce bilan ?",
+    "notes": "Notes internes",
+    "formNotes": "Notes internes",
+    "formNotesPlaceholder": "Observations, points à travailler...",
+    "formSave": "Enregistrer le bilan",
+    "formCancel": "Annuler",
+    "noAxes": "Aucun axe de progression configuré.",
+    "configureAxes": "Configurer les axes →",
+    "manageAxes": "Gérer les axes →"
+  },
+  "postLessonFeedback": {
+    "sectionTitle": "Feedback post-cours",
+    "participantTitle": "Feedback pour {name}",
+    "videoUrl": "URL vidéo (YouTube, Vimeo, Drive…)",
+    "videoUrlPlaceholder": "https://youtu.be/…",
+    "studentFeedback": "Feedback pour l'élève",
+    "studentFeedbackPlaceholder": "Points positifs, axes d'amélioration, encouragements…",
+    "internalNotes": "Notes internes (non visibles par l'élève)",
+    "internalNotesPlaceholder": "Observations personnelles, points à retravailler…",
+    "skillAssessment": "Bilan de compétences",
+    "noAxesConfigured": "Aucun axe de compétence configuré. Ajoutez des axes dans les paramètres.",
+    "save": "Enregistrer",
+    "saving": "Enregistrement…",
+    "saved": "Enregistré",
+    "defaultAxes": {
+      "technique": "Niveau technique",
+      "basicSteps": "Pas de base",
+      "leadFollow": "Leading / Following",
+      "musicality": "Musicalité",
+      "combo": "Combo",
+      "flow": "Flow",
+      "memory": "Mémoire",
+      "postureConnection": "Posture / Connexion"
+    }
+  },
+  "skillAxes": {
+    "title": "Axes de progression",
+    "subtitle": "Personnalisez les axes utilisés dans le bilan de compétences de vos élèves.",
+    "addAxis": "Ajouter un axe",
+    "defaultAxesCreated": "Axes par défaut créés.",
+    "labelPlaceholder": "Ex. : Improvisation",
+    "add": "Ajouter",
+    "remove": "Supprimer",
+    "noAxes": "Aucun axe configuré. Ajoutez vos premiers axes ou utilisez les axes par défaut.",
+    "createDefaults": "Créer les axes par défaut",
+    "active": "Actif",
+    "inactive": "Inactif"
   },
   "lessonDetail": {
     "back": "← Retour aux cours",
@@ -336,7 +416,10 @@
     "confirmCancelTitle": "Annuler ce cours ?",
     "confirmCancelWarning": "Les minutes du forfait seront restituées. Les frais en attente seront annulés. Cette action est irréversible.",
     "confirmCancelConfirm": "Oui, annuler",
-    "confirmCancelBack": "Non"
+    "confirmCancelBack": "Non",
+    "confirmCancelLesson": "Cours",
+    "confirmCancelDate": "Date",
+    "confirmCancelStudent": "Élève"
   },
   "paymentDetail": {
     "back": "← Retour aux paiements",
@@ -394,6 +477,138 @@
     "migrationFound": "{count, plural, one {# cours facturé à l'unité sans couverture forfait. Migrer vers ce forfait ?} other {# cours facturés à l'unité sans couverture forfait. Migrer vers ce forfait ?}}",
     "migrationBlocked": "{count, plural, one {# cours avec paiement partiel sera ignoré — réglez-le manuellement d'abord.} other {# cours avec paiements partiels seront ignorés — réglez-les manuellement d'abord.}}",
     "migrateButton": "{count, plural, one {Migrer # cours} other {Migrer # cours}}"
+  },
+  "portal": {
+    "nav": {
+      "dashboard": "Tableau de bord",
+      "lessons": "Mes cours",
+      "progression": "Ma progression",
+      "profile": "Mon profil",
+      "logout": "Déconnexion"
+    },
+    "dashboard": {
+      "greeting": "Bonjour, {name}",
+      "nextLesson": "Prochain cours",
+      "noUpcomingLesson": "Aucun cours prévu",
+      "packageStatus": "Forfait",
+      "remainingTime": "{time} restant",
+      "noActivePackage": "Aucun forfait actif",
+      "lastAssessment": "Dernier bilan",
+      "noAssessment": "Aucun bilan pour le moment",
+      "subtitle": "Voici un résumé de ton parcours cette semaine.",
+      "bookLesson": "Réserver un cours",
+      "stats": {
+        "totalTime": "Temps total de cours",
+        "completedLessons": "Cours effectués",
+        "averageScore": "Moyenne du dernier bilan"
+      },
+      "packageActive": "Actif",
+      "packageRemaining": "{time} restantes sur {total}",
+      "packageExpiresOn": "Expire le {date}",
+      "seeDetails": "Détails",
+      "seeMore": "Voir",
+      "noNextLessonTitle": "Pas de cours à venir",
+      "noNextLessonDesc": "Contacte ton professeur pour planifier ta prochaine séance."
+    },
+    "lessons": {
+      "title": "Mes cours",
+      "upcoming": "À venir",
+      "past": "Passés",
+      "noUpcoming": "Aucun cours à venir.",
+      "noPast": "Aucun cours passé.",
+      "feedbackFromTeacher": "Retour de votre professeur",
+      "video": "Vidéo",
+      "watchVideo": "Voir la vidéo",
+      "noFeedback": "Aucun feedback pour ce cours.",
+      "subtitle": "Consulte tes cours à venir et ton historique.",
+      "bookLesson": "Réserver un cours",
+      "canceled": "Annulés",
+      "noCanceled": "Aucun cours annulé.",
+      "reschedule": "Replanifier",
+      "seeAssessment": "Voir le bilan"
+    },
+    "progression": {
+      "title": "Ma progression",
+      "latestAssessment": "Dernier bilan",
+      "history": "Historique des bilans",
+      "noAssessments": "Aucun bilan enregistré pour le moment.",
+      "assessmentOf": "Bilan du {date}",
+      "subtitle": "Suivi de tes compétences et bilans réalisés par ton professeur.",
+      "averageLabel": "Moyenne {score}/10",
+      "countBilans": "{count, plural, =1 {# bilan} other {# bilans}}",
+      "export": "Exporter",
+      "coachLabel": "Coach",
+      "compareWith": "Comparer avec",
+      "compareNone": "Aucune comparaison",
+      "referenceTag": "Réf."
+    },
+    "profile": {
+      "title": "Mon profil",
+      "firstName": "Prénom",
+      "lastName": "Nom",
+      "email": "Email",
+      "phone": "Téléphone",
+      "changePassword": "Changer le mot de passe",
+      "currentPassword": "Mot de passe actuel",
+      "newPassword": "Nouveau mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "save": "Enregistrer",
+      "passwordUpdated": "Mot de passe mis à jour avec succès.",
+      "subtitle": "Gère tes informations personnelles et tes préférences.",
+      "memberSince": "Membre depuis",
+      "changePhoto": "Changer la photo",
+      "personalInfo": "Informations personnelles",
+      "personalInfoDesc": "Ces informations sont partagées avec ton professeur.",
+      "preferences": "Préférences",
+      "preferencesDesc": "Personnalise l'expérience de ton portail.",
+      "prefEmailReminders": "Rappels de cours par email",
+      "prefEmailRemindersDesc": "24 h avant chaque séance.",
+      "prefAssessmentNotif": "Notifications de bilans",
+      "prefAssessmentNotifDesc": "Être notifié dès qu'un bilan est publié.",
+      "prefNewsletter": "Newsletter du studio",
+      "prefNewsletterDesc": "Événements, workshops, nouveautés.",
+      "security": "Sécurité",
+      "securityDesc": "Change ton mot de passe régulièrement.",
+      "saving": "Enregistrement…",
+      "saved": "Enregistré ✓",
+      "cancel": "Annuler"
+    },
+    "setup": {
+      "title": "Créer votre mot de passe",
+      "subtitle": "Bienvenue ! Définissez votre mot de passe pour accéder à votre espace élève.",
+      "password": "Mot de passe",
+      "confirmPassword": "Confirmer le mot de passe",
+      "submit": "Activer mon compte",
+      "tokenExpired": "Ce lien d'invitation a expiré ou a déjà été utilisé. Demandez à votre professeur de vous renvoyer une invitation.",
+      "success": "Votre compte est activé. Vous êtes maintenant connecté."
+    },
+    "topbar": {
+      "area": "Espace élève",
+      "search": "Rechercher",
+      "notifications": "Notifications",
+      "help": "Aide"
+    }
+  },
+  "portalAccess": {
+    "cardTitle": "Accès portail élève",
+    "statusInactive": "Non activé",
+    "statusPending": "Invitation envoyée",
+    "statusActive": "Actif",
+    "activatedOn": "Activé le {date}",
+    "activate": "Activer l'accès portail",
+    "resend": "Renvoyer l'invitation",
+    "deactivate": "Désactiver l'accès",
+    "emailRequired": "Aucun email enregistré. Ajoutez-en un pour activer le portail.",
+    "addEmailAndActivate": "Activer l'accès portail",
+    "emailLabel": "Email de l'élève",
+    "emailPlaceholder": "email@exemple.com",
+    "sendInvitation": "Envoyer l'invitation",
+    "cancel": "Annuler",
+    "invitationSent": "Invitation envoyée à {email}.",
+    "deactivated": "Accès portail désactivé.",
+    "confirmDeactivate": "Désactiver l'accès portail de cet élève ? Il ne pourra plus se connecter.",
+    "confirmDeactivateConfirm": "Oui, désactiver",
+    "confirmDeactivateBack": "Annuler"
   },
   "validation": {
     "firstNameRequired": "Le prénom est requis.",

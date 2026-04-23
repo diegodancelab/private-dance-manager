@@ -77,6 +77,8 @@
   display: flex;
   gap: 0.75rem;
   flex-wrap: wrap;
+  position: relative;
+  z-index: 1;
 }
 
 .actionIconLink {
@@ -87,6 +89,8 @@
   padding: 0.25rem;
   border-radius: 4px;
   transition: color 0.15s, background 0.15s;
+  position: relative;
+  z-index: 1;
 }
 
 .actionIconLink:hover {
@@ -94,22 +98,55 @@
   background: #f3f4f6;
 }
 
-.canceledRow td {
+.clickableRow {
+  position: relative;
+  cursor: pointer;
+  transition: background 0.15s;
+}
+
+.clickableRow:hover {
+  background: #f9fafb;
+}
+
+.rowLink {
+  color: inherit;
+  text-decoration: none;
+}
+
+.rowLink::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+}
+
+.noData {
   color: #9ca3af;
 }
 
-.canceledBadge {
-  display: inline-block;
-  margin-left: 0.5rem;
-  padding: 0.15rem 0.45rem;
-  border-radius: 0.35rem;
+.statusBadge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 9px;
+  border-radius: 999px;
   font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.04em;
+  font-weight: 600;
+  letter-spacing: 0.03em;
+  white-space: nowrap;
+}
+
+.statusScheduled {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.statusCanceled {
   background: #fef2f2;
   color: #dc2626;
-  border: 1px solid #fca5a5;
+}
+
+.canceledRow td {
+  color: #9ca3af;
 }
 
 /* ── Mobile: table → cards ────────────────────────────────────────────────── */

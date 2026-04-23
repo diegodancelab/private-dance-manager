@@ -63,12 +63,19 @@ export async function login(
 
   const user = await prisma.user.findUnique({
     where: { email },
-    select: { id: true, passwordHash: true, isActive: true },
+    select: { id: true, passwordHash: true, isActive: true, role: true, portalActivatedAt: true },
   });
 
   if (!user || !user.passwordHash || !user.isActive) {
     await prisma.loginAttempt.create({ data: { email } });
     logger.warn("login", "Failed login attempt — invalid credentials", { email });
+    return { ...empty, errors: { form: "Invalid email or password" } };
+  }
+
+  // Students without activated portal access cannot log in.
+  if (user.role === "STUDENT" && !user.portalActivatedAt) {
+    await prisma.loginAttempt.create({ data: { email } });
+    logger.warn("login", "Failed login attempt — student portal not activated", { email });
     return { ...empty, errors: { form: "Invalid email or password" } };
   }
 
@@ -86,7 +93,25 @@ export async function login(
     where: { OR: [{ email }, { attemptedAt: { lt: expired } }] },
   });
   logger.info("login", "Successful login", { email, userId: user.id });
-  await createSession(user.id);
+
+  // Students go directly to the portal (single-role).
+  if (user.role === "STUDENT") {
+    await createSession(user.id);
+    return redirect("/portal");
+  }
+
+  // Teachers: check if they are also enrolled as a student by another teacher.
+  const crossEnrollmentCount = await prisma.teacherStudentRelation.count({
+    where: { studentId: user.id },
+  });
+
+  if (crossEnrollmentCount > 0) {
+    // Dual-role: no active role set yet — redirect to role selection.
+    await createSession(user.id, null);
+    return redirect("/choose-role");
+  }
+
+  await createSession(user.id, "TEACHER");
   return redirect("/");
 }
 

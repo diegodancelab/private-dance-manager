@@ -68,18 +68,25 @@ enum LessonStatus {
   CANCELED
 }
 
+enum TeacherStudentInvitationStatus {
+  PENDING
+  ACCEPTED
+  CANCELED
+}
+
 model User {
-  id                 String              @id @default(cuid())
-  email              String?             @unique
-  firstName          String
-  lastName           String
-  phone              String?
-  role               UserRole            @default(STUDENT)
-  isActive           Boolean             @default(true)
-  passwordHash       String?
-  createdByTeacherId String?
-  createdAt          DateTime            @default(now())
-  updatedAt          DateTime            @updatedAt
+  id                  String              @id @default(cuid())
+  email               String?             @unique
+  firstName           String
+  lastName            String
+  phone               String?
+  role                UserRole            @default(STUDENT)
+  isActive            Boolean             @default(true)
+  passwordHash        String?
+  createdByTeacherId  String?
+  portalActivatedAt   DateTime?
+  createdAt           DateTime            @default(now())
+  updatedAt           DateTime            @updatedAt
 
   taughtLessons         Lesson[]            @relation("TeacherLessons")
   bookings              LessonParticipant[]
@@ -94,18 +101,28 @@ model User {
   sessions              Session[]
   createdByTeacher      User?               @relation("TeacherCreatedStudents", fields: [createdByTeacherId], references: [id])
   createdStudents       User[]              @relation("TeacherCreatedStudents")
+  portalInvitations     PortalInvitation[]
+  lessonFeedbacks       LessonFeedback[]    @relation("FeedbackStudent")
+  givenFeedbacks        LessonFeedback[]    @relation("FeedbackTeacher")
+  skillAssessments      SkillAssessment[]   @relation("AssessmentStudent")
+  givenAssessments      SkillAssessment[]   @relation("AssessmentTeacher")
+  skillAxes             SkillAxis[]         @relation("AxisTeacher")
+  sentInvitations       TeacherStudentInvitation[] @relation("InvitationTeacher")
+  relationsAsTeacher    TeacherStudentRelation[]   @relation("RelationTeacher")
+  relationsAsStudent    TeacherStudentRelation[]   @relation("RelationStudent")
 
   // Covers: student list (createdByTeacherId + role), student ownership checks
   @@index([createdByTeacherId, role])
 }
 
 model Session {
-  id        String   @id @default(cuid())
-  userId    String
-  expiresAt DateTime
-  createdAt DateTime @default(now())
+  id         String   @id @default(cuid())
+  userId     String
+  activeRole String?
+  expiresAt  DateTime
+  createdAt  DateTime @default(now())
 
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user       User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Lesson {
@@ -125,6 +142,8 @@ model Lesson {
   teacher       User                @relation("TeacherLessons", fields: [teacherId], references: [id])
   participants  LessonParticipant[]
   charges       Charge[]
+  feedbacks     LessonFeedback[]
+  assessments   SkillAssessment[]
 
   // Covers: list page (teacherId), calendar range (scheduledAt), conflict detection (teacherId + scheduledAt)
   @@index([teacherId, scheduledAt])
@@ -269,4 +288,126 @@ model LoginAttempt {
   attemptedAt DateTime @default(now())
 
   @@index([email, attemptedAt])
+}
+
+/// Invitation token sent to a student to activate their portal access.
+/// Single-use (usedAt set on activation) and expires after 48h.
+model PortalInvitation {
+  id        String    @id @default(cuid())
+  userId    String
+  token     String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([token])
+  @@index([userId])
+}
+
+/// Per-student, per-lesson feedback from the teacher.
+/// studentFeedback is visible to the student; internalNotes is teacher-only and NEVER exposed via portal queries.
+model LessonFeedback {
+  id              String   @id @default(cuid())
+  lessonId        String
+  studentId       String
+  teacherId       String
+  videoUrl        String?
+  studentFeedback String?
+  internalNotes   String?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  lesson  Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  student User   @relation("FeedbackStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  teacher User   @relation("FeedbackTeacher", fields: [teacherId], references: [id])
+
+  @@unique([lessonId, studentId])
+  @@index([studentId, createdAt])
+}
+
+/// Teacher-defined skill axes for the progression radar chart.
+/// Axes are global per teacher. Default axes are seeded on first use.
+model SkillAxis {
+  id        String   @id @default(cuid())
+  teacherId String
+  label     String
+  order     Int
+  isActive  Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teacher User             @relation("AxisTeacher", fields: [teacherId], references: [id], onDelete: Cascade)
+  scores  SkillAxisScore[]
+
+  @@index([teacherId, order])
+}
+
+/// A skill assessment snapshot for a student at a point in time.
+/// Contains one SkillAxisScore per active axis.
+model SkillAssessment {
+  id        String   @id @default(cuid())
+  studentId String
+  teacherId String
+  lessonId  String?
+  notes     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  student User             @relation("AssessmentStudent", fields: [studentId], references: [id], onDelete: Cascade)
+  teacher User             @relation("AssessmentTeacher", fields: [teacherId], references: [id])
+  lesson  Lesson?          @relation(fields: [lessonId], references: [id], onDelete: SetNull)
+  scores  SkillAxisScore[]
+
+  @@index([studentId, createdAt])
+}
+
+/// One score (1-10) per axis per assessment.
+model SkillAxisScore {
+  id           String @id @default(cuid())
+  assessmentId String
+  axisId       String
+  score        Int
+
+  assessment SkillAssessment @relation(fields: [assessmentId], references: [id], onDelete: Cascade)
+  axis       SkillAxis       @relation(fields: [axisId], references: [id], onDelete: Cascade)
+
+  @@unique([assessmentId, axisId])
+}
+
+/// Invitation envoyée par un prof pour qu'un autre utilisateur devienne son élève.
+/// Un seul enregistrement par couple (teacherId, email) — upsert pour le renvoi.
+/// token : UUID aléatoire, single-use, expire après 48h.
+model TeacherStudentInvitation {
+  id        String                         @id @default(cuid())
+  teacherId String
+  email     String
+  token     String                         @unique
+  status    TeacherStudentInvitationStatus @default(PENDING)
+  expiresAt DateTime
+  createdAt DateTime                       @default(now())
+  updatedAt DateTime                       @updatedAt
+
+  teacher   User @relation("InvitationTeacher", fields: [teacherId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, email])
+  @@index([token])
+  @@index([email])
+}
+
+/// Relation active entre un prof (teacherId) et un élève (studentId).
+/// studentId peut être un User de rôle TEACHER ou STUDENT.
+/// Créée uniquement après acceptation de l'invitation.
+model TeacherStudentRelation {
+  id        String   @id @default(cuid())
+  teacherId String
+  studentId String
+  createdAt DateTime @default(now())
+
+  teacher   User @relation("RelationTeacher", fields: [teacherId], references: [id], onDelete: Cascade)
+  student   User @relation("RelationStudent", fields: [studentId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, studentId])
+  @@index([studentId])
 }

@@ -265,6 +265,42 @@ export async function getAlerts(teacherId: string): Promise<DashboardAlert[]> {
   return alerts;
 }
 
+export async function getDashboardKpis(teacherId: string) {
+  const now = new Date();
+  const monthStart = new Date(now.getFullYear(), now.getMonth(), 1);
+  const monthEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59, 999);
+
+  const [activeStudents, lessonsThisMonth, paymentsThisMonth] = await Promise.all([
+    prisma.lessonParticipant.findMany({
+      where: { lesson: { teacherId, status: { not: LessonStatus.CANCELED } } },
+      select: { userId: true },
+      distinct: ["userId"],
+    }),
+    prisma.lesson.findMany({
+      where: {
+        teacherId,
+        scheduledAt: { gte: monthStart, lte: monthEnd },
+        status: { not: LessonStatus.CANCELED },
+      },
+      select: { durationMin: true },
+    }),
+    prisma.payment.findMany({
+      where: { teacherId, paidAt: { gte: monthStart, lte: monthEnd } },
+      select: { amount: true },
+    }),
+  ]);
+
+  const totalMinutes = lessonsThisMonth.reduce((s, l) => s + l.durationMin, 0);
+  const revenueThisMonth = paymentsThisMonth.reduce((s, p) => s + Number(p.amount), 0);
+
+  return {
+    activeStudents: activeStudents.length,
+    lessonsThisMonth: lessonsThisMonth.length,
+    revenueThisMonth: Math.round(revenueThisMonth * 100) / 100,
+    hoursThisMonth: Math.round((totalMinutes / 60) * 10) / 10,
+  };
+}
+
 // Internal helper — mirrors the one in lib/dates.ts
 function getZurichOffsetMs(date: Date): number {
   const fmt = new Intl.DateTimeFormat("en-CA", {

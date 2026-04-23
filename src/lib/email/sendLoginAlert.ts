@@ -1,15 +1,9 @@
-import { Resend } from "resend";
+import { sendEmailSafe } from "./emailEnv";
 
-const resend = new Resend(process.env.RESEND_API_KEY);
-
-export async function sendLoginAlert(
-  targetEmail: string
-): Promise<void> {
-  const fromEmail = process.env.ALERT_FROM_EMAIL ?? "onboarding@resend.dev";
+export async function sendLoginAlert(targetEmail: string): Promise<void> {
   const now = new Date().toLocaleString("fr-CH", { timeZone: "Europe/Zurich" });
 
-  await resend.emails.send({
-    from: fromEmail,
+  await sendEmailSafe({
     to: targetEmail,
     subject: "⚠️ Trop de tentatives de connexion sur ton compte",
     html: `

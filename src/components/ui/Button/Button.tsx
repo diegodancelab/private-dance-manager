@@ -2,7 +2,7 @@ import { Link } from "@/i18n/navigation";
 import styles from "./Button.module.css";
 
 type BaseProps = {
-  variant?: "primary" | "secondary" | "danger";
+  variant?: "primary" | "secondary" | "ghost" | "danger";
   size?: "sm" | "md";
   className?: string;
   children: React.ReactNode;

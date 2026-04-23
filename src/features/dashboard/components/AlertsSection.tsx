@@ -1,5 +1,6 @@
 import { getTranslations, getLocale } from "next-intl/server";
 import { Link } from "@/i18n/navigation";
+import { CheckCircle } from "lucide-react";
 import type { DashboardAlert } from "@/features/dashboard/queries";
 import styles from "./AlertsSection.module.css";
 
@@ -41,7 +42,11 @@ export default async function AlertsSection({ alerts }: Props) {
     return (
       <section className={styles.section}>
         <h2 className={styles.title}>{t("alerts")}</h2>
-        <p className={styles.empty}>{t("noAlerts")}</p>
+        <div className={styles.emptyState}>
+          <CheckCircle size={28} strokeWidth={1.5} className={styles.emptyIcon} />
+          <p className={styles.emptyTitle}>{t("noAlertsTitle")}</p>
+          <p className={styles.emptyDesc}>{t("noAlertsDesc")}</p>
+        </div>
       </section>
     );
   }

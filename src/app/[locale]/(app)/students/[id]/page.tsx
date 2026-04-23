@@ -9,6 +9,8 @@ import StudentChargesSection from "@/features/students/components/StudentCharges
 import StudentPackagesSection from "@/features/students/components/StudentPackagesSection";
 import StudentLessonsSection from "@/features/students/components/StudentLessonsSection";
 import StudentRecentPaymentsSection from "@/features/students/components/StudentRecentPaymentsSection";
+import StudentPortalAccessCard from "@/features/students/components/StudentPortalAccessCard";
+import StudentActionsDropdown from "@/features/students/components/StudentActionsDropdown";
 import Button from "@/components/ui/Button/Button";
 import styles from "@/features/students/components/StudentDetail.module.css";
 
@@ -22,11 +24,12 @@ export default async function StudentDetailPage({ params }: Props) {
   const { user } = await requireAuth();
   const t = await getTranslations("studentDetail");
   const tCommon = await getTranslations("common");
+  const tPortal = await getTranslations("portalAccess");
   const data = await getStudentDetail(id, user.id);
 
   if (!data) notFound();
 
-  const { student, summary, unpaidCharges, packages, upcomingLessons, recentPayments } = data;
+  const { student, summary, unpaidCharges, packages, upcomingLessons, recentPayments, portalAccess } = data;
 
   return (
     <div className={styles.page}>
@@ -39,17 +42,22 @@ export default async function StudentDetailPage({ params }: Props) {
           {student.firstName} {student.lastName}
         </h1>
         <div className={styles.quickActions}>
-          <Button href={`/lessons/new?studentId=${student.id}`} size="sm">
-            {t("addLesson")}
-          </Button>
-          <Button href={`/payments/new?userId=${student.id}`} size="sm">
-            {t("addPayment")}
-          </Button>
-          <Button href={`/charges/new?userId=${student.id}`} size="sm">
-            {t("addCharge")}
-          </Button>
-          <Button href={`/packages/new?userId=${student.id}`} size="sm">
-            {t("addPackage")}
+          <StudentActionsDropdown
+            studentId={student.id}
+            labels={{
+              trigger: t("actions"),
+              addLesson: t("addLesson"),
+              addPayment: t("addPayment"),
+              addCharge: t("addCharge"),
+              addPackage: t("addPackage"),
+            }}
+          />
+          <Button
+            href={`/students/${student.id}/progression`}
+            variant="secondary"
+            size="sm"
+          >
+            {t("progressionLink")}
           </Button>
           <Button
             href={`/students/${student.id}/edit`}
@@ -65,6 +73,32 @@ export default async function StudentDetailPage({ params }: Props) {
 
       <div className={styles.card}>
         <StudentInfoCard student={student} />
+        <StudentPortalAccessCard
+          studentId={student.id}
+          hasEmail={!!student.email}
+          portalAccess={portalAccess}
+          t={{
+            cardTitle: tPortal("cardTitle"),
+            statusInactive: tPortal("statusInactive"),
+            statusPending: tPortal("statusPending"),
+            statusActive: tPortal("statusActive"),
+            activatedOn: portalAccess.activatedAt
+              ? tPortal("activatedOn", { date: portalAccess.activatedAt.toLocaleDateString("fr-CH") })
+              : "",
+            activate: tPortal("activate"),
+            resend: tPortal("resend"),
+            deactivate: tPortal("deactivate"),
+            emailRequired: tPortal("emailRequired"),
+            addEmailAndActivate: tPortal("addEmailAndActivate"),
+            emailLabel: tPortal("emailLabel"),
+            emailPlaceholder: tPortal("emailPlaceholder"),
+            sendInvitation: tPortal("sendInvitation"),
+            cancel: tPortal("cancel"),
+            confirmDeactivate: tPortal("confirmDeactivate"),
+            confirmDeactivateConfirm: tPortal("confirmDeactivateConfirm"),
+            confirmDeactivateBack: tPortal("confirmDeactivateBack"),
+          }}
+        />
         <StudentChargesSection charges={unpaidCharges} studentId={student.id} />
         <StudentPackagesSection packages={packages} />
         <StudentLessonsSection lessons={upcomingLessons} />

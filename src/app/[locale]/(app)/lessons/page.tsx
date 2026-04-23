@@ -36,8 +36,17 @@ export default async function LessonsPage({ params }: Props) {
 
   const lessons = await prisma.lesson.findMany({
     where: { teacherId: user.id },
-    orderBy: {
-      scheduledAt: "desc",
+    orderBy: { scheduledAt: "desc" },
+    select: {
+      id: true,
+      title: true,
+      lessonType: true,
+      scheduledAt: true,
+      durationMin: true,
+      status: true,
+      participants: {
+        select: { user: { select: { firstName: true, lastName: true } } },
+      },
     },
   });
 
@@ -63,26 +72,47 @@ export default async function LessonsPage({ params }: Props) {
             <thead>
               <tr>
                 <th className={styles.tableHeadCell}>{t("colTitle")}</th>
+                <th className={styles.tableHeadCell}>{t("colStudents")}</th>
                 <th className={styles.tableHeadCell}>{t("colType")}</th>
                 <th className={styles.tableHeadCell}>{t("colScheduledAt")}</th>
+                <th className={styles.tableHeadCell}>{t("colDuration")}</th>
+                <th className={styles.tableHeadCell}>{t("colStatus")}</th>
                 <th className={styles.tableHeadCell}></th>
               </tr>
             </thead>
 
             <tbody>
               {lessons.map((lesson) => (
-                <tr key={lesson.id} className={lesson.status === "CANCELED" ? styles.canceledRow : ""}>
+                <tr
+                  key={lesson.id}
+                  className={`${styles.clickableRow} ${lesson.status === "CANCELED" ? styles.canceledRow : ""}`}
+                >
                   <td className={styles.tableCell} data-label={t("colTitle")}>
-                    <span>{lesson.title}</span>
-                    {lesson.status === "CANCELED" && (
-                      <span className={styles.canceledBadge}>{tLessons("statusCanceled")}</span>
-                    )}
+                    <Link href={`/lessons/${lesson.id}`} className={styles.rowLink}>
+                      {lesson.title}
+                    </Link>
+                  </td>
+
+                  <td className={styles.tableCell} data-label={t("colStudents")}>
+                    {lesson.participants.length > 0
+                      ? lesson.participants.map((p) => `${p.user.firstName} ${p.user.lastName}`).join(", ")
+                      : <span className={styles.noData}>—</span>}
                   </td>
 
                   <td className={styles.tableCell} data-label={t("colType")}>{tLabels(lesson.lessonType)}</td>
 
                   <td className={styles.tableCell} data-label={t("colScheduledAt")}>
                     {formatDateTime(lesson.scheduledAt)}
+                  </td>
+
+                  <td className={styles.tableCell} data-label={t("colDuration")}>
+                    {t("durationMin", { n: lesson.durationMin })}
+                  </td>
+
+                  <td className={styles.tableCell} data-label={t("colStatus")}>
+                    <span className={`${styles.statusBadge} ${lesson.status === "CANCELED" ? styles.statusCanceled : styles.statusScheduled}`}>
+                      {lesson.status === "CANCELED" ? t("statusCanceled") : t("statusScheduled")}
+                    </span>
                   </td>
 
                   <td className={styles.tableCell}>

@@ -5,7 +5,13 @@ import styles from "./LoginForm.module.css";
 
 export default async function LoginPage() {
   const session = await getSession();
-  if (session?.user.role === "TEACHER") return redirect("/");
+
+  if (session?.user.role === "TEACHER") {
+    // Dual-role teacher who hasn't chosen a context yet → back to choose-role.
+    if (session.activeRole === null) return redirect("/choose-role");
+    return redirect("/");
+  }
+  if (session?.user.role === "STUDENT") return redirect("/portal");
 
   return (
     <div className={styles.loginPage}>
