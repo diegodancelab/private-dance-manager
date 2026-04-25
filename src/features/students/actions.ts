@@ -58,7 +58,13 @@ export const createStudent = withFormAction(async function createStudent(
 
   if (email) {
     const existingUser = await prisma.user.findFirst({
-      where: { email },
+      where: {
+        email,
+        OR: [
+          { role: "TEACHER" },
+          { role: "STUDENT", createdByTeacherId: user.id },
+        ],
+      },
       select: { id: true },
     });
 
@@ -159,6 +165,10 @@ export const updateStudent = withFormAction(async function updateStudent(
       where: {
         email,
         id: { not: id },
+        OR: [
+          { role: "TEACHER" },
+          { role: "STUDENT", createdByTeacherId: user.id },
+        ],
       },
       select: { id: true },
     });
