@@ -15,7 +15,7 @@ export default async function SkillAxesPage({ params }: Props) {
   const t = await getTranslations("skillAxes");
 
   const axes = await prisma.skillAxis.findMany({
-    where: { teacherId: user.id },
+    where: { teacherId: user.id, studentId: null },
     orderBy: { order: "asc" },
     select: { id: true, label: true, order: true, isActive: true },
   });

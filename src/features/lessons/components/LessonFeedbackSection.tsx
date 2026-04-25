@@ -205,14 +205,14 @@ type Props = {
     existingFeedback: ExistingFeedback | null;
     existingAssessment: ExistingAssessment | null;
   }>;
-  axes: Axis[];
+  axesByStudentId: Record<string, Axis[]>;
   t: Record<string, string>;
 };
 
 export default function LessonFeedbackSection({
   lessonId,
   participants,
-  axes,
+  axesByStudentId,
   t,
 }: Props) {
   return (
@@ -224,7 +224,7 @@ export default function LessonFeedbackSection({
           lessonId={lessonId}
           studentId={p.studentId}
           studentName={p.studentName}
-          axes={axes}
+          axes={axesByStudentId[p.studentId] ?? []}
           existingFeedback={p.existingFeedback}
           existingAssessment={p.existingAssessment}
           t={t}

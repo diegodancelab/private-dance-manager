@@ -94,7 +94,7 @@ export default async function AcceptInvitationPage({ params, searchParams }: Pro
   // ── Determine user context ──────────────────────────────────────────────────
 
   const session = await getSession();
-  const existingAccount = await prisma.user.findUnique({
+  const existingAccount = await prisma.user.findFirst({
     where: { email: invitation.email },
     select: { id: true, firstName: true, passwordHash: true },
   });

@@ -6,6 +6,7 @@ import StatusBadge from "@/components/ui/StatusBadge/StatusBadge";
 import { formatDateTime } from "@/lib/format";
 import styles from "./LessonDetail.module.css";
 import { requireAuth } from "@/lib/auth/require-auth";
+import { ensureStudentAxes } from "@/features/skill-axes/actions";
 import CancelLessonButton from "@/features/lessons/components/CancelLessonButton";
 import LessonFeedbackSection from "@/features/lessons/components/LessonFeedbackSection";
 
@@ -24,7 +25,7 @@ export default async function LessonDetailPage({ params }: Props) {
 
   const now = new Date();
 
-  const [lesson, axes] = await Promise.all([
+  const [lesson] = await Promise.all([
     prisma.lesson.findFirst({
       where: { id, teacherId: user.id },
       include: {
@@ -59,14 +60,25 @@ export default async function LessonDetailPage({ params }: Props) {
         },
       },
     }),
-    prisma.skillAxis.findMany({
-      where: { teacherId: user.id, isActive: true },
-      orderBy: { order: "asc" },
-      select: { id: true, label: true, order: true },
-    }),
   ]);
 
   if (!lesson) notFound();
+
+  const participantIds = lesson.participants.map((p) => p.user.id);
+  await Promise.all(participantIds.map((sid) => ensureStudentAxes(sid, user.id)));
+
+  const participantAxes = await prisma.skillAxis.findMany({
+    where: { teacherId: user.id, studentId: { in: participantIds }, isActive: true },
+    orderBy: { order: "asc" },
+    select: { id: true, label: true, order: true, studentId: true },
+  });
+
+  const axesByStudentId: Record<string, { id: string; label: string; order: number }[]> = {};
+  for (const axis of participantAxes) {
+    const sid = axis.studentId!;
+    if (!axesByStudentId[sid]) axesByStudentId[sid] = [];
+    axesByStudentId[sid].push({ id: axis.id, label: axis.label, order: axis.order });
+  }
 
   const isPastLesson = lesson.scheduledAt < now;
 
@@ -188,7 +200,7 @@ export default async function LessonDetailPage({ params }: Props) {
         {isPastLesson && lesson.participants.length > 0 && (
           <LessonFeedbackSection
             lessonId={lesson.id}
-            axes={axes}
+            axesByStudentId={axesByStudentId}
             participants={lesson.participants.map((p) => {
               const existingFeedback =
                 lesson.feedbacks.find((f) => f.studentId === p.user.id) ?? null;

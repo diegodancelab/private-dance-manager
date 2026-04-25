@@ -71,8 +71,12 @@ export async function addEmailAndActivatePortal(
     if (student.email) throw new DomainError("Cet élève a déjà un email enregistré.");
     if (student.portalActivatedAt) throw new DomainError("Le portail est déjà activé pour cet élève.");
 
-    const existingUser = await prisma.user.findUnique({
-      where: { email },
+    const existingUser = await prisma.user.findFirst({
+      where: {
+        email,
+        id: { not: studentId },
+        OR: [{ role: "TEACHER" }, { createdByTeacherId: user.id }],
+      },
       select: { id: true },
     });
     if (existingUser) throw new DomainError("Cette adresse email est déjà utilisée par un autre compte.");

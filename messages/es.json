@@ -352,7 +352,9 @@
     "formCancel": "Cancelar",
     "noAxes": "No hay ejes de progresión configurados.",
     "configureAxes": "Configurar ejes →",
-    "manageAxes": "Gestionar ejes →"
+    "manageAxes": "Gestionar ejes →",
+    "axesSectionTitle": "Ejes para este alumno",
+    "axesSectionSubtitle": "Personaliza los ejes de evaluación para este alumno. Clonados de tu plantilla en la primera visita."
   },
   "postLessonFeedback": {
     "sectionTitle": "Feedback post-clase",

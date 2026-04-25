@@ -164,7 +164,7 @@ export async function setPasswordAndAccept(
     return { ...empty, errors: { form: "Ce lien d'invitation a expiré ou a déjà été utilisé." } };
   }
 
-  const existingUser = await prisma.user.findUnique({
+  const existingUser = await prisma.user.findFirst({
     where: { email: invitation.email },
     select: { id: true, passwordHash: true },
   });
@@ -250,7 +250,7 @@ export async function createAccountAndAccept(
   }
 
   // Double-check no account exists for this email (race condition guard).
-  const existingUser = await prisma.user.findUnique({
+  const existingUser = await prisma.user.findFirst({
     where: { email: invitation.email },
     select: { id: true },
   });

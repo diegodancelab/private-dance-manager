@@ -42,7 +42,7 @@ export async function getStudentProgressionHistory(
       },
     }),
     prisma.skillAxis.findMany({
-      where: { teacherId, isActive: true },
+      where: { teacherId, studentId, isActive: true },
       orderBy: { order: "asc" },
       select: { id: true, label: true, order: true },
     }),

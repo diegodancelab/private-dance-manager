@@ -39,7 +39,7 @@ export async function createProgressionAssessment(
 
   const axisIds = scores.map((s) => s.axisId);
   const axes = await prisma.skillAxis.findMany({
-    where: { id: { in: axisIds }, teacherId: user.id },
+    where: { id: { in: axisIds }, teacherId: user.id, studentId },
     select: { id: true },
   });
   if (axes.length !== axisIds.length) {

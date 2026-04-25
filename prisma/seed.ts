@@ -31,42 +31,45 @@ async function main() {
   const adminPasswordHash = await bcrypt.hash("admin123", 12);
   const teacherPasswordHash = await bcrypt.hash("teacher123", 12);
 
-  const admin = await prisma.user.upsert({
-    where: { email: "admin@privatedancemanager.com" },
-    update: { passwordHash: adminPasswordHash },
-    create: {
-      email: "admin@privatedancemanager.com",
-      firstName: "Admin",
-      lastName: "User",
-      role: UserRole.ADMIN,
-      passwordHash: adminPasswordHash,
-    },
-  });
+  const existingAdmin = await prisma.user.findFirst({ where: { email: "admin@privatedancemanager.com" } });
+  const admin = existingAdmin
+    ? await prisma.user.update({ where: { id: existingAdmin.id }, data: { passwordHash: adminPasswordHash } })
+    : await prisma.user.create({
+        data: {
+          email: "admin@privatedancemanager.com",
+          firstName: "Admin",
+          lastName: "User",
+          role: UserRole.ADMIN,
+          passwordHash: adminPasswordHash,
+        },
+      });
 
-  const teacher = await prisma.user.upsert({
-    where: { email: "diego@privatedancemanager.com" },
-    update: { passwordHash: teacherPasswordHash },
-    create: {
-      email: "diego@privatedancemanager.com",
-      firstName: "Diego",
-      lastName: "Poli",
-      role: UserRole.TEACHER,
-      phone: "+41000000000",
-      passwordHash: teacherPasswordHash,
-    },
-  });
+  const existingTeacher = await prisma.user.findFirst({ where: { email: "diego@privatedancemanager.com" } });
+  const teacher = existingTeacher
+    ? await prisma.user.update({ where: { id: existingTeacher.id }, data: { passwordHash: teacherPasswordHash } })
+    : await prisma.user.create({
+        data: {
+          email: "diego@privatedancemanager.com",
+          firstName: "Diego",
+          lastName: "Poli",
+          role: UserRole.TEACHER,
+          phone: "+41000000000",
+          passwordHash: teacherPasswordHash,
+        },
+      });
 
-  const student = await prisma.user.upsert({
-    where: { email: "student@privatedancemanager.com" },
-    update: {},
-    create: {
-      email: "student@privatedancemanager.com",
-      firstName: "Test",
-      lastName: "Student",
-      role: UserRole.STUDENT,
-      createdByTeacherId: teacher.id,
-    },
-  });
+  const existingStudent = await prisma.user.findFirst({ where: { email: "student@privatedancemanager.com", createdByTeacherId: teacher.id } });
+  const student = existingStudent
+    ? existingStudent
+    : await prisma.user.create({
+        data: {
+          email: "student@privatedancemanager.com",
+          firstName: "Test",
+          lastName: "Student",
+          role: UserRole.STUDENT,
+          createdByTeacherId: teacher.id,
+        },
+      });
 
   const existingLesson = await prisma.lesson.findFirst({
     where: {

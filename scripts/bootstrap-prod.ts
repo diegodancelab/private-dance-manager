@@ -74,26 +74,25 @@ async function main() {
   try {
     const passwordHash = await bcrypt.hash(password, 12);
 
-    const teacher = await prisma.user.upsert({
-      where: { email },
-      update: {
-        passwordHash,
-        firstName,
-        lastName,
-        phone,
-        isActive: true,
-      },
-      create: {
-        email,
-        firstName,
-        lastName,
-        phone,
-        role: UserRole.TEACHER,
-        passwordHash,
-        isActive: true,
-      },
-      select: { id: true, email: true, role: true, firstName: true, lastName: true },
-    });
+    const existingTeacher = await prisma.user.findFirst({ where: { email } });
+    const teacher = existingTeacher
+      ? await prisma.user.update({
+          where: { id: existingTeacher.id },
+          data: { passwordHash, firstName, lastName, phone, isActive: true },
+          select: { id: true, email: true, role: true, firstName: true, lastName: true },
+        })
+      : await prisma.user.create({
+          data: {
+            email,
+            firstName,
+            lastName,
+            phone,
+            role: UserRole.TEACHER,
+            passwordHash,
+            isActive: true,
+          },
+          select: { id: true, email: true, role: true, firstName: true, lastName: true },
+        });
 
     console.log("Bootstrap successful.");
     console.log(`  ID:    ${teacher.id}`);

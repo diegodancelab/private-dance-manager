@@ -68,7 +68,7 @@ export const inviteStudent = withFormAction(async function inviteStudent(
   }
 
   // Look up existing user (for the email in the invitation URL).
-  const existingUser = await prisma.user.findUnique({
+  const existingUser = await prisma.user.findFirst({
     where: { email },
     select: { id: true, firstName: true },
   });
@@ -132,7 +132,7 @@ export async function resendInvitation(formData: FormData): Promise<void> {
 
   if (!invitation) throw new DomainError("Invitation introuvable.");
 
-  const existingUser = await prisma.user.findUnique({
+  const existingUser = await prisma.user.findFirst({
     where: { email: invitation.email },
     select: { firstName: true },
   });

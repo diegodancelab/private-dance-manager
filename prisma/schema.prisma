@@ -107,6 +107,7 @@ model User {
   skillAssessments      SkillAssessment[]   @relation("AssessmentStudent")
   givenAssessments      SkillAssessment[]   @relation("AssessmentTeacher")
   skillAxes             SkillAxis[]         @relation("AxisTeacher")
+  studentSkillAxes      SkillAxis[]         @relation("AxisStudent")
   sentInvitations       TeacherStudentInvitation[] @relation("InvitationTeacher")
   relationsAsTeacher    TeacherStudentRelation[]   @relation("RelationTeacher")
   relationsAsStudent    TeacherStudentRelation[]   @relation("RelationStudent")
@@ -328,10 +329,12 @@ model LessonFeedback {
 }
 
 /// Teacher-defined skill axes for the progression radar chart.
-/// Axes are global per teacher. Default axes are seeded on first use.
+/// studentId = null → teacher template (managed in settings).
+/// studentId = <id> → student-specific axes cloned from template on first access.
 model SkillAxis {
   id        String   @id @default(cuid())
   teacherId String
+  studentId String?
   label     String
   order     Int
   isActive  Boolean  @default(true)
@@ -339,9 +342,10 @@ model SkillAxis {
   updatedAt DateTime @updatedAt
 
   teacher User             @relation("AxisTeacher", fields: [teacherId], references: [id], onDelete: Cascade)
+  student User?            @relation("AxisStudent", fields: [studentId], references: [id], onDelete: Cascade)
   scores  SkillAxisScore[]
 
-  @@index([teacherId, order])
+  @@index([teacherId, studentId, order])
 }
 
 /// A skill assessment snapshot for a student at a point in time.

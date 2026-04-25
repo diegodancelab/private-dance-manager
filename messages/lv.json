@@ -352,7 +352,9 @@
     "formCancel": "Atcelt",
     "noAxes": "Nav konfigurētu progresijas asu.",
     "configureAxes": "Konfigurēt asis →",
-    "manageAxes": "Pārvaldīt asis →"
+    "manageAxes": "Pārvaldīt asis →",
+    "axesSectionTitle": "Asi šim studentam",
+    "axesSectionSubtitle": "Pielāgojiet vērtēšanas asis šim studentam. Klonētas no veidnes pirmajā apmeklējumā."
   },
   "postLessonFeedback": {
     "sectionTitle": "Pēc nodarbības atsauksmes",

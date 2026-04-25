@@ -352,7 +352,9 @@
     "formCancel": "Cancel",
     "noAxes": "No progression axes configured.",
     "configureAxes": "Configure axes →",
-    "manageAxes": "Manage axes →"
+    "manageAxes": "Manage axes →",
+    "axesSectionTitle": "Axes for this student",
+    "axesSectionSubtitle": "Customize the evaluation axes for this student. Cloned from your template on first visit."
   },
   "postLessonFeedback": {
     "sectionTitle": "Post-lesson feedback",

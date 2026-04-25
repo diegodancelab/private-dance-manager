@@ -352,7 +352,9 @@
     "formCancel": "Annuler",
     "noAxes": "Aucun axe de progression configuré.",
     "configureAxes": "Configurer les axes →",
-    "manageAxes": "Gérer les axes →"
+    "manageAxes": "Gérer les axes →",
+    "axesSectionTitle": "Axes de cet élève",
+    "axesSectionSubtitle": "Personnalisez les axes d'évaluation pour cet élève. Clonés depuis votre modèle à la première visite."
   },
   "postLessonFeedback": {
     "sectionTitle": "Feedback post-cours",

@@ -4,7 +4,10 @@ import { getTranslations, setRequestLocale } from "next-intl/server";
 import { requireAuth } from "@/lib/auth/require-auth";
 import { getStudentDetail } from "@/features/students/queries/getStudentDetail";
 import { getStudentProgressionHistory } from "@/features/progression/queries";
+import { ensureStudentAxes } from "@/features/skill-axes/actions";
 import ProgressionView from "@/features/progression/components/ProgressionView";
+import SkillAxesManager from "@/app/[locale]/(app)/settings/skill-axes/SkillAxesManager";
+import { prisma } from "@/lib/prisma";
 import styles from "./ProgressionPage.module.css";
 
 type Props = {
@@ -17,12 +20,23 @@ export default async function StudentProgressionPage({ params }: Props) {
 
   const { user } = await requireAuth();
   const t = await getTranslations("studentProgression");
+  const tAxes = await getTranslations("skillAxes");
 
   const studentData = await getStudentDetail(id, user.id);
   if (!studentData) notFound();
 
   const { student } = studentData;
-  const { assessments, axes } = await getStudentProgressionHistory(id, user.id);
+
+  await ensureStudentAxes(id, user.id);
+
+  const [{ assessments, axes }, allStudentAxes] = await Promise.all([
+    getStudentProgressionHistory(id, user.id),
+    prisma.skillAxis.findMany({
+      where: { teacherId: user.id, studentId: id },
+      orderBy: { order: "asc" },
+      select: { id: true, label: true, order: true, isActive: true },
+    }),
+  ]);
 
   return (
     <div className={styles.page}>
@@ -34,9 +48,6 @@ export default async function StudentProgressionPage({ params }: Props) {
         <h1 className={styles.pageTitle}>
           {t("title")} — {student.firstName} {student.lastName}
         </h1>
-        <Link href="/settings/skill-axes" className={styles.manageAxesLink}>
-          {t("manageAxes")}
-        </Link>
       </div>
 
       <ProgressionView
@@ -62,6 +73,26 @@ export default async function StudentProgressionPage({ params }: Props) {
           configureAxes: t("configureAxes"),
         }}
       />
+
+      <div className={styles.axesSection}>
+        <div className={styles.axesSectionHeader}>
+          <h2 className={styles.axesSectionTitle}>{t("axesSectionTitle")}</h2>
+          <p className={styles.axesSectionSubtitle}>{t("axesSectionSubtitle")}</p>
+        </div>
+        <SkillAxesManager
+          axes={allStudentAxes}
+          studentId={id}
+          t={{
+            addAxis: tAxes("addAxis"),
+            labelPlaceholder: tAxes("labelPlaceholder"),
+            add: tAxes("add"),
+            remove: tAxes("remove"),
+            noAxes: tAxes("noAxes"),
+            active: tAxes("active"),
+            inactive: tAxes("inactive"),
+          }}
+        />
+      </div>
     </div>
   );
 }

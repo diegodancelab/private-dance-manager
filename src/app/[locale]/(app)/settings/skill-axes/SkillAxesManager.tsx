@@ -18,32 +18,41 @@ type Axis = {
 
 type Props = {
   axes: Axis[];
+  studentId?: string;
   t: {
     addAxis: string;
     labelPlaceholder: string;
     add: string;
     remove: string;
     noAxes: string;
-    createDefaults: string;
+    createDefaults?: string;
     active: string;
     inactive: string;
   };
 };
 
-export default function SkillAxesManager({ axes, t }: Props) {
+export default function SkillAxesManager({ axes, studentId, t }: Props) {
   const [isPending, startTransition] = useTransition();
 
   function submit(action: (fd: FormData) => Promise<void>, fd: FormData) {
     startTransition(() => action(fd));
   }
 
+  function withStudentId(fd: FormData) {
+    if (studentId) fd.append("studentId", studentId);
+    return fd;
+  }
+
   return (
     <div className={styles.container}>
       {/* Add new axis */}
       <form
-        action={createSkillAxis}
+        action={(fd) => {
+          submit(createSkillAxis, withStudentId(fd));
+        }}
         className={styles.addForm}
       >
+        {studentId && <input type="hidden" name="studentId" value={studentId} />}
         <input
           type="text"
           name="label"
@@ -60,11 +69,13 @@ export default function SkillAxesManager({ axes, t }: Props) {
       {axes.length === 0 ? (
         <div className={styles.emptyState}>
           <p className={styles.emptyText}>{t.noAxes}</p>
-          <form action={createDefaultAxes}>
-            <button type="submit" className={styles.defaultsBtn} disabled={isPending}>
-              {t.createDefaults}
-            </button>
-          </form>
+          {!studentId && t.createDefaults && (
+            <form action={createDefaultAxes}>
+              <button type="submit" className={styles.defaultsBtn} disabled={isPending}>
+                {t.createDefaults}
+              </button>
+            </form>
+          )}
         </div>
       ) : (
         <ul className={styles.axisList}>
@@ -82,6 +93,7 @@ export default function SkillAxesManager({ axes, t }: Props) {
                   onClick={() => {
                     const fd = new FormData();
                     fd.append("axisId", axis.id);
+                    if (studentId) fd.append("studentId", studentId);
                     submit(toggleSkillAxis, fd);
                   }}
                 >
@@ -90,6 +102,7 @@ export default function SkillAxesManager({ axes, t }: Props) {
                 <form
                   action={(fd) => {
                     fd.append("axisId", axis.id);
+                    if (studentId) fd.append("studentId", studentId);
                     submit(deleteSkillAxis, fd);
                   }}
                   style={{ display: "inline" }}

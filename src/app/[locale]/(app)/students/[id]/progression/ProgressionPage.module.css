@@ -44,3 +44,30 @@
 .manageAxesLink:hover {
   color: #4f46e5;
 }
+
+.axesSection {
+  border-top: 1px solid var(--color-border, #e5e7eb);
+  padding-top: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.axesSectionHeader {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.axesSectionTitle {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary, #111827);
+  margin: 0;
+}
+
+.axesSectionSubtitle {
+  font-size: 13px;
+  color: var(--color-text-secondary, #6b7280);
+  margin: 0;
+}
