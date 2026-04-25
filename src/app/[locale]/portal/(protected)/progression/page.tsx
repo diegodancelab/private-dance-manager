@@ -45,7 +45,7 @@ export default async function PortalProgressionPage({ params }: Props) {
             compareNone: t("compareNone"),
             coachLabel: t("coachLabel"),
             history: t("history"),
-            countBilans: t.raw("countBilans") as string,
+            countBilans: t("countBilans", { count: serialized.length }),
             referenceTag: t("referenceTag"),
           }}
         />

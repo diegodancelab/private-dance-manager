@@ -156,7 +156,7 @@ export default function ProgressionView({ assessments, labels, dateLocale }: Pro
         <div className={styles.cardHeader}>
           <div className={styles.cardTitle}>{labels.history}</div>
           <span className={styles.cardLabel}>
-            {labels.countBilans.replace("{count}", String(assessments.length))}
+            {labels.countBilans}
           </span>
         </div>
 
