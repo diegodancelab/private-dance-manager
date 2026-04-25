@@ -5,6 +5,7 @@ import { prisma } from "@/lib/prisma";
 import { getLocale } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { sendPortalInvitation } from "@/lib/email/sendPortalInvitation";
+import { sendPortalAccessGranted } from "@/lib/email/sendPortalAccessGranted";
 import { DomainError, isDomainError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 
@@ -12,7 +13,13 @@ function getAppUrl(): string {
   return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 }
 
-async function createAndSendInvitation(
+/**
+ * Activates portal access for a student and sends the appropriate email:
+ * - If the student already has an account elsewhere (same email + passwordHash),
+ *   copy the password hash, activate immediately, send a "just log in" email.
+ * - Otherwise create a token, send a setup link to create a password.
+ */
+async function activatePortalAndNotify(
   studentId: string,
   teacherFirstName: string,
   locale: string
@@ -28,21 +35,58 @@ async function createAndSendInvitation(
     );
   }
 
-  const token = crypto.randomUUID();
-  const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48h
-
-  await prisma.portalInvitation.create({
-    data: { userId: studentId, token, expiresAt },
+  // Check if this email already has an active portal account with another teacher.
+  const existingAccount = await prisma.user.findFirst({
+    where: {
+      email: student.email,
+      id: { not: studentId },
+      role: "STUDENT",
+      passwordHash: { not: null },
+      portalActivatedAt: { not: null },
+    },
+    select: { passwordHash: true },
   });
 
-  const invitationUrl = `${getAppUrl()}/${locale}/portal/setup?token=${token}`;
+  if (existingAccount) {
+    // Already has a password — copy it and activate immediately.
+    await prisma.user.update({
+      where: { id: studentId },
+      data: {
+        passwordHash: existingAccount.passwordHash,
+        portalActivatedAt: new Date(),
+      },
+    });
 
-  await sendPortalInvitation({
-    studentEmail: student.email,
-    studentFirstName: student.firstName,
-    teacherFirstName,
-    invitationUrl,
-  });
+    const loginUrl = `${getAppUrl()}/${locale}/login`;
+    await sendPortalAccessGranted({
+      studentEmail: student.email,
+      studentFirstName: student.firstName,
+      teacherFirstName,
+      loginUrl,
+    });
+
+    logger.info("portal", "Portal activated immediately (existing account)", {
+      studentId,
+    });
+  } else {
+    // No existing account — create token and send setup link.
+    const token = crypto.randomUUID();
+    const expiresAt = new Date(Date.now() + 48 * 60 * 60 * 1000); // 48h
+
+    await prisma.portalInvitation.create({
+      data: { userId: studentId, token, expiresAt },
+    });
+
+    const invitationUrl = `${getAppUrl()}/${locale}/portal/setup?token=${token}`;
+    await sendPortalInvitation({
+      studentEmail: student.email,
+      studentFirstName: student.firstName,
+      teacherFirstName,
+      invitationUrl,
+    });
+
+    logger.info("portal", "Portal invitation sent (new account)", { studentId });
+  }
 }
 
 export type AddEmailFormState = { error: string | null };
@@ -87,9 +131,9 @@ export async function addEmailAndActivatePortal(
     });
 
     const locale = await getLocale();
-    await createAndSendInvitation(studentId, user.firstName, locale);
+    await activatePortalAndNotify(studentId, user.firstName, locale);
 
-    logger.info("portal", "Email added and portal invitation sent", {
+    logger.info("portal", "Email added and portal activated", {
       studentId,
       teacherId: user.id,
     });
@@ -126,9 +170,9 @@ export async function activateStudentPortal(formData: FormData): Promise<void> {
   }
 
   const locale = await getLocale();
-  await createAndSendInvitation(studentId, user.firstName, locale);
+  await activatePortalAndNotify(studentId, user.firstName, locale);
 
-  logger.info("portal", "Portal invitation sent", {
+  logger.info("portal", "Portal activation triggered", {
     studentId,
     teacherId: user.id,
   });
@@ -152,9 +196,7 @@ export async function resendPortalInvitation(
   if (!student) throw new Error("Student not found");
 
   if (!student.email) {
-    throw new DomainError(
-      "Un email est requis pour envoyer une invitation."
-    );
+    throw new DomainError("Un email est requis pour envoyer une invitation.");
   }
 
   if (student.portalActivatedAt) {
@@ -164,11 +206,11 @@ export async function resendPortalInvitation(
   // Invalidate all existing unused invitations for this student.
   await prisma.portalInvitation.updateMany({
     where: { userId: studentId, usedAt: null },
-    data: { expiresAt: new Date() }, // force-expire them
+    data: { expiresAt: new Date() },
   });
 
   const locale = await getLocale();
-  await createAndSendInvitation(studentId, user.firstName, locale);
+  await activatePortalAndNotify(studentId, user.firstName, locale);
 
   logger.info("portal", "Portal invitation resent", {
     studentId,
