@@ -76,7 +76,7 @@ enum TeacherStudentInvitationStatus {
 
 model User {
   id                  String              @id @default(cuid())
-  email               String?             @unique
+  email               String?
   firstName           String
   lastName            String
   phone               String?
