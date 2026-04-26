@@ -47,7 +47,6 @@ export default async function PortalLessonsPage({ params }: Props) {
           seeAssessment: t("seeAssessment"),
           reschedule: t("reschedule"),
           feedbackFromTeacher: t("feedbackFromTeacher"),
-          watchVideo: t("watchVideo"),
         }}
         lessonTypeLabels={lessonTypeLabels}
       />

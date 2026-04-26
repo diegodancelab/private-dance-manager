@@ -359,8 +359,6 @@
   "postLessonFeedback": {
     "sectionTitle": "Feedback post-cours",
     "participantTitle": "Feedback pour {name}",
-    "videoUrl": "URL vidéo (YouTube, Vimeo, Drive…)",
-    "videoUrlPlaceholder": "https://youtu.be/…",
     "studentFeedback": "Feedback pour l'élève",
     "studentFeedbackPlaceholder": "Points positifs, axes d'amélioration, encouragements…",
     "internalNotes": "Notes internes (non visibles par l'élève)",
@@ -519,8 +517,6 @@
       "noUpcoming": "Aucun cours à venir.",
       "noPast": "Aucun cours passé.",
       "feedbackFromTeacher": "Retour de votre professeur",
-      "video": "Vidéo",
-      "watchVideo": "Voir la vidéo",
       "noFeedback": "Aucun feedback pour ce cours.",
       "subtitle": "Consulte tes cours à venir et ton historique.",
       "bookLesson": "Réserver un cours",

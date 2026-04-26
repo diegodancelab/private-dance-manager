@@ -23,26 +23,10 @@ type Props = {
     seeAssessment: string;
     reschedule: string;
     feedbackFromTeacher: string;
-    watchVideo: string;
   };
   lessonTypeLabels: Record<string, string>;
 };
 
-function getVideoEmbedType(url: string): "youtube" | "vimeo" | "link" {
-  if (/youtube\.com|youtu\.be/.test(url)) return "youtube";
-  if (/vimeo\.com/.test(url)) return "vimeo";
-  return "link";
-}
-
-function getYoutubeEmbedUrl(url: string): string {
-  const match = url.match(/(?:v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
-  return match ? `https://www.youtube-nocookie.com/embed/${match[1]}` : url;
-}
-
-function getVimeoEmbedUrl(url: string): string {
-  const match = url.match(/vimeo\.com\/(\d+)/);
-  return match ? `https://player.vimeo.com/video/${match[1]}` : url;
-}
 
 function LessonCard({
   lesson,
@@ -92,21 +76,6 @@ function LessonCard({
           </div>
         )}
 
-        {lesson.feedback?.videoUrl && tab === "past" && (() => {
-          const url = lesson.feedback!.videoUrl!;
-          const type = getVideoEmbedType(url);
-          if (type === "youtube") return (
-            <div className={styles.videoWrapper}>
-              <iframe src={getYoutubeEmbedUrl(url)} title={lesson.title} allowFullScreen className={styles.videoEmbed} />
-            </div>
-          );
-          if (type === "vimeo") return (
-            <div className={styles.videoWrapper}>
-              <iframe src={getVimeoEmbedUrl(url)} title={lesson.title} allowFullScreen className={styles.videoEmbed} />
-            </div>
-          );
-          return <a href={url} target="_blank" rel="noopener noreferrer" className={styles.videoLink}>{labels.watchVideo} →</a>;
-        })()}
       </div>
 
       {tab === "upcoming" && (

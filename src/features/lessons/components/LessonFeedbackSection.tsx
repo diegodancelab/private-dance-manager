@@ -12,7 +12,6 @@ import styles from "./LessonFeedbackSection.module.css";
 type Axis = { id: string; label: string; order: number };
 
 type ExistingFeedback = {
-  videoUrl: string | null;
   studentFeedback: string | null;
   internalNotes: string | null;
 };
@@ -77,18 +76,6 @@ function ParticipantFeedbackForm({
         {feedbackState.errors.form && (
           <p className={styles.errorBanner}>{feedbackState.errors.form}</p>
         )}
-
-        <div className={styles.field}>
-          <label className={styles.label}>{t.videoUrl}</label>
-          <input
-            type="url"
-            name="videoUrl"
-            defaultValue={existingFeedback?.videoUrl ?? ""}
-            placeholder={t.videoUrlPlaceholder}
-            className={styles.input}
-            disabled={feedbackPending}
-          />
-        </div>
 
         <div className={styles.field}>
           <label className={styles.label}>{t.studentFeedback}</label>

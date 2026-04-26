@@ -10,7 +10,6 @@ export type PortalLesson = {
   location: string | null;
   teacherName: string;
   feedback: {
-    videoUrl: string | null;
     studentFeedback: string | null;
   } | null;
 };
@@ -36,7 +35,7 @@ export async function getStudentLessons(
     teacher: { select: { firstName: true, lastName: true } },
     feedbacks: {
       where: { studentId },
-      select: { videoUrl: true, studentFeedback: true },
+      select: { studentFeedback: true },
       take: 1,
     },
   };
@@ -87,7 +86,7 @@ export async function getStudentLessons(
       location: p.lesson.location,
       teacherName: `${p.lesson.teacher.firstName} ${p.lesson.teacher.lastName}`,
       feedback: fb
-        ? { videoUrl: fb.videoUrl, studentFeedback: fb.studentFeedback }
+        ? { studentFeedback: fb.studentFeedback }
         : null,
     };
   }

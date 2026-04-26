@@ -359,8 +359,6 @@
   "postLessonFeedback": {
     "sectionTitle": "Pēc nodarbības atsauksmes",
     "participantTitle": "Atsauksmes {name}",
-    "videoUrl": "Video URL (YouTube, Vimeo, Drive…)",
-    "videoUrlPlaceholder": "https://youtu.be/…",
     "studentFeedback": "Atsauksmes skolēnam",
     "studentFeedbackPlaceholder": "Pozitīvie punkti, uzlabojamās jomas, uzmundrinājums…",
     "internalNotes": "Iekšējās piezīmes (skolēnam neredzamas)",
@@ -519,8 +517,6 @@
       "noUpcoming": "Nav gaidāmu nodarbību.",
       "noPast": "Nav pagājušu nodarbību.",
       "feedbackFromTeacher": "Pasniedzēja atsauksmes",
-      "video": "Video",
-      "watchVideo": "Skatīt video",
       "noFeedback": "Nav atsauksmju par šo nodarbību.",
       "subtitle": "Apskatiet savas gaidāmās nodarbības un vēsturi.",
       "bookLesson": "Rezervēt nodarbību",

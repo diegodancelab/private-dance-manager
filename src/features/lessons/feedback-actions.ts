@@ -19,7 +19,6 @@ export async function saveLessonFeedback(
 
   const lessonId = String(formData.get("lessonId") || "").trim();
   const studentId = String(formData.get("studentId") || "").trim();
-  const videoUrl = String(formData.get("videoUrl") || "").trim() || null;
   const studentFeedback = String(formData.get("studentFeedback") || "").trim() || null;
   const internalNotes = String(formData.get("internalNotes") || "").trim() || null;
 
@@ -40,8 +39,8 @@ export async function saveLessonFeedback(
 
   await prisma.lessonFeedback.upsert({
     where: { lessonId_studentId: { lessonId, studentId } },
-    create: { lessonId, studentId, teacherId: user.id, videoUrl, studentFeedback, internalNotes },
-    update: { videoUrl, studentFeedback, internalNotes },
+    create: { lessonId, studentId, teacherId: user.id, studentFeedback, internalNotes },
+    update: { studentFeedback, internalNotes },
   });
 
   revalidatePath(`/lessons/${lessonId}`);

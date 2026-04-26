@@ -314,7 +314,6 @@ model LessonFeedback {
   lessonId        String
   studentId       String
   teacherId       String
-  videoUrl        String?
   studentFeedback String?
   internalNotes   String?
   createdAt       DateTime @default(now())

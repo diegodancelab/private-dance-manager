@@ -43,7 +43,6 @@ export default async function LessonDetailPage({ params }: Props) {
         feedbacks: {
           select: {
             studentId: true,
-            videoUrl: true,
             studentFeedback: true,
             internalNotes: true,
           },
@@ -211,7 +210,6 @@ export default async function LessonDetailPage({ params }: Props) {
                 studentName: `${p.user.firstName} ${p.user.lastName}`,
                 existingFeedback: existingFeedback
                   ? {
-                      videoUrl: existingFeedback.videoUrl,
                       studentFeedback: existingFeedback.studentFeedback,
                       internalNotes: existingFeedback.internalNotes,
                     }
@@ -228,8 +226,6 @@ export default async function LessonDetailPage({ params }: Props) {
             t={{
               sectionTitle: tFeedback("sectionTitle"),
               participantTitle: tFeedback.raw("participantTitle") as string,
-              videoUrl: tFeedback("videoUrl"),
-              videoUrlPlaceholder: tFeedback("videoUrlPlaceholder"),
               studentFeedback: tFeedback("studentFeedback"),
               studentFeedbackPlaceholder: tFeedback("studentFeedbackPlaceholder"),
               internalNotes: tFeedback("internalNotes"),
