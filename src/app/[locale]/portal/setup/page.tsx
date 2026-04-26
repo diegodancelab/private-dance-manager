@@ -28,7 +28,7 @@ export default async function PortalSetupPage({ params, searchParams }: Props) {
       <div className={styles.loginPage}>
         <div className={styles.card}>
           <div className={styles.header}>
-            <h1 className={styles.title}>Private Dance Manager</h1>
+            <h1 className={styles.title}>DanceDesk</h1>
             <p className={styles.subtitle}>{t("tokenExpired")}</p>
           </div>
         </div>

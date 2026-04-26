@@ -74,7 +74,7 @@ export default function PortalShell({
         <div className={styles.brand}>
           <div className={styles.brandLogo}>P</div>
           <div>
-            <div className={styles.brandName}>Private Dance</div>
+            <div className={styles.brandName}>DanceDesk</div>
             <div className={styles.brandSub}>{tTopbar("area")}</div>
           </div>
         </div>

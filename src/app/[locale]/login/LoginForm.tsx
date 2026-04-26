@@ -12,7 +12,7 @@ export default function LoginForm() {
   return (
     <div className={styles.card}>
       <div className={styles.header}>
-        <h1 className={styles.title}>Private Dance Manager</h1>
+        <h1 className={styles.title}>DanceDesk</h1>
         <p className={styles.subtitle}>Sign in to your account</p>
       </div>
 

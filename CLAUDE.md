@@ -1,8 +1,8 @@
-# CLAUDE.md — Private Dance Manager
+# CLAUDE.md — DanceDesk
 
 ## Project Overview
 
-**Private Dance Manager** is a fullstack SaaS-style web application for dance teachers to manage private lessons, students, payments, expenses, and scheduling.
+**DanceDesk** is a fullstack SaaS-style web application for dance teachers to manage private lessons, students, payments, expenses, and scheduling.
 
 ---
 

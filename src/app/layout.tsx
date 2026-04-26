@@ -6,7 +6,7 @@ import "./globals.css";
 const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
 
 export const metadata: Metadata = {
-  title: "Private Dance Manager",
+  title: "DanceDesk",
   description: "Manage private dance lessons, students, charges, and payments.",
 };
 

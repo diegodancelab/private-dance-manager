@@ -18,7 +18,7 @@ export async function sendPortalInvitation({
       <p>Bonjour ${studentFirstName},</p>
       <p>
         <strong>${teacherFirstName}</strong> vous invite à accéder à votre espace élève
-        sur <strong>Private Dance Manager</strong>.
+        sur <strong>DanceDesk</strong>.
       </p>
       <p>
         Vous pourrez y consulter vos cours, vos feedbacks, votre progression
@@ -37,7 +37,7 @@ export async function sendPortalInvitation({
         de vous renvoyer une invitation.
       </p>
       <p style="color:#6b7280;font-size:12px;">
-        Private Dance Manager — invitation automatique
+        DanceDesk — invitation automatique
       </p>
     `,
   });

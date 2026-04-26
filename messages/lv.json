@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "title": "Private Dance Manager",
+    "title": "DanceDesk",
     "description": "Pārvaldiet privātas deju nodarbības, skolēnus, maksājumus un apmaksas."
   },
   "navigation": {
-    "brand": "Private Dance Manager",
+    "brand": "DanceDesk",
     "subtitle": "Skolotāja panelis",
     "dashboard": "Panelis",
     "calendar": "Kalendārs",

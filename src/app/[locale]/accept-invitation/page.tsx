@@ -26,7 +26,7 @@ export default async function AcceptInvitationPage({ params, searchParams }: Pro
       <div className={styles.loginPage}>
         <div className={styles.card}>
           <div className={styles.header}>
-            <h1 className={styles.title}>Private Dance Manager</h1>
+            <h1 className={styles.title}>DanceDesk</h1>
             <p className={styles.subtitle}>
               Ce lien d&apos;invitation a expiré ou a déjà été utilisé.
             </p>
@@ -41,7 +41,7 @@ export default async function AcceptInvitationPage({ params, searchParams }: Pro
       <div className={styles.loginPage}>
         <div className={styles.card}>
           <div className={styles.header}>
-            <h1 className={styles.title}>Private Dance Manager</h1>
+            <h1 className={styles.title}>DanceDesk</h1>
             <p className={styles.subtitle}>
               Ce lien d&apos;invitation est destiné à une autre adresse email.
               Déconnectez-vous et reconnectez-vous avec le bon compte.
@@ -64,7 +64,7 @@ export default async function AcceptInvitationPage({ params, searchParams }: Pro
       <div className={styles.loginPage}>
         <div className={styles.card}>
           <div className={styles.header}>
-            <h1 className={styles.title}>Private Dance Manager</h1>
+            <h1 className={styles.title}>DanceDesk</h1>
             <p className={styles.subtitle}>Lien d&apos;invitation invalide.</p>
           </div>
         </div>
@@ -83,7 +83,7 @@ export default async function AcceptInvitationPage({ params, searchParams }: Pro
       <div className={styles.loginPage}>
         <div className={styles.card}>
           <div className={styles.header}>
-            <h1 className={styles.title}>Private Dance Manager</h1>
+            <h1 className={styles.title}>DanceDesk</h1>
             <p className={styles.subtitle}>{message}</p>
           </div>
         </div>

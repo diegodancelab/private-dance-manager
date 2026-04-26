@@ -16,8 +16,8 @@ export async function sendTeacherStudentInvitation({
   const greeting = recipientFirstName ? `Bonjour ${recipientFirstName},` : "Bonjour,";
 
   const bodyText = isExistingUser
-    ? `<strong>${teacherFirstName}</strong> vous invite à rejoindre ses élèves sur <strong>Private Dance Manager</strong>. Vous pourrez accéder à un espace élève dédié tout en conservant votre compte existant.`
-    : `<strong>${teacherFirstName}</strong> vous invite à rejoindre ses élèves sur <strong>Private Dance Manager</strong>. Cliquez sur le lien ci-dessous pour créer votre compte et accepter l'invitation.`;
+    ? `<strong>${teacherFirstName}</strong> vous invite à rejoindre ses élèves sur <strong>DanceDesk</strong>. Vous pourrez accéder à un espace élève dédié tout en conservant votre compte existant.`
+    : `<strong>${teacherFirstName}</strong> vous invite à rejoindre ses élèves sur <strong>DanceDesk</strong>. Cliquez sur le lien ci-dessous pour créer votre compte et accepter l'invitation.`;
 
   const ctaLabel = isExistingUser ? "Accepter l'invitation" : "Créer mon compte et accepter";
 
@@ -39,7 +39,7 @@ export async function sendTeacherStudentInvitation({
         Ce lien est valable <strong>48 heures</strong>. Si vous ne souhaitez pas accepter cette invitation, ignorez simplement cet email.
       </p>
       <p style="color:#6b7280;font-size:12px;">
-        Private Dance Manager — invitation automatique
+        DanceDesk — invitation automatique
       </p>
     `,
   });

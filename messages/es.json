@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "title": "Private Dance Manager",
+    "title": "DanceDesk",
     "description": "Gestiona clases de baile privadas, alumnos, cargos y pagos."
   },
   "navigation": {
-    "brand": "Private Dance Manager",
+    "brand": "DanceDesk",
     "subtitle": "Panel del profesor",
     "dashboard": "Panel",
     "calendar": "Calendario",

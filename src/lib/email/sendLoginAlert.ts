@@ -22,7 +22,7 @@ export async function sendLoginAlert(targetEmail: string): Promise<void> {
         considère de changer ton mot de passe dès que possible.
       </p>
       <p style="color:#6b7280;font-size:12px;">
-        Private Dance Manager — notification de sécurité automatique
+        DanceDesk — notification de sécurité automatique
       </p>
     `,
   });

@@ -18,7 +18,7 @@ export async function sendPortalAccessGranted({
       <p>Bonjour ${studentFirstName},</p>
       <p>
         <strong>${teacherFirstName}</strong> vous a donné accès à votre espace élève
-        sur <strong>Private Dance Manager</strong>.
+        sur <strong>DanceDesk</strong>.
       </p>
       <p>
         Vous avez déjà un compte — connectez-vous simplement avec vos identifiants habituels
@@ -33,7 +33,7 @@ export async function sendPortalAccessGranted({
         </a>
       </p>
       <p style="color:#6b7280;font-size:12px;">
-        Private Dance Manager — notification automatique
+        DanceDesk — notification automatique
       </p>
     `,
   });

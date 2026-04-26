@@ -1,10 +1,10 @@
 {
   "metadata": {
-    "title": "Private Dance Manager",
+    "title": "DanceDesk",
     "description": "Manage private dance lessons, students, charges, and payments."
   },
   "navigation": {
-    "brand": "Private Dance Manager",
+    "brand": "DanceDesk",
     "subtitle": "Teacher dashboard",
     "dashboard": "Dashboard",
     "calendar": "Calendar",
