@@ -32,27 +32,13 @@ export function getEmailEnvironment(): EmailEnvironment {
 
 // ---------------------------------------------------------------------------
 // Recipient routing
-// Dev     → real address (Mailpit intercepts, nothing escapes)
-// Staging → redirected to EMAIL_OVERRIDE_TO
-// Prod    → real address
+// EMAIL_OVERRIDE_TO, si défini, redirige tous les emails vers une adresse
+// unique — utile en staging pour éviter tout envoi accidentel à de vrais
+// utilisateurs. En production, la variable ne doit pas être définie.
 // ---------------------------------------------------------------------------
 
 export function resolveRecipient(realEmail: string): string {
-  const env = getEmailEnvironment();
-
-  if (env === "production" || env === "development") return realEmail;
-
-  const override = process.env.EMAIL_OVERRIDE_TO;
-  if (!override) {
-    console.warn(
-      `[EMAIL] ⚠️  EMAIL_OVERRIDE_TO not set in "${env}". ` +
-      `Sending to real recipient: ${realEmail}.`
-    );
-    return realEmail;
-  }
-
-  console.log("[EMAIL]", { env, to: realEmail, redirected: override });
-  return override;
+  return process.env.EMAIL_OVERRIDE_TO ?? realEmail;
 }
 
 // ---------------------------------------------------------------------------
