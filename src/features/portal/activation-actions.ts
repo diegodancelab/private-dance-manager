@@ -6,12 +6,9 @@ import { getLocale } from "next-intl/server";
 import { revalidatePath } from "next/cache";
 import { sendPortalInvitation } from "@/lib/email/sendPortalInvitation";
 import { sendPortalAccessGranted } from "@/lib/email/sendPortalAccessGranted";
+import { getAppUrl } from "@/lib/email/emailEnv";
 import { DomainError, isDomainError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
-
-function getAppUrl(): string {
-  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
-}
 
 /**
  * Activates portal access for a student and sends the appropriate email:

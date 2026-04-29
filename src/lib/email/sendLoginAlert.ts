@@ -1,9 +1,10 @@
-import { sendEmailSafe } from "./emailEnv";
+import { sendEmailSafe, FROM_SECURITY } from "./emailEnv";
 
 export async function sendLoginAlert(targetEmail: string): Promise<void> {
   const now = new Date().toLocaleString("fr-CH", { timeZone: "Europe/Zurich" });
 
   await sendEmailSafe({
+    from: FROM_SECURITY,
     to: targetEmail,
     subject: "⚠️ Trop de tentatives de connexion sur ton compte",
     html: `

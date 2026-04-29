@@ -1,4 +1,4 @@
-import { sendEmailSafe } from "./emailEnv";
+import { sendEmailSafe, FROM_NOTIFICATIONS } from "./emailEnv";
 
 export async function sendTeacherStudentInvitation({
   recipientEmail,
@@ -22,6 +22,7 @@ export async function sendTeacherStudentInvitation({
   const ctaLabel = isExistingUser ? "Accepter l'invitation" : "Créer mon compte et accepter";
 
   await sendEmailSafe({
+    from: FROM_NOTIFICATIONS,
     to: recipientEmail,
     subject: `${teacherFirstName} vous invite à rejoindre ses élèves`,
     html: `

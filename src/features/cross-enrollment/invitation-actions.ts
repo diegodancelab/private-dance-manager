@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 import { DomainError } from "@/lib/errors";
 import { logger } from "@/lib/logger";
 import { sendTeacherStudentInvitation } from "@/lib/email/sendTeacherStudentInvitation";
+import { getAppUrl } from "@/lib/email/emailEnv";
 import { TeacherStudentInvitationStatus } from "@/generated/prisma/client";
 import { withFormAction } from "@/lib/errors";
 
@@ -18,10 +19,6 @@ export type InviteFormState = {
 
 function isValidEmail(email: string): boolean {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
-}
-
-function getAppUrl(): string {
-  return process.env.NEXT_PUBLIC_APP_URL ?? "http://localhost:3000";
 }
 
 export const inviteStudent = withFormAction(async function inviteStudent(
