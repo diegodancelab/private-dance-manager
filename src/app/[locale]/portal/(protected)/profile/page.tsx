@@ -18,7 +18,7 @@ export default async function PortalProfilePage({ params }: Props) {
 
   const student = await prisma.user.findUnique({
     where: { id: user.id },
-    select: { firstName: true, lastName: true, email: true, phone: true, createdAt: true },
+    select: { firstName: true, lastName: true, email: true, phone: true, createdAt: true, notifLessonReminder: true, notifAssessment: true },
   });
 
   if (!student) return null;
@@ -82,6 +82,10 @@ export default async function PortalProfilePage({ params }: Props) {
             <div className={styles.fieldsetTitle}>{t("preferences")}</div>
             <div className={styles.fieldsetDesc}>{t("preferencesDesc")}</div>
             <PreferencesForm
+              defaultValues={{
+                notifLessonReminder: student.notifLessonReminder,
+                notifAssessment: student.notifAssessment,
+              }}
               labels={{
                 prefEmailReminders: t("prefEmailReminders"),
                 prefEmailRemindersDesc: t("prefEmailRemindersDesc"),

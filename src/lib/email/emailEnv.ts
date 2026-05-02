@@ -31,6 +31,18 @@ export function getEmailEnvironment(): EmailEnvironment {
 }
 
 // ---------------------------------------------------------------------------
+// App URL
+// ---------------------------------------------------------------------------
+
+export function getAppUrl(): string {
+  const url = process.env.NEXT_PUBLIC_APP_URL;
+  if (!url && process.env.NODE_ENV !== "development") {
+    console.error("[EMAIL] ⚠️  NEXT_PUBLIC_APP_URL is not set — links in emails will point to localhost!");
+  }
+  return url ?? "http://localhost:3000";
+}
+
+// ---------------------------------------------------------------------------
 // Recipient routing
 // EMAIL_OVERRIDE_TO, si défini, redirige tous les emails vers une adresse
 // unique — utile en staging pour éviter tout envoi accidentel à de vrais

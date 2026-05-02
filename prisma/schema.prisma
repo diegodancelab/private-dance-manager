@@ -85,6 +85,8 @@ model User {
   passwordHash        String?
   createdByTeacherId  String?
   portalActivatedAt   DateTime?
+  notifLessonReminder Boolean             @default(true)
+  notifAssessment     Boolean             @default(true)
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
 

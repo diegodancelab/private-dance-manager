@@ -3,6 +3,8 @@
 import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { sendAssessmentNotification } from "@/lib/email/sendAssessmentNotification";
+import { getAppUrl } from "@/lib/email/emailEnv";
 
 // ── Lesson Feedback ──────────────────────────────────────────────────────────
 
@@ -115,7 +117,7 @@ export async function saveSkillAssessment(
     );
   } else {
     // Create new assessment with scores.
-    const assessment = await prisma.skillAssessment.create({
+    await prisma.skillAssessment.create({
       data: {
         studentId,
         teacherId: user.id,
@@ -126,10 +128,26 @@ export async function saveSkillAssessment(
         },
       },
     });
+
+    // Notify student if they opted in.
+    const student = await prisma.user.findUnique({
+      where: { id: studentId },
+      select: { email: true, firstName: true, notifAssessment: true },
+    });
+    if (student?.email && student.notifAssessment) {
+      const locale = "fr"; // server context — use default locale for portal link
+      const progressionUrl = `${getAppUrl()}/${locale}/portal/progression`;
+      void sendAssessmentNotification({
+        studentEmail: student.email,
+        studentFirstName: student.firstName,
+        teacherFirstName: user.firstName,
+        progressionUrl,
+      });
+    }
+
     if (lessonId) {
       revalidatePath(`/lessons/${lessonId}`);
     }
-    void assessment;
   }
 
   if (lessonId) {
