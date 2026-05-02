@@ -8,6 +8,7 @@ export async function sendLessonReminder({
   scheduledAt,
   location,
   portalUrl,
+  timezone = "Europe/Zurich",
 }: {
   studentEmail: string;
   studentFirstName: string;
@@ -16,17 +17,18 @@ export async function sendLessonReminder({
   scheduledAt: Date;
   location?: string | null;
   portalUrl: string;
+  timezone?: string;
 }): Promise<void> {
   const dateStr = scheduledAt.toLocaleDateString("fr-CH", {
     weekday: "long",
     day: "numeric",
     month: "long",
-    timeZone: "Europe/Zurich",
+    timeZone: timezone,
   });
   const timeStr = scheduledAt.toLocaleTimeString("fr-CH", {
     hour: "2-digit",
     minute: "2-digit",
-    timeZone: "Europe/Zurich",
+    timeZone: timezone,
   });
 
   const locationLine = location

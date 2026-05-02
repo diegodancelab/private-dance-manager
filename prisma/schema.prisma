@@ -68,6 +68,26 @@ enum LessonStatus {
   CANCELED
 }
 
+enum NotificationType {
+  LESSON_REMINDER
+  ASSESSMENT_PUBLISHED
+  PAYMENT_DUE
+  PACKAGE_EXPIRING
+}
+
+enum NotificationChannel {
+  EMAIL
+  PUSH
+  SMS
+}
+
+enum NotificationStatus {
+  PENDING
+  SENT
+  FAILED
+  SKIPPED
+}
+
 enum TeacherStudentInvitationStatus {
   PENDING
   ACCEPTED
@@ -87,6 +107,7 @@ model User {
   portalActivatedAt   DateTime?
   notifLessonReminder Boolean             @default(true)
   notifAssessment     Boolean             @default(true)
+  timezone            String              @default("Europe/Zurich")
   createdAt           DateTime            @default(now())
   updatedAt           DateTime            @updatedAt
 
@@ -113,6 +134,7 @@ model User {
   sentInvitations       TeacherStudentInvitation[] @relation("InvitationTeacher")
   relationsAsTeacher    TeacherStudentRelation[]   @relation("RelationTeacher")
   relationsAsStudent    TeacherStudentRelation[]   @relation("RelationStudent")
+  notificationLogs      NotificationLog[]
 
   // Covers: student list (createdByTeacherId + role), student ownership checks
   @@index([createdByTeacherId, role])
@@ -415,4 +437,28 @@ model TeacherStudentRelation {
 
   @@unique([teacherId, studentId])
   @@index([studentId])
+}
+
+/// Trace immuable de chaque tentative d'envoi de notification.
+/// Sert de dédup (unique sur userId+type+referenceId+channel),
+/// d'audit trail et de source pour le retry passif (status=FAILED).
+model NotificationLog {
+  id           String              @id @default(cuid())
+  userId       String
+  type         NotificationType
+  channel      NotificationChannel @default(EMAIL)
+  status       NotificationStatus  @default(PENDING)
+  referenceId  String              @default("")  // lessonId, assessmentId, etc.
+  subject      String?
+  errorMessage String?
+  attempts     Int                 @default(0)
+  sentAt       DateTime?
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  user         User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, referenceId, channel])
+  @@index([status, attempts, createdAt])
+  @@index([userId])
 }
