@@ -143,9 +143,9 @@ export default function PortalShell({
             <div className={styles.topbarTitle}>{activeLabel}</div>
           </div>
           <div className={styles.topbarSpacer} />
-          <IconButton title={tTopbar("search")}><Search size={18} /></IconButton>
+          <span style={{ display: "none" }}><IconButton title={tTopbar("search")}><Search size={18} /></IconButton></span>
           <IconButton title={tTopbar("notifications")} dot><Bell size={18} /></IconButton>
-          <IconButton title={tTopbar("help")}><HelpCircle size={18} /></IconButton>
+          <span style={{ display: "none" }}><IconButton title={tTopbar("help")}><HelpCircle size={18} /></IconButton></span>
         </header>
 
         {/* Content */}

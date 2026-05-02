@@ -38,7 +38,7 @@ export default function PreferencesForm({ labels }: Props) {
           description={labels.prefAssessmentNotifDesc}
         />
       </div>
-      <div className={styles.toggleRow}>
+      <div style={{ display: "none" }}>
         <Toggle
           checked={newsletter}
           onChange={setNewsletter}
