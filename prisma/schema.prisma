@@ -131,10 +131,13 @@ model User {
   givenAssessments      SkillAssessment[]   @relation("AssessmentTeacher")
   skillAxes             SkillAxis[]         @relation("AxisTeacher")
   studentSkillAxes      SkillAxis[]         @relation("AxisStudent")
-  sentInvitations       TeacherStudentInvitation[] @relation("InvitationTeacher")
-  relationsAsTeacher    TeacherStudentRelation[]   @relation("RelationTeacher")
-  relationsAsStudent    TeacherStudentRelation[]   @relation("RelationStudent")
-  notificationLogs      NotificationLog[]
+  sentInvitations         TeacherStudentInvitation[] @relation("InvitationTeacher")
+  relationsAsTeacher      TeacherStudentRelation[]   @relation("RelationTeacher")
+  relationsAsStudent      TeacherStudentRelation[]   @relation("RelationStudent")
+  notificationLogs        NotificationLog[]
+  programmes              Programme[]                @relation("TeacherProgrammes")
+  studentProgrammes       StudentProgramme[]         @relation("StudentProgrammes")
+  taughtStudentProgrammes StudentProgramme[]         @relation("TeacherStudentProgrammes")
 
   // Covers: student list (createdByTeacherId + role), student ownership checks
   @@index([createdByTeacherId, role])
@@ -461,4 +464,94 @@ model NotificationLog {
   @@unique([userId, type, referenceId, channel])
   @@index([status, attempts, createdAt])
   @@index([userId])
+}
+
+enum ProgrammeItemStatus {
+  NOT_STARTED
+  INTRODUCED
+  IN_PROGRESS
+  MASTERED
+}
+
+/// Programme pédagogique créé par un prof (syllabus structuré par sections + items).
+model Programme {
+  id          String   @id @default(cuid())
+  teacherId   String
+  name        String
+  description String?
+  level       String?
+  danceStyle  String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  teacher     User               @relation("TeacherProgrammes", fields: [teacherId], references: [id], onDelete: Cascade)
+  sections    ProgrammeSection[]
+  assignments StudentProgramme[]
+
+  @@index([teacherId])
+}
+
+/// Section ordonnée au sein d'un programme (ex : "1. Footwork").
+model ProgrammeSection {
+  id          String   @id @default(cuid())
+  programmeId String
+  title       String
+  subtitle    String?
+  description String?
+  order       Int
+
+  programme   Programme       @relation(fields: [programmeId], references: [id], onDelete: Cascade)
+  items       ProgrammeItem[]
+
+  @@index([programmeId, order])
+}
+
+/// Item (élément) au sein d'une section (ex : "Pas de base").
+model ProgrammeItem {
+  id          String   @id @default(cuid())
+  sectionId   String
+  name        String
+  nameAlt     String?
+  description String?
+  isMandatory Boolean  @default(true)
+  order       Int
+
+  section     ProgrammeSection             @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  statuses    StudentProgrammeItemStatus[]
+
+  @@index([sectionId, order])
+}
+
+/// Assignation d'un programme à un élève par un prof.
+model StudentProgramme {
+  id          String   @id @default(cuid())
+  programmeId String
+  studentId   String
+  teacherId   String
+  assignedAt  DateTime @default(now())
+
+  programme    Programme                   @relation(fields: [programmeId], references: [id])
+  student      User                        @relation("StudentProgrammes", fields: [studentId], references: [id], onDelete: Cascade)
+  teacher      User                        @relation("TeacherStudentProgrammes", fields: [teacherId], references: [id])
+  itemStatuses StudentProgrammeItemStatus[]
+
+  @@unique([programmeId, studentId])
+  @@index([studentId])
+  @@index([teacherId])
+}
+
+/// Statut d'un item du programme pour un élève précis.
+model StudentProgrammeItemStatus {
+  id                 String              @id @default(cuid())
+  studentProgrammeId String
+  itemId             String
+  status             ProgrammeItemStatus @default(NOT_STARTED)
+  notes              String?
+  updatedAt          DateTime            @updatedAt
+
+  studentProgramme StudentProgramme @relation(fields: [studentProgrammeId], references: [id], onDelete: Cascade)
+  item             ProgrammeItem    @relation(fields: [itemId], references: [id], onDelete: Cascade)
+
+  @@unique([studentProgrammeId, itemId])
+  @@index([studentProgrammeId])
 }

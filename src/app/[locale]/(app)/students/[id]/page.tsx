@@ -11,8 +11,10 @@ import StudentLessonsSection from "@/features/students/components/StudentLessons
 import StudentRecentPaymentsSection from "@/features/students/components/StudentRecentPaymentsSection";
 import StudentPortalAccessCard from "@/features/students/components/StudentPortalAccessCard";
 import StudentActionsDropdown from "@/features/students/components/StudentActionsDropdown";
+import StudentProgrammePanel from "@/features/programmes/components/StudentProgrammePanel";
 import Button from "@/components/ui/Button/Button";
 import styles from "@/features/students/components/StudentDetail.module.css";
+import { getStudentProgrammes, getTeacherProgrammes } from "@/features/programmes/queries";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;
@@ -25,7 +27,13 @@ export default async function StudentDetailPage({ params }: Props) {
   const t = await getTranslations("studentDetail");
   const tCommon = await getTranslations("common");
   const tPortal = await getTranslations("portalAccess");
-  const data = await getStudentDetail(id, user.id);
+  const tProg = await getTranslations("programmes");
+
+  const [data, studentProgrammes, teacherProgrammes] = await Promise.all([
+    getStudentDetail(id, user.id),
+    getStudentProgrammes(id, user.id),
+    getTeacherProgrammes(user.id),
+  ]);
 
   if (!data) notFound();
 
@@ -99,6 +107,30 @@ export default async function StudentDetailPage({ params }: Props) {
             confirmDeactivateBack: tPortal("confirmDeactivateBack"),
           }}
         />
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>{tProg("studentProgramme")}</h2>
+          </div>
+          <StudentProgrammePanel
+            studentId={student.id}
+            studentProgrammes={studentProgrammes}
+            teacherProgrammes={teacherProgrammes}
+            t={{
+              studentProgramme: tProg("studentProgramme"),
+              assignProgramme: tProg("assignProgramme"),
+              selectProgramme: tProg("selectProgramme"),
+              assign: tProg("assign"),
+              unassign: tProg("unassign"),
+              progress: tProg.raw("progress") as string,
+              NOT_STARTED: tProg("NOT_STARTED"),
+              INTRODUCED: tProg("INTRODUCED"),
+              IN_PROGRESS: tProg("IN_PROGRESS"),
+              MASTERED: tProg("MASTERED"),
+              noAssignedProgramme: tProg("noAssignedProgramme"),
+              optional: tProg("optional"),
+            }}
+          />
+        </div>
         <StudentChargesSection charges={unpaidCharges} studentId={student.id} />
         <StudentPackagesSection packages={packages} />
         <StudentLessonsSection lessons={upcomingLessons} />

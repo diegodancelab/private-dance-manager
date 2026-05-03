@@ -11,6 +11,7 @@ import {
   LayoutDashboard,
   Calendar,
   TrendingUp,
+  GraduationCap,
   User,
   Search,
   Bell,
@@ -45,6 +46,7 @@ export default function PortalShell({
     { href: "/portal", label: t("dashboard"), icon: LayoutDashboard },
     { href: "/portal/lessons", label: t("lessons"), icon: Calendar },
     { href: "/portal/progression", label: t("progression"), icon: TrendingUp },
+    { href: "/portal/programme", label: t("programme"), icon: GraduationCap },
     { href: "/portal/profile", label: t("profile"), icon: User },
   ];
 
