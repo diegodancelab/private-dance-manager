@@ -14,11 +14,12 @@ import {
   Receipt,
   Wallet,
   Settings,
+  GraduationCap,
   type LucideIcon,
 } from "lucide-react";
 import styles from "./SidebarNav.module.css";
 
-const navItems: { href: string; labelKey: string; Icon: LucideIcon }[] = [
+const navItems: { href: string; labelKey: string; Icon: LucideIcon; matchPrefix?: string }[] = [
   { href: "/", labelKey: "dashboard", Icon: LayoutDashboard },
   { href: "/calendar", labelKey: "calendar", Icon: CalendarDays },
   { href: "/lessons", labelKey: "lessons", Icon: BookOpen },
@@ -26,7 +27,8 @@ const navItems: { href: string; labelKey: string; Icon: LucideIcon }[] = [
   { href: "/packages", labelKey: "packages", Icon: Package },
   { href: "/charges", labelKey: "charges", Icon: Receipt },
   { href: "/payments", labelKey: "payments", Icon: Wallet },
-  { href: "/settings/skill-axes", labelKey: "settings", Icon: Settings },
+  { href: "/settings/programmes", labelKey: "programmes", Icon: GraduationCap, matchPrefix: "/settings/programmes" },
+  { href: "/settings/skill-axes", labelKey: "settings", Icon: Settings, matchPrefix: "/settings/skill-axes" },
 ];
 
 type SidebarNavProps = {
@@ -66,11 +68,12 @@ export default function SidebarNav({ isDualRole = false, userName, userEmail }: 
       )}
 
       <nav className={styles.nav} aria-label="Main navigation">
-        {navItems.map(({ href, labelKey, Icon }) => {
+        {navItems.map(({ href, labelKey, Icon, matchPrefix }) => {
+          const prefix = matchPrefix ?? href;
           const isActive =
             href === "/"
               ? pathname === "/"
-              : pathname.startsWith(href);
+              : pathname.startsWith(prefix);
 
           return (
             <Link
