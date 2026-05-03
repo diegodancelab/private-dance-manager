@@ -19,10 +19,12 @@ export async function assignProgramme(formData: FormData): Promise<void> {
   });
   if (!programme) return;
 
-  await prisma.studentProgramme.upsert({
-    where: { programmeId_studentId: { programmeId, studentId } },
-    create: { programmeId, studentId, teacherId: user.id },
-    update: { teacherId: user.id, assignedAt: new Date() },
+  await prisma.studentProgramme.deleteMany({
+    where: { studentId, teacherId: user.id },
+  });
+
+  await prisma.studentProgramme.create({
+    data: { programmeId, studentId, teacherId: user.id },
   });
 
   revalidatePath(`/students/${studentId}`);
