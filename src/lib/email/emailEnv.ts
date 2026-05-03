@@ -13,6 +13,20 @@ export const FROM_SECURITY      = process.env.EMAIL_FROM_SECURITY      ?? "secur
 export const FROM_NOTIFICATIONS = process.env.EMAIL_FROM_NOTIFICATIONS ?? "notifications@dancedesk.ch";
 
 // ---------------------------------------------------------------------------
+// App URL — source unique pour construire les liens dans les emails.
+// NEXT_PUBLIC_APP_URL doit être configurée dans Vercel pour chaque
+// environnement (Settings → Environment Variables).
+// ---------------------------------------------------------------------------
+
+export function getAppUrl(): string {
+  const url = process.env.NEXT_PUBLIC_APP_URL;
+  if (!url && process.env.NODE_ENV !== "development") {
+    console.error("[EMAIL] ⚠️  NEXT_PUBLIC_APP_URL is not set — links in emails will point to localhost!");
+  }
+  return url ?? "http://localhost:3000";
+}
+
+// ---------------------------------------------------------------------------
 // Environment detection
 // NODE_ENV=development → local dev with Mailpit
 // VERCEL_ENV=preview   → staging on Vercel (Resend, redirected recipient)
