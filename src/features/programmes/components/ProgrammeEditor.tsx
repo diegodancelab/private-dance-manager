@@ -141,9 +141,14 @@ export default function ProgrammeEditor({ programme, t }: Props) {
                   action={(fd) => { fd.append("id", section.id); fd.append("programmeId", programme.id); startTransition(() => updateSection(fd)); setEditingSection(null); }}
                   className={styles.sectionEditForm}
                 >
-                  <input name="title" required defaultValue={section.title} placeholder={t.sectionTitlePlaceholder} className={styles.input} />
-                  <input name="subtitle" defaultValue={section.subtitle ?? ""} placeholder={t.sectionSubtitlePlaceholder} className={styles.input} />
-                  <textarea name="description" defaultValue={section.description ?? ""} placeholder={t.sectionDescriptionPlaceholder} rows={2} className={styles.textarea} />
+                  <div className={styles.field}>
+                    <label className={styles.label}>{t.sectionTitle} *</label>
+                    <input name="title" required defaultValue={section.title} placeholder={t.sectionTitlePlaceholder} className={styles.input} />
+                  </div>
+                  <div className={styles.field}>
+                    <label className={styles.label}>{t.sectionDescription}</label>
+                    <textarea name="description" defaultValue={section.description ?? ""} placeholder={t.sectionDescriptionPlaceholder} rows={2} className={styles.textarea} />
+                  </div>
                   <div style={{ display: "flex", gap: "0.5rem" }}>
                     <button type="submit" className={styles.btnPrimary}>{t.save}</button>
                     <button type="button" className={styles.btnGhost} onClick={() => setEditingSection(null)}>✕</button>
@@ -164,10 +169,19 @@ export default function ProgrammeEditor({ programme, t }: Props) {
                             className={styles.itemEditForm}
                           >
                             <div className={styles.row}>
-                              <input name="name" required defaultValue={item.name} placeholder={t.itemNamePlaceholder} className={styles.input} style={{ flex: 1 }} />
-                              <input name="nameAlt" defaultValue={item.nameAlt ?? ""} placeholder={t.itemNameAltPlaceholder} className={styles.input} style={{ flex: 1 }} />
+                              <div className={styles.field} style={{ flex: 1 }}>
+                                <label className={styles.label}>{t.itemName} *</label>
+                                <input name="name" required defaultValue={item.name} placeholder={t.itemNamePlaceholder} className={styles.input} />
+                              </div>
+                              <div className={styles.field} style={{ flex: 1 }}>
+                                <label className={styles.label}>{t.itemNameAlt}</label>
+                                <input name="nameAlt" defaultValue={item.nameAlt ?? ""} placeholder={t.itemNameAltPlaceholder} className={styles.input} />
+                              </div>
                             </div>
-                            <input name="description" defaultValue={item.description ?? ""} placeholder={t.itemDescription} className={styles.input} />
+                            <div className={styles.field}>
+                              <label className={styles.label}>{t.itemDescription}</label>
+                              <input name="description" defaultValue={item.description ?? ""} placeholder={t.itemDescription} className={styles.input} />
+                            </div>
                             <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
                               <label className={styles.checkLabel}>
                                 <input type="checkbox" name="isMandatory" defaultChecked={item.isMandatory} onChange={(e) => { const fd = e.target.form!; const hidden = fd.querySelector('input[name="isMandatory"]') as HTMLInputElement | null; if (hidden) hidden.value = e.target.checked ? "true" : "false"; }} />
@@ -203,8 +217,14 @@ export default function ProgrammeEditor({ programme, t }: Props) {
                       className={styles.addItemForm}
                     >
                       <div className={styles.row}>
-                        <input name="name" required placeholder={t.itemNamePlaceholder} className={styles.input} style={{ flex: 1 }} autoFocus />
-                        <input name="nameAlt" placeholder={t.itemNameAltPlaceholder} className={styles.input} style={{ flex: 1 }} />
+                        <div className={styles.field} style={{ flex: 1 }}>
+                          <label className={styles.label}>{t.itemName} *</label>
+                          <input name="name" required placeholder={t.itemNamePlaceholder} className={styles.input} autoFocus />
+                        </div>
+                        <div className={styles.field} style={{ flex: 1 }}>
+                          <label className={styles.label}>{t.itemNameAlt}</label>
+                          <input name="nameAlt" placeholder={t.itemNameAltPlaceholder} className={styles.input} />
+                        </div>
                       </div>
                       <div style={{ display: "flex", gap: "0.5rem" }}>
                         <button type="submit" className={styles.btnPrimary}>{t.save}</button>
@@ -228,9 +248,14 @@ export default function ProgrammeEditor({ programme, t }: Props) {
             action={(fd) => { fd.append("programmeId", programme.id); startTransition(() => createSection(fd)); setAddingSection(false); }}
             className={styles.addSectionForm}
           >
-            <input name="title" required placeholder={t.sectionTitlePlaceholder} className={styles.input} autoFocus />
-            <input name="subtitle" placeholder={t.sectionSubtitlePlaceholder} className={styles.input} />
-            <textarea name="description" placeholder={t.sectionDescriptionPlaceholder} rows={2} className={styles.textarea} />
+            <div className={styles.field}>
+              <label className={styles.label}>{t.sectionTitle} *</label>
+              <input name="title" required placeholder={t.sectionTitlePlaceholder} className={styles.input} autoFocus />
+            </div>
+            <div className={styles.field}>
+              <label className={styles.label}>{t.sectionDescription}</label>
+              <textarea name="description" placeholder={t.sectionDescriptionPlaceholder} rows={2} className={styles.textarea} />
+            </div>
             <div style={{ display: "flex", gap: "0.5rem" }}>
               <button type="submit" className={styles.btnPrimary}>{t.save}</button>
               <button type="button" className={styles.btnGhost} onClick={() => setAddingSection(false)}>✕</button>
