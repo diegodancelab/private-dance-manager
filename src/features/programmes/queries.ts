@@ -91,6 +91,39 @@ export async function getProgrammeDetail(
   });
 }
 
+export async function getStudentProgrammes(
+  studentId: string,
+  teacherId: string
+): Promise<StudentProgrammeWithStatuses[]> {
+  const rows = await prisma.studentProgramme.findMany({
+    where: { studentId, teacherId },
+    orderBy: { assignedAt: "asc" },
+    select: {
+      id: true,
+      assignedAt: true,
+      teacher: { select: { firstName: true, lastName: true } },
+      itemStatuses: { select: { itemId: true, status: true, notes: true } },
+      programme: {
+        select: {
+          id: true, name: true, description: true, level: true, danceStyle: true,
+          sections: {
+            orderBy: { order: "asc" },
+            select: {
+              id: true, title: true, subtitle: true, description: true, order: true,
+              items: {
+                orderBy: { order: "asc" },
+                select: { id: true, name: true, nameAlt: true, description: true, isMandatory: true, order: true },
+              },
+            },
+          },
+        },
+      },
+    },
+  });
+
+  return rows.map((sp) => ({ ...sp, teacherName: `${sp.teacher.firstName} ${sp.teacher.lastName}` }));
+}
+
 export async function getStudentProgramme(
   studentId: string,
   teacherId: string

@@ -14,7 +14,7 @@ import StudentActionsDropdown from "@/features/students/components/StudentAction
 import StudentProgrammePanel from "@/features/programmes/components/StudentProgrammePanel";
 import Button from "@/components/ui/Button/Button";
 import styles from "@/features/students/components/StudentDetail.module.css";
-import { getStudentProgramme, getTeacherProgrammes } from "@/features/programmes/queries";
+import { getStudentProgrammes, getTeacherProgrammes } from "@/features/programmes/queries";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;
@@ -29,9 +29,9 @@ export default async function StudentDetailPage({ params }: Props) {
   const tPortal = await getTranslations("portalAccess");
   const tProg = await getTranslations("programmes");
 
-  const [data, studentProgramme, teacherProgrammes] = await Promise.all([
+  const [data, studentProgrammes, teacherProgrammes] = await Promise.all([
     getStudentDetail(id, user.id),
-    getStudentProgramme(id, user.id),
+    getStudentProgrammes(id, user.id),
     getTeacherProgrammes(user.id),
   ]);
 
@@ -113,7 +113,7 @@ export default async function StudentDetailPage({ params }: Props) {
           </div>
           <StudentProgrammePanel
             studentId={student.id}
-            studentProgramme={studentProgramme}
+            studentProgrammes={studentProgrammes}
             teacherProgrammes={teacherProgrammes}
             t={{
               studentProgramme: tProg("studentProgramme"),

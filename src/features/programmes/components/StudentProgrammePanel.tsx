@@ -1,6 +1,6 @@
 "use client";
 
-import { useTransition } from "react";
+import { useState, useTransition } from "react";
 import {
   assignProgramme,
   unassignProgramme,
@@ -36,126 +36,147 @@ type T = {
 
 type Props = {
   studentId: string;
-  studentProgramme: StudentProgrammeWithStatuses | null;
+  studentProgrammes: StudentProgrammeWithStatuses[];
   teacherProgrammes: ProgrammeListItem[];
   t: T;
 };
 
-export default function StudentProgrammePanel({ studentId, studentProgramme, teacherProgrammes, t }: Props) {
+export default function StudentProgrammePanel({ studentId, studentProgrammes, teacherProgrammes, t }: Props) {
   const [, startTransition] = useTransition();
+  const [selectedProgrammeId, setSelectedProgrammeId] = useState("");
 
-  if (!studentProgramme) {
-    return (
-      <div className={styles.emptyBlock}>
-        <p className={styles.emptyText}>{t.noAssignedProgramme}</p>
-        {teacherProgrammes.length > 0 && (
-          <form
-            action={(fd) => { fd.append("studentId", studentId); startTransition(() => assignProgramme(fd)); }}
-            className={styles.assignForm}
-          >
-            <select name="programmeId" className={styles.select} required>
-              <option value="">{t.selectProgramme}</option>
-              {teacherProgrammes.map((p) => (
-                <option key={p.id} value={p.id}>{p.name}{p.level ? ` — ${p.level}` : ""}</option>
-              ))}
-            </select>
-            <button type="submit" className={styles.btnPrimary}>{t.assign}</button>
-          </form>
-        )}
-      </div>
-    );
-  }
-
-  const { programme, itemStatuses, id: spId } = studentProgramme;
-  const statusMap = new Map(itemStatuses.map((s) => [s.itemId, s.status]));
-
-  const allItems = programme.sections.flatMap((s) => s.items);
-  const masteredCount = allItems.filter((item) => statusMap.get(item.id) === "MASTERED").length;
-  const progress = t.progress
-    .replace("{done}", String(masteredCount))
-    .replace("{total}", String(allItems.length));
+  const assignedIds = new Set(studentProgrammes.map((sp) => sp.programme.id));
+  const alreadyAssigned = selectedProgrammeId !== "" && assignedIds.has(selectedProgrammeId);
 
   return (
     <div className={styles.root}>
-      <div className={styles.programmeHeader}>
-        <div>
-          <span className={styles.programmeName}>{programme.name}</span>
-          {programme.level && <span className={styles.programmeLevel}>{programme.level}</span>}
-          <span className={styles.progressBadge}>{progress}</span>
-        </div>
-        <div className={styles.headerActions}>
-          {teacherProgrammes.length > 0 && (
-            <form
-              action={(fd) => { fd.append("studentId", studentId); startTransition(() => assignProgramme(fd)); }}
-              className={styles.reassignForm}
-            >
-              <select name="programmeId" className={styles.selectSm} defaultValue="">
-                <option value="" disabled>{t.selectProgramme}</option>
-                {teacherProgrammes.map((p) => (
-                  <option key={p.id} value={p.id}>{p.name}</option>
-                ))}
-              </select>
-              <button type="submit" className={styles.btnSm}>{t.assignProgramme}</button>
-            </form>
-          )}
-          <form action={(fd) => { fd.append("studentProgrammeId", spId); fd.append("studentId", studentId); startTransition(() => unassignProgramme(fd)); }}>
-            <button type="submit" className={styles.btnDanger}
-              onClick={(e) => { if (!confirm(`Retirer ce programme ?`)) e.preventDefault(); }}>
-              {t.unassign}
-            </button>
-          </form>
-        </div>
-      </div>
+      {/* Assign form */}
+      {teacherProgrammes.length > 0 && (
+        <form
+          action={(fd) => {
+            fd.append("studentId", studentId);
+            startTransition(() => assignProgramme(fd));
+            setSelectedProgrammeId("");
+          }}
+          className={styles.assignForm}
+        >
+          <select
+            name="programmeId"
+            className={styles.select}
+            required
+            value={selectedProgrammeId}
+            onChange={(e) => setSelectedProgrammeId(e.target.value)}
+          >
+            <option value="">{t.selectProgramme}</option>
+            {teacherProgrammes.map((p) => (
+              <option key={p.id} value={p.id}>
+                {p.name}{p.level ? ` — ${p.level}` : ""}
+              </option>
+            ))}
+          </select>
+          <button
+            type="submit"
+            className={styles.btnPrimary}
+            disabled={!selectedProgrammeId || alreadyAssigned}
+            title={alreadyAssigned ? "Déjà assigné" : undefined}
+          >
+            {t.assign}
+          </button>
+        </form>
+      )}
 
-      <div className={styles.sections}>
-        {programme.sections.map((section) => {
-          const sectionItems = section.items;
-          const sectionMastered = sectionItems.filter((item) => statusMap.get(item.id) === "MASTERED").length;
+      {/* Assigned programmes list */}
+      {studentProgrammes.length === 0 ? (
+        <p className={styles.emptyText}>{t.noAssignedProgramme}</p>
+      ) : (
+        <div className={styles.programmesList}>
+          {studentProgrammes.map((sp) => {
+            const { programme, itemStatuses, id: spId } = sp;
+            const statusMap = new Map(itemStatuses.map((s) => [s.itemId, s.status]));
+            const allItems = programme.sections.flatMap((s) => s.items);
+            const masteredCount = allItems.filter((item) => statusMap.get(item.id) === "MASTERED").length;
+            const progress = t.progress
+              .replace("{done}", String(masteredCount))
+              .replace("{total}", String(allItems.length));
 
-          return (
-            <details key={section.id} className={styles.section}>
-              <summary className={styles.sectionSummary}>
-                <span className={styles.sectionTitle}>{section.title}</span>
-                {section.subtitle && <span className={styles.sectionSub}>{section.subtitle}</span>}
-                <span className={styles.sectionCount}>{sectionMastered}/{sectionItems.length}</span>
-              </summary>
-
-              {section.description && (
-                <p className={styles.sectionDesc}>{section.description}</p>
-              )}
-
-              <div className={styles.itemsList}>
-                {sectionItems.map((item) => {
-                  const currentStatus = statusMap.get(item.id) ?? "NOT_STARTED";
-                  const nextStatus = STATUS_CYCLE[(STATUS_CYCLE.indexOf(currentStatus) + 1) % STATUS_CYCLE.length];
-
-                  return (
-                    <form
-                      key={item.id}
-                      action={(fd) => {
-                        fd.append("studentProgrammeId", spId);
-                        fd.append("itemId", item.id);
-                        fd.append("studentId", studentId);
-                        fd.append("status", nextStatus);
-                        startTransition(() => updateItemStatus(fd));
-                      }}
-                      className={styles.itemForm}
+            return (
+              <div key={spId} className={styles.programmeBlock}>
+                <div className={styles.programmeHeader}>
+                  <div className={styles.programmeHeaderLeft}>
+                    <span className={styles.programmeName}>{programme.name}</span>
+                    {programme.level && <span className={styles.programmeLevel}>{programme.level}</span>}
+                    <span className={styles.progressBadge}>{progress}</span>
+                  </div>
+                  <form
+                    action={(fd) => {
+                      fd.append("studentProgrammeId", spId);
+                      fd.append("studentId", studentId);
+                      startTransition(() => unassignProgramme(fd));
+                    }}
+                  >
+                    <button
+                      type="submit"
+                      className={styles.btnDanger}
+                      onClick={(e) => { if (!confirm(`Retirer "${programme.name}" ?`)) e.preventDefault(); }}
                     >
-                      <button type="submit" className={styles.itemBtn} title={t[nextStatus]}>
-                        <span className={styles.itemIcon}>{STATUS_ICONS[currentStatus]}</span>
-                        <span className={styles.itemName}>{item.name}</span>
-                        {item.nameAlt && <span className={styles.itemNameAlt}>{item.nameAlt}</span>}
-                        {!item.isMandatory && <span className={styles.optionalTag}>{t.optional}</span>}
-                        <span className={styles.statusLabel}>{t[currentStatus]}</span>
-                      </button>
-                    </form>
-                  );
-                })}
+                      {t.unassign}
+                    </button>
+                  </form>
+                </div>
+
+                <div className={styles.sections}>
+                  {programme.sections.map((section) => {
+                    const sectionItems = section.items;
+                    const sectionMastered = sectionItems.filter((item) => statusMap.get(item.id) === "MASTERED").length;
+
+                    return (
+                      <details key={section.id} className={styles.section}>
+                        <summary className={styles.sectionSummary}>
+                          <span className={styles.sectionTitle}>{section.title}</span>
+                          <span className={styles.sectionCount}>{sectionMastered}/{sectionItems.length}</span>
+                        </summary>
+
+                        {section.description && (
+                          <p className={styles.sectionDesc}>{section.description}</p>
+                        )}
+
+                        <div className={styles.itemsList}>
+                          {sectionItems.map((item) => {
+                            const currentStatus = statusMap.get(item.id) ?? "NOT_STARTED";
+                            const nextStatus = STATUS_CYCLE[(STATUS_CYCLE.indexOf(currentStatus) + 1) % STATUS_CYCLE.length];
+
+                            return (
+                              <form
+                                key={item.id}
+                                action={(fd) => {
+                                  fd.append("studentProgrammeId", spId);
+                                  fd.append("itemId", item.id);
+                                  fd.append("studentId", studentId);
+                                  fd.append("status", nextStatus);
+                                  startTransition(() => updateItemStatus(fd));
+                                }}
+                                className={styles.itemForm}
+                              >
+                                <button type="submit" className={styles.itemBtn} title={t[nextStatus]}>
+                                  <span className={styles.itemIcon}>{STATUS_ICONS[currentStatus]}</span>
+                                  <span className={styles.itemName}>{item.name}</span>
+                                  {item.nameAlt && <span className={styles.itemNameAlt}>{item.nameAlt}</span>}
+                                  {!item.isMandatory && <span className={styles.optionalTag}>{t.optional}</span>}
+                                  <span className={styles.statusLabel}>{t[currentStatus]}</span>
+                                </button>
+                              </form>
+                            );
+                          })}
+                        </div>
+                      </details>
+                    );
+                  })}
+                </div>
               </div>
-            </details>
-          );
-        })}
-      </div>
+            );
+          })}
+        </div>
+      )}
     </div>
   );
 }
