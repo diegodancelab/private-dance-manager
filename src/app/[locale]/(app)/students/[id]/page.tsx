@@ -121,7 +121,7 @@ export default async function StudentDetailPage({ params }: Props) {
               selectProgramme: tProg("selectProgramme"),
               assign: tProg("assign"),
               unassign: tProg("unassign"),
-              progress: tProg("progress"),
+              progress: tProg.raw("progress") as string,
               NOT_STARTED: tProg("NOT_STARTED"),
               INTRODUCED: tProg("INTRODUCED"),
               IN_PROGRESS: tProg("IN_PROGRESS"),

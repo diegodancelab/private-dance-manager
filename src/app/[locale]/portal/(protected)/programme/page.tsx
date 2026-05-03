@@ -25,7 +25,7 @@ export default async function PortalProgrammePage({ params }: Props) {
         portalTitle: t("portalTitle"),
         portalSubtitle: subtitle,
         portalNoProgram: t("portalNoProgram"),
-        progress: t("progress"),
+        progress: t.raw("progress") as string,
         NOT_STARTED: t("NOT_STARTED"),
         INTRODUCED: t("INTRODUCED"),
         IN_PROGRESS: t("IN_PROGRESS"),
