@@ -4,6 +4,7 @@ import { requireTeacherAuth } from "@/lib/auth/require-auth";
 import { prisma } from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getLocale } from "next-intl/server";
 
 // ─── Programme CRUD ───────────────────────────────────────────────────────────
 
@@ -22,8 +23,9 @@ export async function createProgramme(formData: FormData): Promise<void> {
     select: { id: true },
   });
 
+  const locale = await getLocale();
   revalidatePath("/settings/programmes");
-  redirect(`/settings/programmes/${programme.id}`);
+  redirect(`/${locale}/settings/programmes/${programme.id}`);
 }
 
 export async function updateProgramme(formData: FormData): Promise<void> {
@@ -53,8 +55,9 @@ export async function deleteProgramme(formData: FormData): Promise<void> {
 
   await prisma.programme.deleteMany({ where: { id, teacherId: user.id } });
 
+  const locale = await getLocale();
   revalidatePath("/settings/programmes");
-  redirect("/settings/programmes");
+  redirect(`/${locale}/settings/programmes`);
 }
 
 // ─── Section CRUD ─────────────────────────────────────────────────────────────
