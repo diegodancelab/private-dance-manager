@@ -15,6 +15,7 @@ import {
   Wallet,
   Settings,
   GraduationCap,
+  Layers,
   type LucideIcon,
 } from "lucide-react";
 import styles from "./SidebarNav.module.css";
@@ -28,6 +29,7 @@ const navItems: { href: string; labelKey: string; Icon: LucideIcon; matchPrefix?
   { href: "/charges", labelKey: "charges", Icon: Receipt },
   { href: "/payments", labelKey: "payments", Icon: Wallet },
   { href: "/settings/programmes", labelKey: "programmes", Icon: GraduationCap, matchPrefix: "/settings/programmes" },
+  { href: "/settings/levels", labelKey: "levels", Icon: Layers, matchPrefix: "/settings/levels" },
   { href: "/settings/skill-axes", labelKey: "settings", Icon: Settings, matchPrefix: "/settings/skill-axes" },
 ];
 

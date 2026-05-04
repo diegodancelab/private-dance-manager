@@ -138,6 +138,9 @@ model User {
   programmes              Programme[]                @relation("TeacherProgrammes")
   studentProgrammes       StudentProgramme[]         @relation("StudentProgrammes")
   taughtStudentProgrammes StudentProgramme[]         @relation("TeacherStudentProgrammes")
+  teacherLevels           TeacherLevel[]             @relation("TeacherLevels")
+  levelAssignmentsGiven   StudentLevelAssignment[]   @relation("TeacherLevelAssignments")
+  levelAssignment         StudentLevelAssignment[]   @relation("StudentLevelAssignments")
 
   // Covers: student list (createdByTeacherId + role), student ownership checks
   @@index([createdByTeacherId, role])
@@ -377,13 +380,15 @@ model SkillAxis {
 /// A skill assessment snapshot for a student at a point in time.
 /// Contains one SkillAxisScore per active axis.
 model SkillAssessment {
-  id        String   @id @default(cuid())
-  studentId String
-  teacherId String
-  lessonId  String?
-  notes     String?
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+  id                 String   @id @default(cuid())
+  studentId          String
+  teacherId          String
+  lessonId           String?
+  notes              String?
+  snapshotLevelName  String?
+  snapshotLevelColor String?
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
 
   student User             @relation("AssessmentStudent", fields: [studentId], references: [id], onDelete: Cascade)
   teacher User             @relation("AssessmentTeacher", fields: [teacherId], references: [id])
@@ -538,6 +543,39 @@ model StudentProgramme {
   @@unique([programmeId, studentId])
   @@index([studentId])
   @@index([teacherId])
+}
+
+/// Niveau personnalisé créé par un prof (ex : Débutant, Intermédiaire, Avancé).
+model TeacherLevel {
+  id        String   @id @default(cuid())
+  teacherId String
+  name      String
+  color     String   @default("#4f46e5")
+  order     Int
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  teacher            User                    @relation("TeacherLevels", fields: [teacherId], references: [id], onDelete: Cascade)
+  studentAssignments StudentLevelAssignment[]
+
+  @@unique([teacherId, name])
+  @@index([teacherId, order])
+}
+
+/// Niveau actuel d'un élève chez un prof (unique par prof+élève).
+model StudentLevelAssignment {
+  id         String   @id @default(cuid())
+  teacherId  String
+  studentId  String
+  levelId    String
+  assignedAt DateTime @default(now())
+
+  teacher User         @relation("TeacherLevelAssignments", fields: [teacherId], references: [id], onDelete: Cascade)
+  student User         @relation("StudentLevelAssignments", fields: [studentId], references: [id], onDelete: Cascade)
+  level   TeacherLevel @relation(fields: [levelId], references: [id], onDelete: Cascade)
+
+  @@unique([teacherId, studentId])
+  @@index([studentId])
 }
 
 /// Statut d'un item du programme pour un élève précis.

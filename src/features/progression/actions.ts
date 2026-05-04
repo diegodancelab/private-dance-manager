@@ -46,11 +46,18 @@ export async function createProgressionAssessment(
     return { success: false, error: "Axes invalides." };
   }
 
+  const levelAssignment = await prisma.studentLevelAssignment.findUnique({
+    where: { teacherId_studentId: { teacherId: user.id, studentId } },
+    select: { level: { select: { name: true, color: true } } },
+  });
+
   await prisma.skillAssessment.create({
     data: {
       studentId,
       teacherId: user.id,
       notes,
+      snapshotLevelName: levelAssignment?.level.name ?? null,
+      snapshotLevelColor: levelAssignment?.level.color ?? null,
       scores: {
         create: scores.map((s) => ({ axisId: s.axisId, score: s.score })),
       },

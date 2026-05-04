@@ -12,9 +12,11 @@ import StudentRecentPaymentsSection from "@/features/students/components/Student
 import StudentPortalAccessCard from "@/features/students/components/StudentPortalAccessCard";
 import StudentActionsDropdown from "@/features/students/components/StudentActionsDropdown";
 import StudentProgrammePanel from "@/features/programmes/components/StudentProgrammePanel";
+import StudentLevelSection from "@/features/levels/components/StudentLevelSection";
 import Button from "@/components/ui/Button/Button";
 import styles from "@/features/students/components/StudentDetail.module.css";
 import { getStudentProgrammes, getTeacherProgrammes } from "@/features/programmes/queries";
+import { getTeacherLevels, getStudentLevel } from "@/features/levels/queries";
 
 type Props = {
   params: Promise<{ id: string; locale: string }>;
@@ -28,11 +30,14 @@ export default async function StudentDetailPage({ params }: Props) {
   const tCommon = await getTranslations("common");
   const tPortal = await getTranslations("portalAccess");
   const tProg = await getTranslations("programmes");
+  const tLevel = await getTranslations("levels");
 
-  const [data, studentProgrammes, teacherProgrammes] = await Promise.all([
+  const [data, studentProgrammes, teacherProgrammes, teacherLevels, currentLevel] = await Promise.all([
     getStudentDetail(id, user.id),
     getStudentProgrammes(id, user.id),
     getTeacherProgrammes(user.id),
+    getTeacherLevels(user.id),
+    getStudentLevel(id, user.id),
   ]);
 
   if (!data) notFound();
@@ -105,6 +110,18 @@ export default async function StudentDetailPage({ params }: Props) {
             confirmDeactivate: tPortal("confirmDeactivate"),
             confirmDeactivateConfirm: tPortal("confirmDeactivateConfirm"),
             confirmDeactivateBack: tPortal("confirmDeactivateBack"),
+          }}
+        />
+        <StudentLevelSection
+          studentId={student.id}
+          currentLevel={currentLevel}
+          teacherLevels={teacherLevels}
+          t={{
+            studentLevel: tLevel("studentLevel"),
+            noLevel: tLevel("noLevel"),
+            assignLevel: tLevel("assignLevel"),
+            removeLevel: tLevel("removeLevel"),
+            selectLevel: tLevel("selectLevel"),
           }}
         />
         <div className={styles.section}>

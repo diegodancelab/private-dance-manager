@@ -19,7 +19,8 @@
     "closeMenu": "Aizvērt navigācijas izvēlni",
     "switchToStudent": "Pārslēgties uz skolēna portālu",
     "settings": "Iestatījumi",
-    "programmes": "Programmas"
+    "programmes": "Programmas",
+    "levels": "Līmeņi"
   },
   "common": {
     "add": "Pievienot",
@@ -641,6 +642,24 @@
     "selectedStudentNotFound": "Izvēlētais skolēns nav atrasts.",
     "selectedChargeNotFound": "Izvēlētais maksājums nav atrasts.",
     "chargeNotBelongToStudent": "Šis maksājums nepieder izvēlētajam skolēnam."
+  },
+  "levels": {
+    "title": "Līmeņi",
+    "subtitle": "Izveidojiet pielāgotus līmeņus, ko piešķirt saviem skolēniem (piem. Iesācējs, Vidējs, Pieredzējis).",
+    "addLevel": "Pievienot līmeni",
+    "namePlaceholder": "Piem. Iesācējs",
+    "name": "Nosaukums",
+    "color": "Krāsa",
+    "save": "Saglabāt",
+    "delete": "Dzēst",
+    "edit": "Rediģēt",
+    "noLevels": "Nav izveidotu līmeņu.",
+    "confirmDelete": "Dzēst šo līmeni?",
+    "studentLevel": "Līmenis",
+    "noLevel": "Nav līmeņa",
+    "assignLevel": "Piešķirt",
+    "removeLevel": "Noņemt",
+    "selectLevel": "Izvēlēties līmeni"
   },
   "programmes": {
     "title": "Programmas",
