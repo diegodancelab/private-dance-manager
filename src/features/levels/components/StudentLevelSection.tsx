@@ -26,8 +26,6 @@ export default function StudentLevelSection({ studentId, currentLevel, teacherLe
 
   return (
     <div className={styles.root}>
-      <span className={styles.label}>{t.studentLevel}</span>
-
       <div className={styles.content}>
         {currentLevel ? (
           <span
