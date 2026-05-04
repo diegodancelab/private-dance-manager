@@ -26,8 +26,9 @@ export default function StudentLevelSection({ studentId, currentLevel, teacherLe
 
   return (
     <div className={styles.root}>
-      <div className={styles.header}>
-        <span className={styles.label}>{t.studentLevel}</span>
+      <span className={styles.label}>{t.studentLevel}</span>
+
+      <div className={styles.content}>
         {currentLevel ? (
           <span
             className={styles.badge}
@@ -42,10 +43,8 @@ export default function StudentLevelSection({ studentId, currentLevel, teacherLe
         ) : (
           <span className={styles.noLevel}>{t.noLevel}</span>
         )}
-      </div>
 
-      {teacherLevels.length > 0 && (
-        <div className={styles.controls}>
+        {teacherLevels.length > 0 && (
           <form
             action={(fd) => { fd.append("studentId", studentId); startTransition(() => assignStudentLevel(fd)); }}
             className={styles.assignForm}
@@ -58,20 +57,20 @@ export default function StudentLevelSection({ studentId, currentLevel, teacherLe
             </select>
             <button type="submit" className={styles.btnSm}>{t.assignLevel}</button>
           </form>
+        )}
 
-          {currentLevel && (
-            <form action={(fd) => { fd.append("studentId", studentId); startTransition(() => removeStudentLevel(fd)); }}>
-              <button
-                type="submit"
-                className={styles.btnDanger}
-                onClick={(e) => { if (!confirm("Retirer le niveau ?")) e.preventDefault(); }}
-              >
-                {t.removeLevel}
-              </button>
-            </form>
-          )}
-        </div>
-      )}
+        {currentLevel && (
+          <form action={(fd) => { fd.append("studentId", studentId); startTransition(() => removeStudentLevel(fd)); }}>
+            <button
+              type="submit"
+              className={styles.btnDanger}
+              onClick={(e) => { if (!confirm("Retirer le niveau ?")) e.preventDefault(); }}
+            >
+              {t.removeLevel}
+            </button>
+          </form>
+        )}
+      </div>
     </div>
   );
 }
