@@ -31,19 +31,22 @@ type T = {
 
 type Props = { levels: Level[]; t: T };
 
-function ColorPalette({ selected, onSelect }: { selected: string; onSelect: (c: string) => void }) {
+function ColorPalette({ selected, onSelect, label }: { selected: string; onSelect: (c: string) => void; label: string }) {
   return (
-    <div className={styles.palette}>
-      {LEVEL_COLORS.map((c) => (
-        <button
-          key={c}
-          type="button"
-          className={`${styles.swatch} ${selected === c ? styles.swatchSelected : ""}`}
-          style={{ background: c }}
-          onClick={() => onSelect(c)}
-          aria-label={c}
-        />
-      ))}
+    <div className={styles.paletteRow}>
+      <span className={styles.paletteLabel}>{label}</span>
+      <div className={styles.palette}>
+        {LEVEL_COLORS.map((c) => (
+          <button
+            key={c}
+            type="button"
+            className={`${styles.swatch} ${selected === c ? styles.swatchSelected : ""}`}
+            style={{ background: c }}
+            onClick={() => onSelect(c)}
+            aria-label={c}
+          />
+        ))}
+      </div>
     </div>
   );
 }
@@ -79,20 +82,14 @@ export default function LevelsManager({ levels, t }: Props) {
               }}
               className={styles.form}
             >
-              <div className={styles.formPreview}>
-                <span className={styles.colorDot} style={{ background: editColor }} />
+              <div className={styles.formRow}>
+                <span className={styles.colorPreview} style={{ background: editColor }} />
+                <input name="name" required defaultValue={level.name} className={styles.nameInput} autoFocus placeholder={t.namePlaceholder} />
               </div>
-              <div className={styles.field}>
-                <label className={styles.label}>{t.name} *</label>
-                <input name="name" required defaultValue={level.name} className={styles.input} autoFocus />
-              </div>
-              <div className={styles.field}>
-                <label className={styles.label}>{t.color}</label>
-                <ColorPalette selected={editColor} onSelect={setEditColor} />
-              </div>
+              <ColorPalette selected={editColor} onSelect={setEditColor} label={t.color} />
               <div className={styles.formActions}>
-                <button type="submit" className={styles.btnPrimary}>{t.save}</button>
-                <button type="button" className={styles.btnGhost} onClick={() => setEditingId(null)}>✕</button>
+                <button type="submit" className={styles.btnSave}>{t.save}</button>
+                <button type="button" className={styles.btnCancel} onClick={() => setEditingId(null)}>✕</button>
               </div>
             </form>
           ) : (
@@ -103,16 +100,16 @@ export default function LevelsManager({ levels, t }: Props) {
               </div>
               <div className={styles.levelActions}>
                 <form action={(fd) => { fd.append("id", level.id); fd.append("direction", "up"); startTransition(() => reorderLevel(fd)); }}>
-                  <button type="submit" className={styles.btnXS} disabled={idx === 0} title="Monter">↑</button>
+                  <button type="submit" className={styles.btnIcon} disabled={idx === 0} title="Monter">↑</button>
                 </form>
                 <form action={(fd) => { fd.append("id", level.id); fd.append("direction", "down"); startTransition(() => reorderLevel(fd)); }}>
-                  <button type="submit" className={styles.btnXS} disabled={idx === levels.length - 1} title="Descendre">↓</button>
+                  <button type="submit" className={styles.btnIcon} disabled={idx === levels.length - 1} title="Descendre">↓</button>
                 </form>
-                <button className={styles.btnXS} onClick={() => startEdit(level)} title={t.edit}>✏️</button>
+                <button type="button" className={styles.btnIcon} onClick={() => startEdit(level)} title={t.edit}>✏️</button>
                 <form action={(fd) => { fd.append("id", level.id); startTransition(() => deleteLevel(fd)); }}>
                   <button
                     type="submit"
-                    className={styles.btnXSDanger}
+                    className={styles.btnIconDanger}
                     onClick={(e) => { if (!confirm(t.confirmDelete)) e.preventDefault(); }}
                     title={t.delete}
                   >✕</button>
@@ -133,20 +130,14 @@ export default function LevelsManager({ levels, t }: Props) {
           }}
           className={styles.form}
         >
-          <div className={styles.formPreview}>
-            <span className={styles.colorDot} style={{ background: addColor }} />
+          <div className={styles.formRow}>
+            <span className={styles.colorPreview} style={{ background: addColor }} />
+            <input name="name" required placeholder={t.namePlaceholder} className={styles.nameInput} autoFocus />
           </div>
-          <div className={styles.field}>
-            <label className={styles.label}>{t.name} *</label>
-            <input name="name" required placeholder={t.namePlaceholder} className={styles.input} autoFocus />
-          </div>
-          <div className={styles.field}>
-            <label className={styles.label}>{t.color}</label>
-            <ColorPalette selected={addColor} onSelect={setAddColor} />
-          </div>
+          <ColorPalette selected={addColor} onSelect={setAddColor} label={t.color} />
           <div className={styles.formActions}>
-            <button type="submit" className={styles.btnPrimary}>{t.save}</button>
-            <button type="button" className={styles.btnGhost} onClick={() => setAdding(false)}>✕</button>
+            <button type="submit" className={styles.btnSave}>{t.save}</button>
+            <button type="button" className={styles.btnCancel} onClick={() => setAdding(false)}>✕</button>
           </div>
         </form>
       ) : (
