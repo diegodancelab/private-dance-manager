@@ -55,7 +55,7 @@ export default function StudentLevelSection({ studentId, currentLevel, teacherLe
                 <option key={l.id} value={l.id}>{l.name}</option>
               ))}
             </select>
-            <button type="submit" className={styles.btnSm}>{t.assignLevel}</button>
+            <button type="submit" className={styles.btnAssign}>{t.assignLevel}</button>
           </form>
         )}
 

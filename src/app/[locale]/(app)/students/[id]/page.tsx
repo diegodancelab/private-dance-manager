@@ -112,18 +112,23 @@ export default async function StudentDetailPage({ params }: Props) {
             confirmDeactivateBack: tPortal("confirmDeactivateBack"),
           }}
         />
-        <StudentLevelSection
-          studentId={student.id}
-          currentLevel={currentLevel}
-          teacherLevels={teacherLevels}
-          t={{
-            studentLevel: tLevel("studentLevel"),
-            noLevel: tLevel("noLevel"),
-            assignLevel: tLevel("assignLevel"),
-            removeLevel: tLevel("removeLevel"),
-            selectLevel: tLevel("selectLevel"),
-          }}
-        />
+        <div className={styles.section}>
+          <div className={styles.sectionHeader}>
+            <h2 className={styles.sectionTitle}>{tLevel("studentLevel")}</h2>
+          </div>
+          <StudentLevelSection
+            studentId={student.id}
+            currentLevel={currentLevel}
+            teacherLevels={teacherLevels}
+            t={{
+              studentLevel: tLevel("studentLevel"),
+              noLevel: tLevel("noLevel"),
+              assignLevel: tLevel("assignLevel"),
+              removeLevel: tLevel("removeLevel"),
+              selectLevel: tLevel("selectLevel"),
+            }}
+          />
+        </div>
         <div className={styles.section}>
           <div className={styles.sectionHeader}>
             <h2 className={styles.sectionTitle}>{tProg("studentProgramme")}</h2>

@@ -1,28 +1,16 @@
 .root {
   display: flex;
   align-items: center;
-  gap: 1rem;
-  padding: 0.875rem 0;
-  border-top: 1px solid var(--border);
+  gap: 0.75rem;
   flex-wrap: wrap;
 }
 
 .label {
   font-size: 0.8rem;
   font-weight: 600;
-  color: var(--text-secondary);
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
+  color: #111827;
   white-space: nowrap;
-  min-width: 60px;
-}
-
-.content {
-  display: flex;
-  align-items: center;
-  gap: 0.625rem;
-  flex-wrap: wrap;
-  flex: 1;
+  min-width: 50px;
 }
 
 .badge {
@@ -38,7 +26,7 @@
 
 .noLevel {
   font-size: 0.85rem;
-  color: var(--text-secondary);
+  color: #6b7280;
   font-style: italic;
 }
 
@@ -49,45 +37,45 @@
 }
 
 .select {
-  height: 30px;
-  padding: 0 0.5rem;
-  border: 1px solid var(--border);
+  height: 32px;
+  padding: 0 0.625rem;
+  border: 1px solid #d1d5db;
   border-radius: 6px;
-  font-size: 0.8rem;
-  color: var(--text-primary);
-  background: var(--bg);
+  font-size: 0.85rem;
+  color: #111827;
+  background: #fff;
   outline: none;
   cursor: pointer;
 }
 
-.select:focus { border-color: var(--primary); }
+.select:focus { border-color: #4f46e5; }
 
-.btnSm {
-  height: 30px;
-  padding: 0 0.75rem;
-  background: var(--primary);
+.btnAssign {
+  height: 32px;
+  padding: 0 0.875rem;
+  background: #4f46e5;
   color: #fff;
   border: none;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
 }
 
-.btnSm:hover { background: var(--primary-hover); }
+.btnAssign:hover { background: #4338ca; }
 
 .btnDanger {
-  height: 30px;
-  padding: 0 0.75rem;
-  background: transparent;
+  height: 32px;
+  padding: 0 0.875rem;
+  background: none;
   color: #dc2626;
   border: 1px solid #fca5a5;
   border-radius: 6px;
-  font-size: 0.8rem;
+  font-size: 0.85rem;
   font-weight: 500;
   cursor: pointer;
   white-space: nowrap;
 }
 
-.btnDanger:hover { background: #fee2e2; }
+.btnDanger:hover { background: #fef2f2; }
