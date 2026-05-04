@@ -26,23 +26,25 @@ export default function StudentLevelSection({ studentId, currentLevel, teacherLe
 
   return (
     <div className={styles.root}>
-      <div className={styles.content}>
-        {currentLevel ? (
-          <span
-            className={styles.badge}
-            style={{
-              background: currentLevel.color + "22",
-              color: currentLevel.color,
-              borderColor: currentLevel.color + "55",
-            }}
-          >
-            {currentLevel.name}
-          </span>
-        ) : (
-          <span className={styles.noLevel}>{t.noLevel}</span>
-        )}
+      {/* Current level badge */}
+      {currentLevel ? (
+        <span
+          className={styles.badge}
+          style={{
+            background: currentLevel.color + "22",
+            color: currentLevel.color,
+            borderColor: currentLevel.color + "55",
+          }}
+        >
+          {currentLevel.name}
+        </span>
+      ) : (
+        <span className={styles.noLevel}>{t.noLevel}</span>
+      )}
 
-        {teacherLevels.length > 0 && (
+      {/* Controls: assign + remove on the same line */}
+      {teacherLevels.length > 0 && (
+        <div className={styles.controls}>
           <form
             action={(fd) => { fd.append("studentId", studentId); startTransition(() => assignStudentLevel(fd)); }}
             className={styles.assignForm}
@@ -55,20 +57,20 @@ export default function StudentLevelSection({ studentId, currentLevel, teacherLe
             </select>
             <button type="submit" className={styles.btnAssign}>{t.assignLevel}</button>
           </form>
-        )}
 
-        {currentLevel && (
-          <form action={(fd) => { fd.append("studentId", studentId); startTransition(() => removeStudentLevel(fd)); }}>
-            <button
-              type="submit"
-              className={styles.btnDanger}
-              onClick={(e) => { if (!confirm("Retirer le niveau ?")) e.preventDefault(); }}
-            >
-              {t.removeLevel}
-            </button>
-          </form>
-        )}
-      </div>
+          {currentLevel && (
+            <form action={(fd) => { fd.append("studentId", studentId); startTransition(() => removeStudentLevel(fd)); }}>
+              <button
+                type="submit"
+                className={styles.btnDanger}
+                onClick={(e) => { if (!confirm("Retirer le niveau ?")) e.preventDefault(); }}
+              >
+                {t.removeLevel}
+              </button>
+            </form>
+          )}
+        </div>
+      )}
     </div>
   );
 }
