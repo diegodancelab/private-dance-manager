@@ -11,6 +11,8 @@ export type PortalAssessment = {
   createdAt: Date;
   notes: string | null;
   averageScore: number;
+  snapshotLevelName: string | null;
+  snapshotLevelColor: string | null;
   teacher: { firstName: string; lastName: string };
   scores: AssessmentScore[];
 };
@@ -27,6 +29,8 @@ export async function getStudentAssessments(
       id: true,
       createdAt: true,
       notes: true,
+      snapshotLevelName: true,
+      snapshotLevelColor: true,
       teacher: { select: { firstName: true, lastName: true } },
       scores: {
         select: {
@@ -55,6 +59,8 @@ export async function getStudentAssessments(
       id: a.id,
       createdAt: a.createdAt,
       notes: a.notes,
+      snapshotLevelName: a.snapshotLevelName,
+      snapshotLevelColor: a.snapshotLevelColor,
       averageScore,
       teacher: a.teacher,
       scores,

@@ -40,12 +40,11 @@ export default function RadarChart({ data, referenceData, size = 260, maxScore =
     }).join(" ");
   }
 
-  // Build reference polygon points (aligned with data axes)
+  // Build reference polygon points — iterate by index (referenceData is pre-aligned)
   const refPoints = referenceData
-    ? data
-        .map((d, i) => {
-          const ref = referenceData.find((r) => r.label === d.label);
-          const fraction = (ref?.score ?? 0) / maxScore;
+    ? referenceData
+        .map((r, i) => {
+          const fraction = r.score / maxScore;
           const { x, y } = polarToXY(radius * fraction, angleFor(i));
           return `${x},${y}`;
         })
@@ -98,14 +97,14 @@ export default function RadarChart({ data, referenceData, size = 260, maxScore =
         );
       })}
 
-      {/* Reference polygon (rendered first, behind main) */}
+      {/* Reference polygon (orange, rendered first = behind) */}
       {refPoints && (
         <polygon
           points={refPoints}
-          fill="rgba(245, 158, 11, 0.12)"
+          fill="rgba(245, 158, 11, 0.20)"
           stroke="#f59e0b"
-          strokeWidth={1.5}
-          strokeDasharray="5,3"
+          strokeWidth={2}
+          strokeDasharray="4 2"
         />
       )}
 

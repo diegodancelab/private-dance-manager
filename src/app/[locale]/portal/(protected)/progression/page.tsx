@@ -15,11 +15,13 @@ export default async function PortalProgressionPage({ params }: Props) {
 
   const assessments = await getStudentAssessments(user.id, 20);
 
-  const dateLocale = locale === "fr" ? "fr-CH" : locale === "es" ? "es-ES" : "en-GB";
+const dateLocale = locale === "fr" ? "fr-CH" : locale === "es" ? "es-ES" : "en-GB";
 
   const serialized = assessments.map((a) => ({
     ...a,
     createdAt: a.createdAt.toISOString(),
+    snapshotLevelName: a.snapshotLevelName ?? null,
+    snapshotLevelColor: a.snapshotLevelColor ?? null,
   }));
 
   return (
