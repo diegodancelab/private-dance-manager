@@ -19,7 +19,8 @@
     "closeMenu": "Close navigation menu",
     "switchToStudent": "Switch to student portal",
     "settings": "Settings",
-    "programmes": "Programmes"
+    "programmes": "Programmes",
+    "levels": "Levels"
   },
   "common": {
     "add": "Add",
@@ -641,6 +642,24 @@
     "selectedStudentNotFound": "Selected student was not found.",
     "selectedChargeNotFound": "Selected charge was not found.",
     "chargeNotBelongToStudent": "This charge does not belong to the selected student."
+  },
+  "levels": {
+    "title": "Levels",
+    "subtitle": "Create custom levels to assign to your students (e.g. Beginner, Intermediate, Advanced).",
+    "addLevel": "Add level",
+    "namePlaceholder": "e.g. Beginner",
+    "name": "Name",
+    "color": "Color",
+    "save": "Save",
+    "delete": "Delete",
+    "edit": "Edit",
+    "noLevels": "No levels created yet.",
+    "confirmDelete": "Delete this level?",
+    "studentLevel": "Level",
+    "noLevel": "No level",
+    "assignLevel": "Assign",
+    "removeLevel": "Remove",
+    "selectLevel": "Choose a level"
   },
   "programmes": {
     "title": "Programmes",

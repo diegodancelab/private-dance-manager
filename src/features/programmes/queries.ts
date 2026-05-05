@@ -174,12 +174,12 @@ export async function getStudentProgramme(
   return { ...sp, teacherName: `${sp.teacher.firstName} ${sp.teacher.lastName}` };
 }
 
-export async function getStudentProgrammeForPortal(
+export async function getStudentProgrammesForPortal(
   studentId: string
-): Promise<StudentProgrammeWithStatuses | null> {
-  const sp = await prisma.studentProgramme.findFirst({
+): Promise<StudentProgrammeWithStatuses[]> {
+  const rows = await prisma.studentProgramme.findMany({
     where: { studentId },
-    orderBy: { assignedAt: "desc" },
+    orderBy: { assignedAt: "asc" },
     select: {
       id: true,
       assignedAt: true,
@@ -220,6 +220,5 @@ export async function getStudentProgrammeForPortal(
     },
   });
 
-  if (!sp) return null;
-  return { ...sp, teacherName: `${sp.teacher.firstName} ${sp.teacher.lastName}` };
+  return rows.map((sp) => ({ ...sp, teacherName: `${sp.teacher.firstName} ${sp.teacher.lastName}` }));
 }

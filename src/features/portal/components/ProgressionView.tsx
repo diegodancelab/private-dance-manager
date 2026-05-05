@@ -12,6 +12,8 @@ export type SerializedAssessment = {
   createdAt: string;
   notes: string | null;
   averageScore: number;
+  snapshotLevelName: string | null;
+  snapshotLevelColor: string | null;
   teacher: { firstName: string; lastName: string };
   scores: { axisId: string; axisLabel: string; score: number }[];
 };
@@ -44,7 +46,7 @@ export default function ProgressionView({ assessments, labels, dateLocale }: Pro
   const refDataAligned = referenceAssessment
     ? latest?.scores.map((s) => ({
         label: s.axisLabel,
-        score: referenceAssessment.scores.find((r) => r.axisId === s.axisId)?.score ?? 0,
+        score: referenceAssessment.scores.find((r) => r.axisLabel === s.axisLabel)?.score ?? 0,
       }))
     : undefined;
 
@@ -60,9 +62,23 @@ export default function ProgressionView({ assessments, labels, dateLocale }: Pro
               <div className={styles.cardLabel}>{labels.latestAssessment}</div>
               <div className={styles.cardTitle}>{formatDate(latest.createdAt)}</div>
             </div>
-            <Badge variant="primary">
-              {labels.averageLabel.replace("{score}", String(latest.averageScore))}
-            </Badge>
+            <div className={viewStyles.cardBadges}>
+              {latest.snapshotLevelName && latest.snapshotLevelColor && (
+                <span
+                  className={viewStyles.levelBadge}
+                  style={{
+                    background: latest.snapshotLevelColor + "22",
+                    color: latest.snapshotLevelColor,
+                    borderColor: latest.snapshotLevelColor + "55",
+                  }}
+                >
+                  {latest.snapshotLevelName}
+                </span>
+              )}
+              <Badge variant="primary">
+                {labels.averageLabel.replace("{score}", String(latest.averageScore))}
+              </Badge>
+            </div>
           </div>
 
           {/* Comparison selector */}
@@ -175,6 +191,18 @@ export default function ProgressionView({ assessments, labels, dateLocale }: Pro
               <div className={styles.timelineContent}>
                 <div className={styles.timelineDate}>
                   {formatDate(assessment.createdAt)} · {labels.averageLabel.replace("{score}", String(assessment.averageScore))}
+                  {assessment.snapshotLevelName && assessment.snapshotLevelColor && (
+                    <span
+                      className={viewStyles.levelBadge}
+                      style={{
+                        background: assessment.snapshotLevelColor + "22",
+                        color: assessment.snapshotLevelColor,
+                        borderColor: assessment.snapshotLevelColor + "55",
+                      }}
+                    >
+                      {assessment.snapshotLevelName}
+                    </span>
+                  )}
                   {assessment.id === referenceId && (
                     <span className={viewStyles.refTag}>{labels.referenceTag}</span>
                   )}

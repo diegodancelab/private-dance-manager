@@ -19,7 +19,8 @@
     "closeMenu": "Cerrar menú de navegación",
     "switchToStudent": "Cambiar al portal de alumno",
     "settings": "Configuración",
-    "programmes": "Programas"
+    "programmes": "Programas",
+    "levels": "Niveles"
   },
   "common": {
     "add": "Añadir",
@@ -641,6 +642,24 @@
     "selectedStudentNotFound": "El alumno seleccionado no fue encontrado.",
     "selectedChargeNotFound": "El cargo seleccionado no fue encontrado.",
     "chargeNotBelongToStudent": "Este cargo no pertenece al alumno seleccionado."
+  },
+  "levels": {
+    "title": "Niveles",
+    "subtitle": "Crea niveles personalizados para asignar a tus alumnos (ej. Principiante, Intermedio, Avanzado).",
+    "addLevel": "Añadir nivel",
+    "namePlaceholder": "Ej. Principiante",
+    "name": "Nombre",
+    "color": "Color",
+    "save": "Guardar",
+    "delete": "Eliminar",
+    "edit": "Editar",
+    "noLevels": "No hay niveles creados.",
+    "confirmDelete": "¿Eliminar este nivel?",
+    "studentLevel": "Nivel",
+    "noLevel": "Sin nivel",
+    "assignLevel": "Asignar",
+    "removeLevel": "Retirar",
+    "selectLevel": "Elegir un nivel"
   },
   "programmes": {
     "title": "Programas",

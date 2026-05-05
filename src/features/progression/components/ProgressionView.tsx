@@ -125,6 +125,18 @@ export default function ProgressionView({ studentId, assessments, axes, t }: Pro
                 >
                   <div className={styles.itemHeader}>
                     <span className={styles.itemDate}>{t.assessmentOfTemplate.replace("{date}", formatDate(a.createdAt))}</span>
+                    {a.snapshotLevelName && a.snapshotLevelColor && (
+                      <span
+                        className={styles.levelBadge}
+                        style={{
+                          background: a.snapshotLevelColor + "22",
+                          color: a.snapshotLevelColor,
+                          borderColor: a.snapshotLevelColor + "55",
+                        }}
+                      >
+                        {a.snapshotLevelName}
+                      </span>
+                    )}
                     {isCurrent && (
                       <span className={styles.badge + " " + styles.badgeCurrent}>{t.currentLabel}</span>
                     )}

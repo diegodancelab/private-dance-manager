@@ -5,6 +5,8 @@ export type TeacherAssessment = {
   createdAt: Date;
   notes: string | null;
   avgScore: number;
+  snapshotLevelName: string | null;
+  snapshotLevelColor: string | null;
   scores: { axisId: string; axisLabel: string; score: number }[];
 };
 
@@ -31,6 +33,8 @@ export async function getStudentProgressionHistory(
         id: true,
         createdAt: true,
         notes: true,
+        snapshotLevelName: true,
+        snapshotLevelColor: true,
         scores: {
           select: {
             axisId: true,
@@ -58,7 +62,7 @@ export async function getStudentProgressionHistory(
       scores.length > 0
         ? Math.round((scores.reduce((sum, s) => sum + s.score, 0) / scores.length) * 10) / 10
         : 0;
-    return { id: a.id, createdAt: a.createdAt, notes: a.notes, avgScore, scores };
+    return { id: a.id, createdAt: a.createdAt, notes: a.notes, avgScore, snapshotLevelName: a.snapshotLevelName, snapshotLevelColor: a.snapshotLevelColor, scores };
   });
 
   return { assessments, axes };

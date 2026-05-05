@@ -24,23 +24,12 @@ type T = {
 };
 
 type Props = {
-  studentProgramme: StudentProgrammeWithStatuses | null;
+  studentProgrammes: StudentProgrammeWithStatuses[];
   t: T;
 };
 
-export default function PortalProgrammeView({ studentProgramme, t }: Props) {
-  if (!studentProgramme) {
-    return (
-      <div className={styles.page}>
-        <div className={styles.pageHeader}>
-          <h1 className={styles.pageTitle}>{t.portalTitle}</h1>
-        </div>
-        <p className={styles.noProgram}>{t.portalNoProgram}</p>
-      </div>
-    );
-  }
-
-  const { programme, itemStatuses } = studentProgramme;
+function ProgrammeBlock({ sp, t }: { sp: StudentProgrammeWithStatuses; t: T }) {
+  const { programme, itemStatuses } = sp;
   const statusMap = new Map(itemStatuses.map((s) => [s.itemId, s.status]));
 
   const allItems = programme.sections.flatMap((s) => s.items);
@@ -48,17 +37,15 @@ export default function PortalProgrammeView({ studentProgramme, t }: Props) {
   const totalCount = allItems.length;
   const progressPct = totalCount > 0 ? Math.round((masteredCount / totalCount) * 100) : 0;
   const progressLabel = t.progress.replace("{done}", String(masteredCount)).replace("{total}", String(totalCount));
+  const subtitle = t.portalSubtitle.replace("{teacher}", sp.teacherName);
 
   return (
-    <div className={styles.page}>
-      <div className={styles.pageHeader}>
-        <div>
-          <h1 className={styles.pageTitle}>{programme.name}</h1>
-          {t.portalSubtitle && <p className={styles.pageSubtitle}>{t.portalSubtitle}</p>}
-        </div>
+    <div className={styles.programmeBlock}>
+      <div className={styles.programmeHeader}>
+        <h2 className={styles.programmeTitle}>{programme.name}</h2>
+        {subtitle && <p className={styles.pageSubtitle}>{subtitle}</p>}
       </div>
 
-      {/* Global progress bar */}
       <div className={styles.progressCard}>
         <div className={styles.progressTop}>
           <span className={styles.progressLabel}>{progressLabel}</span>
@@ -69,14 +56,17 @@ export default function PortalProgrammeView({ studentProgramme, t }: Props) {
         </div>
       </div>
 
-      {/* Sections */}
       <div className={styles.sections}>
         {programme.sections.map((section) => {
           const sectionItems = section.items;
           const sectionMastered = sectionItems.filter((item) => statusMap.get(item.id) === "MASTERED").length;
 
           return (
-            <details key={section.id} className={styles.section} open={sectionItems.some((item) => (statusMap.get(item.id) ?? "NOT_STARTED") !== "MASTERED")}>
+            <details
+              key={section.id}
+              className={styles.section}
+              open={sectionItems.length === 0 || sectionItems.some((item) => (statusMap.get(item.id) ?? "NOT_STARTED") !== "MASTERED")}
+            >
               <summary className={styles.sectionSummary}>
                 <span className={styles.sectionTitle}>{section.title}</span>
                 {section.subtitle && <span className={styles.sectionSub}>{section.subtitle}</span>}
@@ -105,6 +95,26 @@ export default function PortalProgrammeView({ studentProgramme, t }: Props) {
           );
         })}
       </div>
+    </div>
+  );
+}
+
+export default function PortalProgrammeView({ studentProgrammes, t }: Props) {
+  return (
+    <div className={styles.page}>
+      <div className={styles.pageHeader}>
+        <h1 className={styles.pageTitle}>{t.portalTitle}</h1>
+      </div>
+
+      {studentProgrammes.length === 0 ? (
+        <p className={styles.noProgram}>{t.portalNoProgram}</p>
+      ) : (
+        <div className={styles.programmeList}>
+          {studentProgrammes.map((sp) => (
+            <ProgrammeBlock key={sp.id} sp={sp} t={t} />
+          ))}
+        </div>
+      )}
     </div>
   );
 }

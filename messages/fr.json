@@ -19,7 +19,8 @@
     "closeMenu": "Fermer le menu de navigation",
     "switchToStudent": "Passer en espace élève",
     "settings": "Paramètres",
-    "programmes": "Programmes"
+    "programmes": "Programmes",
+    "levels": "Niveaux"
   },
   "common": {
     "add": "Ajouter",
@@ -641,6 +642,24 @@
     "selectedStudentNotFound": "L'élève sélectionné est introuvable.",
     "selectedChargeNotFound": "La charge sélectionnée est introuvable.",
     "chargeNotBelongToStudent": "Cette charge n'appartient pas à l'élève sélectionné."
+  },
+  "levels": {
+    "title": "Niveaux",
+    "subtitle": "Créez des niveaux personnalisés à attribuer à vos élèves (ex. Débutant, Intermédiaire, Avancé).",
+    "addLevel": "Ajouter un niveau",
+    "namePlaceholder": "Ex. Débutant",
+    "name": "Nom",
+    "color": "Couleur",
+    "save": "Enregistrer",
+    "delete": "Supprimer",
+    "edit": "Modifier",
+    "noLevels": "Aucun niveau créé.",
+    "confirmDelete": "Supprimer ce niveau ?",
+    "studentLevel": "Niveau",
+    "noLevel": "Aucun niveau",
+    "assignLevel": "Attribuer",
+    "removeLevel": "Retirer",
+    "selectLevel": "Choisir un niveau"
   },
   "programmes": {
     "title": "Programmes",

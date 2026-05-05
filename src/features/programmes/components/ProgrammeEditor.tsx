@@ -33,7 +33,7 @@ type Props = { programme: ProgrammeDetail; t: T };
 export default function ProgrammeEditor({ programme, t }: Props) {
   const [, startTransition] = useTransition();
   const [editingMeta, setEditingMeta] = useState(false);
-  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set());
+  const [expandedSections, setExpandedSections] = useState<Set<string>>(new Set(programme.sections.map((s) => s.id)));
   const [addingSection, setAddingSection] = useState(false);
   const [editingSection, setEditingSection] = useState<string | null>(null);
   const [addingItemInSection, setAddingItemInSection] = useState<string | null>(null);

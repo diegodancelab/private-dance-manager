@@ -24,6 +24,30 @@
   color: #6b7280;
 }
 
+.programmeList {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.programmeBlock {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.programmeHeader {
+  border-bottom: 1px solid #e5e7eb;
+  padding-bottom: 0.75rem;
+}
+
+.programmeTitle {
+  margin: 0;
+  font-size: 1.125rem;
+  font-weight: 700;
+  color: #111827;
+}
+
 .noProgram {
   color: #6b7280;
   font-size: 0.9rem;
